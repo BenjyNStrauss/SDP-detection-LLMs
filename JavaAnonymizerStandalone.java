@@ -1,8 +1,6 @@
-package pattern;
 
-import assist.base.Assist;
-import assist.base.ParsingBase;
-import assist.util.LabeledHash;
+
+import java.util.Hashtable;
 
 /**
  * Class for anonymizing java code variables and constants
@@ -28,7 +26,7 @@ public class JavaAnonymizerStandalone {
 	 */
 	public JavaAnonymizerStandalone(final String[] keywords) {
 		this.keywords = (keywords != null) ? keywords : JavaAnonymizerFactory.DEFAULT_KEYWORDS;
-		preserve_non_sealed = Assist.stringArrayContains(keywords, "non-sealed");
+		preserve_non_sealed = stringArrayContains(keywords, "non-sealed", true);
 	}
 	
 	/**
@@ -38,7 +36,7 @@ public class JavaAnonymizerStandalone {
 	 */
 	public String[] anonamize(String[] code) {
 		//remove comments
-		code = ParsingBase.removeJavaComments(String.join("\n", code)).trim().split("\n");
+		code = removeJavaComments(String.join("\n", code)).trim().split("\n");
 		
 		//Standardize the spacing
 		code = fixSpacing(code);
@@ -49,8 +47,8 @@ public class JavaAnonymizerStandalone {
 			codeLine = codeLine.replaceAll("\n\n", "\n");
 		}
 		
-		final LabeledHash<String, Integer> tokens = new LabeledHash<String, Integer>();
-		final LabeledHash<String, Integer> literals = new LabeledHash<String, Integer>();
+		final Hashtable<String, Integer> tokens = new Hashtable<String, Integer>();
+		final Hashtable<String, Integer> literals = new Hashtable<String, Integer>();
 		
 		final char[] text = codeLine.toCharArray();
 		final StringBuilder outputBuilder = new StringBuilder();
@@ -157,7 +155,7 @@ public class JavaAnonymizerStandalone {
 						
 						//System.out.println("Found identifier: $"+identifierNo+" :: "+tokenBuilder.toString());
 						
-						if(Assist.stringArrayContains(keywords, tokenBuilder.toString(), false)) {
+						if(stringArrayContains(keywords, tokenBuilder.toString(), false)) {
 							outputBuilder.append(tokenBuilder.toString());
 						} else {
 							outputBuilder.append("ident$"+identifierNo);
@@ -271,5 +269,76 @@ public class JavaAnonymizerStandalone {
 		}
 		
 		return code;
+	}
+	
+	/**
+	 * Removes Java comments
+	 * 
+	 * @param text
+	 * @return
+	 */
+	public static String removeJavaComments(final String text) {
+		final StringBuilder builder = new StringBuilder();
+		final char[] lineChars = text.toCharArray();
+		
+		boolean quoted = false;
+		boolean commented = false;
+		boolean line_commented = false;
+		
+		for(int pos = 0; pos < lineChars.length; ++pos) {
+			switch(lineChars[pos]) {
+			case '"':
+				if(!(commented || line_commented)) { 
+					//ignore escaped quotes
+					if(lineChars[pos-1] != '\\') {
+						quoted = !quoted;
+					}
+					builder.append(lineChars[pos]);
+				}
+				break;
+			case '/':
+				if(quoted) {
+					builder.append(lineChars[pos]);
+				} else if(pos < lineChars.length-1 && lineChars[pos+1] == '/') {
+					line_commented = true;
+				} else if(pos < lineChars.length-1 && !line_commented && lineChars[pos+1] == '*') {
+					commented = true;
+				} if(pos > 0 && commented && !line_commented && lineChars[pos-1] == '*') {
+					commented = false;
+				}
+				break;
+			case '\n':
+				line_commented = false;
+				builder.append(lineChars[pos]);
+				break;
+			default:
+				if(!(commented || line_commented)) {
+					builder.append(lineChars[pos]);
+				}
+			}	
+		}
+		
+		return builder.toString();
+	}
+	
+	/**
+	 * Determine if an array of Strings contains a given string
+	 * @param array
+	 * @param searchTerm
+	 * @param ignoreCase
+	 * @return
+	 */
+	public static final boolean stringArrayContains(final String array[], String searchTerm, final boolean ignoreCase) {
+		if(ignoreCase) { 
+			for(final String str: array) { 
+				if(str.equalsIgnoreCase(searchTerm)) { return true; }
+			}
+		} else {
+			for(final String str: array) {
+				if(str.equals(searchTerm)) { return true; }
+			}
+		}
+		
+		return false;
 	}
 }
