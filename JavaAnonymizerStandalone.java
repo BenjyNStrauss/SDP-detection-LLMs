@@ -1,4 +1,4 @@
-
+package anonymize;
 
 import java.util.Hashtable;
 
@@ -13,19 +13,41 @@ import java.util.Hashtable;
 public class JavaAnonymizerStandalone {
 	public final boolean preserve_non_sealed;
 	
+	private static final String[] DEFAULT_KEYWORDS = new String[]{
+			"abstract", "assert", "boolean", "break", "byte", "case", "catch", "char", 
+	        "class", "const", "continue", "default", "do", "double", "else", "enum", 
+	        "extends", "final", "finally", "float", "for", "goto", "if", "implements", 
+	        "import", "instanceof", "int", "interface", "long", "native", "new", "null", 
+	        "package", "private", "protected", "public", "return", "short", "static", 
+	        "strictfp", "super", "switch", "synchronized", "this", "throw", "throws", 
+	        "transient", "try", "void", "volatile", "while",
+	};
+	
+	private static final String[] ADDITIONAL_KEYWORDS = new String[]{
+			"exports", "module", "non-sealed", "open", "opens", "permits",
+			"provides", "record", "requires", "sealed", "to", "transitive",
+			"uses", "var", "when", "with", "yield"
+	};
+	
+	private static final String STRING = "String";
+	
+	private static final String[] JAVA_COMMON = new String[] {
+			STRING, "java", "javax"
+	};
+	
 	private final String[] keywords;
 	
 	/**
 	 * Default constructor using default keywords
 	 */
-	public JavaAnonymizerStandalone() { this(JavaAnonymizerFactory.DEFAULT_KEYWORDS); }
+	public JavaAnonymizerStandalone() { this(DEFAULT_KEYWORDS); }
 	
 	/**
 	 * 
 	 * @param keywords
 	 */
 	public JavaAnonymizerStandalone(final String[] keywords) {
-		this.keywords = (keywords != null) ? keywords : JavaAnonymizerFactory.DEFAULT_KEYWORDS;
+		this.keywords = (keywords != null) ? keywords : DEFAULT_KEYWORDS;
 		preserve_non_sealed = stringArrayContains(keywords, "non-sealed", true);
 	}
 	
