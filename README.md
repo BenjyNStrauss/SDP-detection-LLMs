@@ -13,4 +13,6 @@ To use the Java Anonymizer:
 
 Output will be in the same format as the input.
 
-The LLM output parser standalone has not been tested.  Place files in a directory "analysis" before running.  If bugs occur, please email benjynstrauss@gmail.com with the stack trace.
+To use the parser: 
+
+Place files in a directory "analysis" before running.  If bugs occur, please email benjynstrauss@gmail.com with the stack trace.
