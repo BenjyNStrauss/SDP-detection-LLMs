@@ -1,5 +1,5 @@
 # SDP-detection-LLMs
-Dataset used in ESEM 2025 Paper
+Dataset used in Paper
 
 Contained within are the 50 classes, enums, and interfaces analyzed.
 
@@ -13,4 +13,4 @@ To use the Java Anonymizer:
 
 Output will be in the same format as the input.
 
-
+The LLM output parser standalone has not been tested.  Place files in a directory "analysis" before running.  If bugs occur, please email benjynstrauss@gmail.com with the stack trace.
