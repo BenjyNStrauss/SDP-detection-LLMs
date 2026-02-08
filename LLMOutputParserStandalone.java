@@ -36,7 +36,7 @@ public class LLMOutputParserStandalone {
 	private static final String HEADER2 = "Project,Filename,Anonymized,ChatGPT,Copilot,Gemini,Claude,Perplexity";
 	private static final String HEADER3 = "Project,Filename,anon-improved,anon-improved-pairwise";
 	private static final String BASE_DIR = "research/llm-pattern-detection";
-	private static final String ANALYSIS = BASE_DIR+"/@analysis";
+	private static final String ANALYSIS = "analysis";
 	
 	private static final File OUTFILE = new File(BASE_DIR+"/analysis.csv");
 	private static final File ACCFILE = new File(BASE_DIR+"/accuracy.csv");
