@@ -1,0 +1,717 @@
+package ident$1.ident$2.ident$3.ident$4.ident$5;
+import javax.ident$8.ident$9;
+import javax.ident$8.ident$10;
+import javax.ident$8.ident$11;
+import javax.ident$8.ident$12;
+import java.ident$14.ident$15;
+import ident$1.ident$2.ident$3.ident$5.ident$16;
+@ident$10
+@ident$12
+public class ident$19 implements ident$11<ident$21> {
+private final ident$21 exports;
+@ident$9
+public ident$19(ident$16 ident$25) {
+this(new ident$21(ident$28.ident$29(ident$25.ident$30())));
+}
+public ident$19(ident$21 exports) {
+this.exports = ident$15.ident$31(exports);
+}
+@Override
+public ident$21 ident$33() {
+return exports;
+}
+}
+<<<<<<<<DIVIDER>>>>>>>>
+package ident$1.ident$2.ident$3.ident$4;
+import java.ident$7.ident$8;
+import java.ident$7.ident$9;
+import java.ident$7.ident$10;
+import java.ident$7.ident$11;
+import java.ident$7.ident$12;
+import java.ident$7.ident$13;
+import java.ident$7.ident$14;
+import java.ident$7.ident$15;
+import java.ident$7.ident$16;
+import java.ident$7.ident$17;
+import java.ident$7.ident$18.ident$19;
+import ident$1.ident$2.ident$3.ident$20.ident$21;
+import ident$1.ident$2.ident$3.ident$22.ident$23;
+import ident$1.ident$2.ident$3.ident$22.ident$24;
+import ident$1.ident$2.ident$3.ident$22.ident$25;
+import ident$1.ident$2.ident$3.ident$22.ident$26;
+public class ident$29 implements ident$21 {
+private final ident$26 ident$33;
+private final ident$14<ident$25> ident$34;
+private final ident$15<ident$25, Integer> ident$36;
+private final ident$15<String, ident$25> ident$38;
+public ident$29(ident$9<ident$25> ident$38)
+throws ident$23, ident$24 {
+this(ident$38, ident$38);
+}
+@Deprecated
+public ident$29(ident$14<ident$25> ident$34, ident$9<ident$25> ident$38)
+throws ident$23, ident$24 {
+this((ident$9<ident$25>) ident$34, ident$38);
+}
+public ident$29(ident$9<ident$25> ident$34, ident$9<ident$25> ident$38)
+throws ident$23, ident$24 {
+this.ident$34 = ident$10.ident$42(new ident$8<>(ident$34));
+this.ident$33 = new ident$26(ident$38);
+this.ident$36 = new ident$12<>();
+this.ident$38 = new ident$12<>();
+ident$14<ident$25> ident$44 = this.ident$33.ident$45();
+for (int ident$48 = 0; ident$48 < ident$44.ident$49(); ident$48++) {
+ident$25 ident$22 = ident$44.ident$50(ident$48);
+String ident$51 = ident$26.ident$52(ident$22);
+this.ident$38.ident$53(ident$51, ident$22);
+this.ident$36.ident$53(ident$22, ident$48);
+}
+}
+@Override
+public ident$14<ident$25> ident$55() {
+return this.ident$34;
+}
+@Override
+public ident$14<ident$25> ident$45() {
+return new ident$8<>(ident$33.ident$45());
+}
+@Override
+public ident$14<ident$25> ident$57(ident$25 ident$22, boolean transitive) {
+ident$16.ident$60(ident$22, "literal$0");
+ident$17<String> ident$61 = new ident$13<>();
+ident$57(ident$26.ident$52(ident$22), ident$61, transitive);
+return ident$45(ident$61);
+}
+private void ident$57(String ident$63, ident$17<String> ident$61, boolean transitive) {
+for (String ident$51 : ident$33.ident$64(ident$63)) {
+if (ident$61.ident$66(ident$51) && transitive) {
+ident$57(ident$51, ident$61, transitive);
+}
+}
+}
+@Override
+public ident$14<ident$25> ident$67(ident$25 ident$22, boolean transitive) {
+ident$16.ident$60(ident$22, "literal$0");
+ident$17<String> ident$61 = new ident$13<>();
+ident$67(ident$26.ident$52(ident$22), ident$61, transitive);
+return ident$45(ident$61);
+}
+private void ident$67(String ident$63, ident$9<String> ident$61, boolean transitive) {
+for (String ident$51 : ident$33.ident$68(ident$63)) {
+if (ident$61.ident$66(ident$51) && transitive) {
+ident$67(ident$51, ident$61, transitive);
+}
+}
+}
+private ident$14<ident$25> ident$45(ident$17<String> ident$61) {
+return ident$61.ident$18()
+.ident$69(ident$38::ident$50)
+.ident$44(ident$11.ident$70(ident$36::ident$50))
+.ident$71(ident$19.ident$72());
+}
+@Override
+public String ident$73() {
+return ident$33.ident$45().ident$73();
+}
+}
+<<<<<<<<DIVIDER>>>>>>>>
+package ident$1.ident$2.ident$3.ident$4;
+import ident$1.ident$2.ident$3.ident$6.ident$7;
+import ident$1.ident$8.ident$9.ident$10.ident$11.ident$12;
+public class ident$15 extends Exception {
+private final ident$7 ident$4;
+public ident$15(ident$7 ident$4, ident$12 ident$20) {
+super("literal$0" + ident$4.ident$22());
+this.ident$4 = ident$4;
+}
+public ident$7 ident$24() {
+return ident$4;
+}
+}
+<<<<<<<<DIVIDER>>>>>>>>
+package ident$1.ident$2.ident$3.ident$4;
+import java.ident$7.ident$8;
+import ident$1.ident$2.ident$3.ident$9.ident$10;
+public class ident$13 extends ident$15 {
+private final Throwable ident$19;
+public ident$13(ident$10 ident$9, long ident$7, Throwable ident$19) {
+this(ident$9, ident$8.ident$22(ident$7), ident$19);
+}
+public ident$13(ident$10 ident$9, ident$8 ident$7, Throwable ident$19) {
+this(ident$9, ident$7, ident$7, ident$19);
+}
+public ident$13(ident$10 ident$9, ident$8 ident$23, ident$8 ident$24, Throwable ident$19) {
+super(ident$9, ident$23, ident$24);
+this.ident$19 = ident$19;
+}
+public Throwable ident$26() {
+return ident$19;
+}
+}
+<<<<<<<<DIVIDER>>>>>>>>
+package ident$1.ident$2.ident$3.ident$4;
+import javax.ident$7.ident$8;
+import javax.ident$7.ident$9;
+import javax.ident$7.ident$10;
+import java.ident$12.ident$13;
+import java.ident$14.ident$15;
+import java.ident$14.ident$16;
+import java.ident$14.ident$17;
+import java.ident$14.ident$18;
+import ident$1.ident$2.ident$3.ident$19.ident$20;
+import ident$1.ident$2.ident$3.ident$21.ident$22;
+import ident$1.ident$2.ident$3.ident$21.ident$23.ident$24;
+import ident$1.ident$2.ident$3.ident$25.ident$26;
+import ident$1.ident$2.ident$3.ident$27.ident$28;
+import ident$1.ident$2.ident$3.ident$27.ident$29;
+import ident$1.ident$2.ident$3.ident$27.ident$30;
+import ident$1.ident$2.ident$3.ident$27.ident$31;
+import ident$1.ident$2.ident$3.ident$27.ident$32;
+import ident$1.ident$2.ident$3.ident$27.ident$33;
+import ident$1.ident$2.ident$3.ident$34.ident$35.ident$36;
+import ident$1.ident$2.ident$3.ident$34.ident$35.ident$37;
+@ident$9
+@ident$10
+public class ident$40 implements ident$42 {
+private final ident$26 ident$45;
+@ident$8
+public ident$40(ident$26 ident$45) {
+this.ident$45 = ident$45;
+}
+@Override
+public ident$48 ident$49(ident$48 ident$50, ident$36 ident$51)
+throws ident$53 {
+if (ident$51 != null) {
+ident$18<String, ident$17<ident$37>> ident$57 = new ident$16<>(2);
+for (ident$37 ident$35 : ident$51.ident$60()) {
+if (!ident$57.ident$61(ident$35.ident$62())) {
+ident$57.ident$63(ident$35.ident$62(), new ident$15<>());
+}
+ident$57.ident$64(ident$35.ident$62()).ident$65(ident$35);
+}
+ident$50.ident$66(ident$57);
+}
+return ident$50;
+}
+@Override
+public ident$48 ident$68(ident$48 ident$50)
+throws ident$53 {
+ident$69(ident$50);
+ident$70(ident$50);
+ident$71(ident$50);
+return ident$50;
+}
+private void ident$71(ident$48 ident$50) {
+ident$50.ident$73("literal$0");
+ident$50.ident$73("literal$1");
+}
+private void ident$70(ident$48 ident$50) throws ident$53 {
+if (ident$50.ident$74() == null) {
+ident$50.ident$75(ident$76(ident$50));
+}
+if (ident$50.ident$77() == null) {
+ident$50.ident$78(new ident$13(ident$50.ident$74().ident$79()).ident$80());
+}
+}
+private ident$24 ident$76(ident$48 ident$50)
+throws ident$53 {
+String ident$81 = null;
+if (ident$50.ident$77() != null) {
+ident$81 = ident$50.ident$77().ident$82();
+}
+if (ident$81 == null || ident$81.ident$83()) {
+String ident$84 = ident$50.ident$85().ident$86(ident$20.ident$87);
+if (ident$84 == null) {
+ident$84 = ident$50.ident$88().ident$86("literal$2") + ident$13.ident$89 + "literal$3";
+}
+ident$81 = new ident$13(ident$84, "literal$4").ident$82();
+}
+try {
+return ident$45.ident$76(new ident$13(ident$81));
+} catch (Exception ident$93) {
+throw new ident$53("literal$5", ident$93);
+}
+}
+private void ident$69(ident$48 ident$50) {
+if (ident$50.ident$95() == null && ident$50.ident$96() != null) {
+ident$50.ident$97(ident$50.ident$96().ident$80().ident$98());
+}
+}
+@Override
+@Deprecated
+public ident$48 ident$100(ident$48 ident$50, ident$32 ident$27)
+throws ident$53 {
+if (ident$27 == null) {
+return ident$50;
+}
+ident$50.ident$101(ident$27.ident$102());
+ident$50.ident$103(ident$27.ident$104());
+ident$50.ident$105(ident$27.ident$106());
+ident$50.ident$78(ident$27.ident$74());
+for (ident$31 ident$107 : ident$27.ident$108()) {
+ident$107 = ident$107.ident$109();
+ident$50.ident$110(ident$107);
+}
+for (ident$29 ident$111 : ident$27.ident$112()) {
+if (!ident$111.ident$113()) {
+continue;
+}
+ident$111 = ident$111.ident$109();
+ident$50.ident$115(ident$111);
+}
+for (ident$28 ident$116 : ident$27.ident$117()) {
+ident$116 = ident$116.ident$109();
+ident$50.ident$118(ident$116);
+}
+ident$50.ident$119(ident$27.ident$120());
+for (ident$1.ident$2.ident$3.ident$27.ident$121 ident$122 : ident$27.ident$123()) {
+ident$50.ident$124(ident$33.ident$125(ident$122));
+if (ident$27.ident$120().ident$126(ident$122.ident$127())) {
+ident$17<ident$30> ident$128 = ident$122.ident$129();
+for (ident$30 ident$130 : ident$128) {
+try {
+ident$50.ident$131(ident$26.ident$132(ident$130));
+} catch (ident$22 ident$93) {
+}
+}
+ident$17<ident$30> ident$133 = ident$122.ident$134();
+for (ident$30 ident$135 : ident$133) {
+try {
+ident$50.ident$136(ident$26.ident$132(ident$135));
+} catch (ident$22 ident$93) {
+}
+}
+}
+}
+return ident$50;
+}
+}
+<<<<<<<<DIVIDER>>>>>>>>
+package ident$1.ident$2.ident$3.ident$4.ident$5;
+import javax.ident$8.ident$9;
+import javax.ident$8.ident$10;
+import javax.ident$8.ident$11;
+import java.ident$13.ident$14;
+import java.ident$13.ident$15;
+import java.ident$16.ident$17;
+import java.ident$16.ident$18;
+import ident$1.ident$2.ident$3.ident$4.ident$19;
+import ident$1.ident$20.ident$21.ident$22.ident$23;
+import ident$1.ident$20.ident$21.ident$22.ident$24;
+import ident$1.ident$20.ident$21.ident$22.ident$25;
+import ident$1.ident$20.ident$21.ident$22.ident$26;
+import ident$1.ident$27.ident$28;
+import ident$1.ident$27.ident$29;
+@ident$10
+@ident$11
+public class ident$32 implements ident$19 {
+private final ident$28 ident$36 = ident$29.ident$37(ident$38());
+private final ident$26 ident$39;
+private final String ident$41;
+@ident$9
+public ident$32(ident$26 ident$39) {
+this.ident$39 = ident$39;
+this.ident$41 = ident$43();
+}
+@Override
+public String ident$45() {
+return ident$41;
+}
+private String ident$43() {
+ident$18 ident$47 = new ident$18();
+String ident$49 = "literal$0";
+try (ident$15 ident$51 = ident$32.class.ident$52("literal$1" + ident$49)) {
+if (ident$51 != null) {
+ident$47.ident$55(ident$51);
+} else {
+ident$36.ident$57("literal$2" + ident$49 + "literal$3");
+}
+} catch (ident$14 ident$59) {
+String ident$60 = "literal$4" + ident$49 + "literal$5";
+if (ident$36.ident$61()) {
+ident$36.ident$57(ident$60, ident$59);
+} else {
+ident$36.ident$57(ident$60);
+}
+}
+String ident$22 = ident$47.ident$62("literal$6", "literal$7").ident$63();
+if (!ident$22.ident$64("literal$8")) {
+return ident$22;
+} else {
+return "literal$7";
+}
+}
+@Override
+public boolean ident$66(String ident$67) {
+if (ident$17.ident$68(ident$67, "literal$9").ident$69()) {
+throw new IllegalArgumentException("literal$10");
+}
+ident$25 ident$72;
+try {
+ident$72 = ident$39.ident$73(ident$67);
+} catch (ident$23 ident$59) {
+throw new IllegalArgumentException(ident$59.ident$74(), ident$59);
+}
+ident$24 ident$75;
+try {
+String ident$41 = ident$45();
+if (ident$41.ident$69()) {
+throw new IllegalArgumentException("literal$11");
+}
+ident$75 = ident$39.ident$76(ident$41);
+} catch (ident$23 ident$59) {
+throw new IllegalStateException("literal$12" + ident$59.ident$74(), ident$59);
+}
+if (ident$72.ident$78() == null) {
+return ident$72.ident$79().ident$80(ident$75) <= 0;
+}
+return ident$72.ident$81(ident$75);
+}
+}
+<<<<<<<<DIVIDER>>>>>>>>
+package ident$1.ident$2.ident$3.ident$4;
+import java.ident$7.ident$8;
+import java.ident$9.ident$10;
+import java.ident$9.ident$11;
+import java.ident$9.ident$12.ident$13;
+import ident$1.ident$2.ident$3.ident$4.ident$14.ident$15;
+import ident$1.ident$2.ident$3.ident$4.ident$16.ident$17;
+import ident$1.ident$2.ident$3.ident$4.ident$18.ident$19;
+import ident$1.ident$2.ident$3.ident$4.ident$20.ident$21.ident$22;
+import ident$1.ident$2.ident$3.ident$4.ident$23.ident$24;
+import ident$1.ident$2.ident$3.ident$4.ident$23.ident$25;
+import ident$1.ident$2.ident$3.ident$4.ident$23.ident$26;
+public interface ident$29 extends Comparable<ident$29> {
+@Deprecated(ident$33 = "literal$0")
+String ident$35 = "literal$1";
+@Deprecated(ident$33 = "literal$0")
+String ident$36 = "literal$2";
+String ident$37 = "literal$3";
+ident$13 ident$38 = ident$13.ident$39("literal$4");
+String ident$40 = "literal$5";
+String ident$41 = "literal$6";
+String ident$42 = "literal$7";
+String ident$43 = "literal$8";
+String ident$44 = "literal$9";
+String ident$45 = "literal$10";
+String ident$46 = "literal$11";
+String ident$47 = "literal$12";
+String ident$48();
+String ident$49();
+String ident$50();
+void ident$52(String ident$53);
+String ident$54();
+String ident$55();
+String ident$56();
+boolean ident$58();
+ident$8 ident$59();
+void ident$60(ident$8 ident$61);
+String ident$62();
+void ident$63(String ident$64);
+String ident$65();
+String ident$66();
+void ident$67(ident$17 ident$16);
+ident$10<ident$17> ident$68();
+void ident$69(ident$19 ident$70);
+ident$19 ident$71();
+void ident$72(String ident$53, ident$19 ident$73);
+String ident$74();
+void ident$75(String ident$76);
+ident$22 ident$77();
+void ident$78(ident$22 ident$79);
+ident$15 ident$80();
+ident$11<String> ident$81();
+void ident$82(ident$11<String> ident$83);
+void ident$84(String ident$85);
+ident$26 ident$86();
+void ident$87(ident$26 ident$88);
+void ident$89(String ident$53);
+void ident$90(String ident$91);
+void ident$92(String ident$93);
+boolean ident$94();
+void ident$95(boolean ident$96);
+boolean ident$97();
+void ident$98(String ident$53);
+void ident$99(ident$15 ident$14);
+boolean ident$100();
+void ident$101(boolean ident$102);
+ident$11<ident$24> ident$103();
+void ident$104(ident$11<ident$24> ident$105);
+boolean ident$106();
+void ident$107(boolean ident$108);
+ident$24 ident$109() throws ident$25;
+boolean ident$111() throws ident$25;
+}
+<<<<<<<<DIVIDER>>>>>>>>
+package ident$1.ident$2.ident$3.ident$4;
+@SuppressWarnings("literal$0")
+public class ident$8 implements java.ident$11.ident$12, Cloneable {
+private String ident$16;
+private String ident$17;
+private ident$18 ident$19;
+public ident$8() {}
+public ident$8(ident$1.ident$2.ident$3.ident$20.ident$4.ident$8 ident$21) {
+this.ident$16 = ident$21.ident$23();
+this.ident$17 = ident$21.ident$24();
+this.ident$19 = ident$21.ident$25() != null ? new ident$18(ident$21.ident$25()) : null;
+}
+public ident$8 ident$28() {
+try {
+ident$8 ident$30 = (ident$8) super.ident$28();
+return ident$30;
+} catch (Exception ident$35) {
+throw (RuntimeException)
+new UnsupportedOperationException(ident$39().ident$40() + "literal$1").ident$41(ident$35);
+}
+}
+public String ident$24() {
+return this.ident$17;
+}
+public String ident$23() {
+return this.ident$16;
+}
+public void ident$43(String ident$17) {
+this.ident$17 = ident$17;
+}
+public void ident$44(String ident$16) {
+this.ident$16 = ident$16;
+}
+public ident$18 ident$25() {
+return ident$19;
+}
+public void ident$45(ident$18 ident$19) {
+this.ident$19 = ident$19;
+}
+@Override
+public String ident$47() {
+return ident$23() + "literal$2" + ident$24();
+}
+public ident$1.ident$2.ident$3.ident$20.ident$4.ident$8 ident$48() {
+return new ident$1.ident$2.ident$3.ident$20.ident$4.ident$8(ident$16, ident$17);
+}
+}
+<<<<<<<<DIVIDER>>>>>>>>
+package ident$1.ident$2.ident$3.ident$4;
+import java.ident$7.ident$8.ident$9;
+@SuppressWarnings("literal$0")
+public final class ident$14 implements java.ident$16.ident$17, Cloneable, ident$19 {
+private int ident$22 = -1;
+private int ident$23 = -1;
+private ident$24 ident$25;
+private java.ident$7.ident$26<Object, ident$14> ident$28;
+private ident$14 ident$29;
+private ident$14 ident$30;
+public ident$14(ident$1.ident$2.ident$3.ident$31.ident$4.ident$14 ident$29) {
+this.ident$22 = ident$29.ident$33();
+this.ident$23 = ident$29.ident$34();
+this.ident$25 = ident$29.ident$35() != null ? new ident$24(ident$29.ident$35()) : null;
+this.ident$28 = ident$29.ident$38().ident$39()
+? null
+: ident$29.ident$38().ident$40().ident$8()
+.ident$41(ident$9.ident$42(
+ident$43 -> ident$43.ident$44(),
+ident$43 -> ident$43.ident$45() == ident$29 ? this : new ident$14(ident$43.ident$45())));
+this.ident$30 = ident$29.ident$46() != null ? new ident$14(ident$29.ident$46()) : null;
+}
+public ident$14(int ident$22, int ident$23) {
+this.ident$22 = ident$22;
+this.ident$23 = ident$23;
+}
+public ident$14(int ident$22, int ident$23, ident$24 ident$25) {
+this.ident$22 = ident$22;
+this.ident$23 = ident$23;
+this.ident$25 = ident$25;
+}
+public ident$14 ident$47() {
+try {
+ident$14 ident$49 = (ident$14) super.ident$47();
+if (ident$49.ident$28 != null) {
+ident$49.ident$28 = new java.ident$7.ident$52(ident$49.ident$28);
+}
+return ident$49;
+} catch (Exception ident$56) {
+throw (RuntimeException)
+new UnsupportedOperationException(ident$60().ident$61() + "literal$1").ident$62(ident$56);
+}
+}
+public int ident$34() {
+return this.ident$23;
+}
+public int ident$33() {
+return this.ident$22;
+}
+@Override
+public ident$14 ident$64(Object ident$65) {
+if (ident$65 instanceof String ident$68) {
+switch (ident$68) {
+case "literal$2": {
+return this.ident$29;
+}
+default: {
+return ident$72(ident$65);
+}
+}
+} else {
+return ident$72(ident$65);
+}
+}
+public java.ident$7.ident$26<Object, ident$14> ident$38() {
+return ident$28;
+}
+@Override
+public void ident$75(Object ident$65, ident$14 ident$29) {
+if (ident$65 instanceof String ident$68) {
+switch (ident$68) {
+case "literal$2": {
+this.ident$29 = ident$29;
+return;
+}
+default: {
+ident$76(ident$65, ident$29);
+return;
+}
+}
+} else {
+ident$76(ident$65, ident$29);
+}
+}
+public void ident$76(Object ident$65, ident$14 ident$29) {
+if (ident$29 != null) {
+if (this.ident$28 == null) {
+this.ident$28 = new java.ident$7.ident$52<>();
+}
+this.ident$28.ident$77(ident$65, ident$29);
+}
+}
+private ident$14 ident$72(Object ident$65) {
+return (ident$28 != null) ? ident$28.ident$78(ident$65) : null;
+}
+public ident$24 ident$35() {
+return this.ident$25;
+}
+public ident$14 ident$46() {
+return ident$30;
+}
+public void ident$79(ident$14 ident$30) {
+this.ident$30 = ident$30;
+}
+public static ident$14 ident$81(ident$14 ident$82, ident$14 ident$25, boolean ident$84) {
+if (ident$25 == null) {
+return ident$82;
+} else if (ident$82 == null) {
+return ident$25;
+}
+ident$14 ident$85 = new ident$14(ident$82.ident$33(), ident$82.ident$34(), ident$82.ident$35());
+java.ident$7.ident$26<Object, ident$14> ident$28;
+java.ident$7.ident$26<Object, ident$14> ident$86 = ident$25.ident$38();
+java.ident$7.ident$26<Object, ident$14> ident$87 = ident$82.ident$38();
+if (ident$86 == null) {
+ident$28 = ident$87;
+} else if (ident$87 == null) {
+ident$28 = ident$86;
+} else {
+ident$28 = new java.ident$7.ident$52();
+ident$28.ident$88(ident$84 ? ident$87 : ident$86);
+ident$28.ident$88(ident$84 ? ident$86 : ident$87);
+}
+ident$85.ident$89(ident$28);
+return ident$85;
+}
+public static ident$14 ident$81(
+ident$14 ident$82, ident$14 ident$25, java.ident$7.ident$90<Integer> ident$92) {
+if (ident$25 == null) {
+return ident$82;
+} else if (ident$82 == null) {
+return ident$25;
+}
+ident$14 ident$85 = new ident$14(ident$82.ident$33(), ident$82.ident$34(), ident$82.ident$35());
+java.ident$7.ident$26<Object, ident$14> ident$28;
+java.ident$7.ident$26<Object, ident$14> ident$86 = ident$25.ident$38();
+java.ident$7.ident$26<Object, ident$14> ident$87 = ident$82.ident$38();
+if (ident$86 == null) {
+ident$28 = ident$87;
+} else if (ident$87 == null) {
+ident$28 = ident$86;
+} else {
+ident$28 = new java.ident$7.ident$52<>();
+for (java.ident$7.ident$94<Integer> ident$95 = ident$92.ident$96(); ident$95.ident$97(); ) {
+ident$14 ident$29;
+Integer ident$98 = ident$95.ident$99();
+if (ident$98.ident$100() < 0) {
+ident$29 = ident$86.ident$78(Integer.ident$101(~ident$98.ident$100()));
+} else {
+ident$29 = ident$87.ident$78(ident$98);
+}
+ident$28.ident$77(Integer.ident$101(ident$28.ident$102()), ident$29);
+}
+}
+ident$85.ident$89(ident$28);
+return ident$85;
+}
+public void ident$89(java.ident$7.ident$26<Object, ident$14> ident$28) {
+this.ident$28 = ident$28;
+}
+public ident$1.ident$2.ident$3.ident$31.ident$4.ident$14 ident$103() {
+if (ident$28 != null && ident$28.ident$104().ident$105(this)) {
+if (ident$28.ident$102() == 1 && ident$28.ident$104().ident$96().ident$99() == this) {
+return new ident$1.ident$2.ident$3.ident$31.ident$4.ident$14(
+ident$22,
+ident$23,
+ident$25 != null ? ident$25.ident$106() : null,
+ident$28.ident$107().ident$96().ident$99());
+} else {
+return new ident$1.ident$2.ident$3.ident$31.ident$4.ident$14(
+ident$22, ident$23, ident$25 != null ? ident$25.ident$106() : null);
+}
+} else {
+return new ident$1.ident$2.ident$3.ident$31.ident$4.ident$14(
+ident$22,
+ident$23,
+ident$25 != null ? ident$25.ident$106() : null,
+ident$28 != null
+? ident$28.ident$40().ident$8().ident$41(ident$9.ident$42(ident$43 -> ident$43.ident$44(), ident$43 -> ident$43.ident$45()
+.ident$103()))
+: null);
+}
+}
+public abstract static class ident$109 {
+public abstract String ident$110(ident$14 ident$29);
+}
+@Override
+public String ident$110() {
+return ident$33() + "literal$3" + ident$34() + "literal$4" + ident$35();
+}
+}
+<<<<<<<<DIVIDER>>>>>>>>
+package ident$1.ident$2.ident$3.ident$4.ident$5;
+import java.ident$8.ident$9;
+import java.ident$8.ident$10;
+import ident$1.ident$2.ident$3.ident$4.ident$11;
+import ident$1.ident$2.ident$3.ident$4.ident$12.ident$13;
+public final class ident$17 {
+private ident$17() {}
+public static boolean ident$21(@ident$13 ident$9<String, ?> ident$23) {
+return ident$25(ident$23, ident$11.ident$26, ident$27);
+}
+public static boolean ident$28(@ident$13 ident$9<String, ?> ident$23) {
+return ident$25(ident$23, ident$11.ident$29, !ident$21(ident$23));
+}
+public static boolean ident$30(@ident$13 ident$9<String, ?> ident$23) {
+return ident$25(ident$23, ident$11.ident$31, ident$32);
+}
+private static boolean ident$25(ident$10 ident$23, String ident$33, boolean ident$34) {
+return ident$25(ident$23 != null ? ident$23.ident$36(ident$33) : null, ident$34);
+}
+private static boolean ident$25(ident$9<String, ?> ident$23, String ident$33, boolean ident$34) {
+return ident$25(ident$23 != null ? ident$23.ident$36(ident$33) : null, ident$34);
+}
+private static boolean ident$25(Object ident$38, boolean ident$34) {
+if (ident$38 instanceof Boolean ident$42) {
+return ident$42;
+} else if (ident$38 != null) {
+return Boolean.ident$44(ident$38.ident$45());
+} else {
+return ident$34;
+}
+}
+}

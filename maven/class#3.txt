@@ -1,0 +1,19 @@
+package ident$1.ident$2.ident$3.ident$4;
+import java.ident$7.ident$8;
+import ident$1.ident$2.ident$3.ident$9.ident$10;
+public class ident$13 extends ident$15 {
+private final Throwable ident$19;
+public ident$13(ident$10 ident$9, long ident$7, Throwable ident$19) {
+this(ident$9, ident$8.ident$22(ident$7), ident$19);
+}
+public ident$13(ident$10 ident$9, ident$8 ident$7, Throwable ident$19) {
+this(ident$9, ident$7, ident$7, ident$19);
+}
+public ident$13(ident$10 ident$9, ident$8 ident$23, ident$8 ident$24, Throwable ident$19) {
+super(ident$9, ident$23, ident$24);
+this.ident$19 = ident$19;
+}
+public Throwable ident$26() {
+return ident$19;
+}
+}

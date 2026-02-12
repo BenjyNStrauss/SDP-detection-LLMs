@@ -1,0 +1,92 @@
+package ident$1.ident$2.ident$3.ident$4;
+import java.ident$7.ident$8;
+import java.ident$7.ident$9;
+import java.ident$7.ident$10;
+import java.ident$7.ident$11;
+import java.ident$7.ident$12;
+import java.ident$7.ident$13;
+import java.ident$7.ident$14;
+import java.ident$7.ident$15;
+import java.ident$7.ident$16;
+import java.ident$7.ident$17;
+import java.ident$7.ident$18.ident$19;
+import ident$1.ident$2.ident$3.ident$20.ident$21;
+import ident$1.ident$2.ident$3.ident$22.ident$23;
+import ident$1.ident$2.ident$3.ident$22.ident$24;
+import ident$1.ident$2.ident$3.ident$22.ident$25;
+import ident$1.ident$2.ident$3.ident$22.ident$26;
+public class ident$29 implements ident$21 {
+private final ident$26 ident$33;
+private final ident$14<ident$25> ident$34;
+private final ident$15<ident$25, Integer> ident$36;
+private final ident$15<String, ident$25> ident$38;
+public ident$29(ident$9<ident$25> ident$38)
+throws ident$23, ident$24 {
+this(ident$38, ident$38);
+}
+@Deprecated
+public ident$29(ident$14<ident$25> ident$34, ident$9<ident$25> ident$38)
+throws ident$23, ident$24 {
+this((ident$9<ident$25>) ident$34, ident$38);
+}
+public ident$29(ident$9<ident$25> ident$34, ident$9<ident$25> ident$38)
+throws ident$23, ident$24 {
+this.ident$34 = ident$10.ident$42(new ident$8<>(ident$34));
+this.ident$33 = new ident$26(ident$38);
+this.ident$36 = new ident$12<>();
+this.ident$38 = new ident$12<>();
+ident$14<ident$25> ident$44 = this.ident$33.ident$45();
+for (int ident$48 = 0; ident$48 < ident$44.ident$49(); ident$48++) {
+ident$25 ident$22 = ident$44.ident$50(ident$48);
+String ident$51 = ident$26.ident$52(ident$22);
+this.ident$38.ident$53(ident$51, ident$22);
+this.ident$36.ident$53(ident$22, ident$48);
+}
+}
+@Override
+public ident$14<ident$25> ident$55() {
+return this.ident$34;
+}
+@Override
+public ident$14<ident$25> ident$45() {
+return new ident$8<>(ident$33.ident$45());
+}
+@Override
+public ident$14<ident$25> ident$57(ident$25 ident$22, boolean transitive) {
+ident$16.ident$60(ident$22, "literal$0");
+ident$17<String> ident$61 = new ident$13<>();
+ident$57(ident$26.ident$52(ident$22), ident$61, transitive);
+return ident$45(ident$61);
+}
+private void ident$57(String ident$63, ident$17<String> ident$61, boolean transitive) {
+for (String ident$51 : ident$33.ident$64(ident$63)) {
+if (ident$61.ident$66(ident$51) && transitive) {
+ident$57(ident$51, ident$61, transitive);
+}
+}
+}
+@Override
+public ident$14<ident$25> ident$67(ident$25 ident$22, boolean transitive) {
+ident$16.ident$60(ident$22, "literal$0");
+ident$17<String> ident$61 = new ident$13<>();
+ident$67(ident$26.ident$52(ident$22), ident$61, transitive);
+return ident$45(ident$61);
+}
+private void ident$67(String ident$63, ident$9<String> ident$61, boolean transitive) {
+for (String ident$51 : ident$33.ident$68(ident$63)) {
+if (ident$61.ident$66(ident$51) && transitive) {
+ident$67(ident$51, ident$61, transitive);
+}
+}
+}
+private ident$14<ident$25> ident$45(ident$17<String> ident$61) {
+return ident$61.ident$18()
+.ident$69(ident$38::ident$50)
+.ident$44(ident$11.ident$70(ident$36::ident$50))
+.ident$71(ident$19.ident$72());
+}
+@Override
+public String ident$73() {
+return ident$33.ident$45().ident$73();
+}
+}

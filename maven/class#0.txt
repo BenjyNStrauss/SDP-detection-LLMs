@@ -1,0 +1,23 @@
+package ident$1.ident$2.ident$3.ident$4.ident$5;
+import javax.ident$8.ident$9;
+import javax.ident$8.ident$10;
+import javax.ident$8.ident$11;
+import javax.ident$8.ident$12;
+import java.ident$14.ident$15;
+import ident$1.ident$2.ident$3.ident$5.ident$16;
+@ident$10
+@ident$12
+public class ident$19 implements ident$11<ident$21> {
+private final ident$21 exports;
+@ident$9
+public ident$19(ident$16 ident$25) {
+this(new ident$21(ident$28.ident$29(ident$25.ident$30())));
+}
+public ident$19(ident$21 exports) {
+this.exports = ident$15.ident$31(exports);
+}
+@Override
+public ident$21 ident$33() {
+return exports;
+}
+}
