@@ -1,0 +1,26 @@
+package ident$1.ident$2.ident$3;
+import ident$1.ident$5.ident$6;
+public interface ident$9 {
+ident$10 ident$11(ident$10 ident$12, ident$10 ident$13);
+default ident$10 ident$11(ident$10 ident$12, ident$10 ident$13, ident$10 ident$15) {
+return ident$11(ident$12, ident$13);
+}
+default boolean ident$18() {
+return ident$19;
+}
+default boolean ident$20(ident$10 ident$12, ident$10 ident$13) {
+return ident$19;
+}
+default void ident$22(ident$10 ident$23) {
+}
+default void ident$22(ident$10 ident$23, ident$10 ident$15) {
+ident$22(ident$23);
+}
+default void ident$24(ident$10 ident$23, int ident$26, int ident$27, long ident$24) {
+}
+default void ident$29(ident$10 ident$12, ident$10 ident$13) {
+ident$6.ident$30(ident$31()).ident$32(
+"literal$0", this, ident$12,
+ident$13);
+}
+}

@@ -1,0 +1,19 @@
+package ident$1.ident$2.ident$3.ident$4.ident$5;
+import java.ident$8.ident$9.ident$10;
+import ident$1.ident$2.ident$3.ident$11;
+import ident$1.ident$2.ident$3.ident$12;
+import ident$1.ident$2.ident$3.ident$13;
+import ident$1.ident$2.ident$3.ident$14.ident$15;
+public class ident$18 extends ident$15 {
+@SuppressWarnings("literal$0")
+@Override
+public <ident$22> ident$22 ident$23(Class<ident$22> ident$25, ident$11 ident$26, Object ident$28) {
+if (ident$28 instanceof ident$12 || ident$28 instanceof ident$13 || ident$28 instanceof ident$10) {
+return (ident$22) ident$32;
+}
+if (ident$25.ident$33(String.class)) {
+return (ident$22) ident$28.ident$35();
+}
+return null;
+}
+}

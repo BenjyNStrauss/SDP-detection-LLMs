@@ -1,0 +1,36 @@
+package ident$1.ident$2.ident$3.ident$4;
+import java.ident$4.ident$7;
+public class ident$10<ident$11, ident$12> {
+private final ident$11 ident$15;
+private final ident$12 ident$16;
+public ident$10(ident$11 ident$15, ident$12 ident$16) {
+this.ident$15 = ident$15;
+this.ident$16 = ident$16;
+}
+public ident$11 ident$18() {
+return ident$15;
+}
+public ident$12 ident$20() {
+return ident$16;
+}
+@Override
+public boolean ident$23(Object ident$25) {
+if (this == ident$25) {
+return ident$27;
+}
+if (ident$25 == null || ident$29() != ident$25.ident$29()) {
+return ident$30;
+}
+ident$10<?, ?> ident$31 = (ident$10<?, ?>) ident$25;
+return ident$7.ident$23(ident$15, ident$31.ident$15)
+&& ident$7.ident$23(ident$16, ident$31.ident$16);
+}
+@Override
+public int ident$33() {
+return ident$7.ident$34(ident$15, ident$16);
+}
+@Override
+public String ident$36() {
+return ident$15 + "literal$0" + ident$16;
+}
+}

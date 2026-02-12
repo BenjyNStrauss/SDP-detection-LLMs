@@ -1,0 +1,21 @@
+package ident$1.ident$2.ident$3.ident$4.ident$5;
+import ident$1.ident$2.ident$3.ident$7.ident$8;
+import ident$1.ident$2.ident$3.ident$7.ident$9;
+public class ident$12 implements ident$9 {
+private final ident$16 ident$17;
+public ident$12(ident$16 ident$17) {
+this.ident$17 = ident$17;
+}
+@Override
+public ident$8 ident$20(String ident$22) {
+return new ident$25(ident$17, new ident$26("literal$0", ident$22));
+}
+@Override
+public ident$8 ident$27(String ident$22) {
+return new ident$28(ident$17, new ident$26("literal$1", ident$22));
+}
+@Override
+public ident$8 ident$29(String ident$30) {
+return new ident$31(ident$17, new ident$26("literal$2", ident$30));
+}
+}
