@@ -1,0 +1,32 @@
+package ident$1.ident$2.ident$3.ident$4.ident$5;
+import java.ident$8.ident$9;
+import java.ident$8.ident$10;
+import ident$1.ident$2.ident$3.ident$4.ident$11;
+import ident$1.ident$2.ident$3.ident$4.ident$12.ident$13;
+public final class ident$17 {
+private ident$17() {}
+public static boolean ident$21(@ident$13 ident$9<String, ?> ident$23) {
+return ident$25(ident$23, ident$11.ident$26, ident$27);
+}
+public static boolean ident$28(@ident$13 ident$9<String, ?> ident$23) {
+return ident$25(ident$23, ident$11.ident$29, !ident$21(ident$23));
+}
+public static boolean ident$30(@ident$13 ident$9<String, ?> ident$23) {
+return ident$25(ident$23, ident$11.ident$31, ident$32);
+}
+private static boolean ident$25(ident$10 ident$23, String ident$33, boolean ident$34) {
+return ident$25(ident$23 != null ? ident$23.ident$36(ident$33) : null, ident$34);
+}
+private static boolean ident$25(ident$9<String, ?> ident$23, String ident$33, boolean ident$34) {
+return ident$25(ident$23 != null ? ident$23.ident$36(ident$33) : null, ident$34);
+}
+private static boolean ident$25(Object ident$38, boolean ident$34) {
+if (ident$38 instanceof Boolean ident$42) {
+return ident$42;
+} else if (ident$38 != null) {
+return Boolean.ident$44(ident$38.ident$45());
+} else {
+return ident$34;
+}
+}
+}

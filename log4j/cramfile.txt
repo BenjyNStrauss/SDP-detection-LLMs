@@ -1,0 +1,1482 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package org.apache.maven.artifact;
+
+import java.io.File;
+import java.util.Collection;
+import java.util.List;
+import java.util.regex.Pattern;
+
+import org.apache.maven.artifact.handler.ArtifactHandler;
+import org.apache.maven.artifact.metadata.ArtifactMetadata;
+import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
+import org.apache.maven.artifact.versioning.ArtifactVersion;
+import org.apache.maven.artifact.versioning.OverConstrainedVersionException;
+import org.apache.maven.artifact.versioning.VersionRange;
+
+/**
+ * Maven Artifact interface. Notice that it mixes artifact definition concepts (groupId, artifactId, version)
+ * with dependency information (version range, scope).
+ */
+public interface Artifact extends Comparable<Artifact> {
+
+    @Deprecated(since = "4.0.0")
+    String RELEASE_VERSION = "RELEASE";
+
+    @Deprecated(since = "4.0.0")
+    String LATEST_VERSION = "LATEST";
+
+    String SNAPSHOT_VERSION = "SNAPSHOT";
+
+    Pattern VERSION_FILE_PATTERN = Pattern.compile("^(.*)-(\\d{8}\\.\\d{6})-(\\d+)$");
+
+    // TODO into artifactScope handler
+
+    String SCOPE_COMPILE = "compile";
+
+    String SCOPE_COMPILE_PLUS_RUNTIME = "compile+runtime";
+
+    String SCOPE_TEST = "test";
+
+    String SCOPE_RUNTIME = "runtime";
+
+    String SCOPE_RUNTIME_PLUS_SYSTEM = "runtime+system";
+
+    String SCOPE_PROVIDED = "provided";
+
+    String SCOPE_SYSTEM = "system";
+
+    String SCOPE_IMPORT = "import"; // Used to import dependencyManagement dependencies
+
+    String getGroupId();
+
+    String getArtifactId();
+
+    String getVersion();
+
+    void setVersion(String version);
+
+    String getScope();
+
+    String getType();
+
+    String getClassifier();
+
+    boolean hasClassifier();
+
+    File getFile();
+
+    void setFile(File destination);
+
+    String getBaseVersion();
+
+    void setBaseVersion(String baseVersion);
+
+    String getId();
+
+    String getDependencyConflictId();
+
+    void addMetadata(ArtifactMetadata metadata);
+
+    Collection<ArtifactMetadata> getMetadataList();
+
+    void setRepository(ArtifactRepository remoteRepository);
+
+    ArtifactRepository getRepository();
+
+    void updateVersion(String version, ArtifactRepository localRepository);
+
+    String getDownloadUrl();
+
+    void setDownloadUrl(String downloadUrl);
+
+    ArtifactFilter getDependencyFilter();
+
+    void setDependencyFilter(ArtifactFilter artifactFilter);
+
+    ArtifactHandler getArtifactHandler();
+
+    List<String> getDependencyTrail();
+
+    void setDependencyTrail(List<String> dependencyTrail);
+
+    void setScope(String scope);
+
+    VersionRange getVersionRange();
+
+    void setVersionRange(VersionRange newRange);
+
+    void selectVersion(String version);
+
+    void setGroupId(String groupId);
+
+    void setArtifactId(String artifactId);
+
+    boolean isSnapshot();
+
+    void setResolved(boolean resolved);
+
+    boolean isResolved();
+
+    void setResolvedVersion(String version);
+
+    void setArtifactHandler(ArtifactHandler handler);
+
+    boolean isRelease();
+
+    void setRelease(boolean release);
+
+    List<ArtifactVersion> getAvailableVersions();
+
+    void setAvailableVersions(List<ArtifactVersion> versions);
+
+    boolean isOptional();
+
+    void setOptional(boolean optional);
+
+    ArtifactVersion getSelectedVersion() throws OverConstrainedVersionException;
+
+    boolean isSelectedVersionKnown() throws OverConstrainedVersionException;
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package org.apache.maven.execution;
+
+import java.time.Duration;
+
+import org.apache.maven.project.MavenProject;
+
+/**
+ * Summarizes the result of a failed project build in the reactor.
+ *
+ */
+public class BuildFailure extends BuildSummary {
+
+    /**
+     * The cause of the build failure.
+     */
+    private final Throwable cause;
+
+    /**
+     * Creates a new build summary for the specified project.
+     *
+     * @param project The project being summarized, must not be {@code null}.
+     * @param time The build time of the project in milliseconds.
+     * @param cause The cause of the build failure, may be {@code null}.
+     */
+    public BuildFailure(MavenProject project, long time, Throwable cause) {
+        this(project, Duration.ofMillis(time), cause);
+    }
+
+    /**
+     * Creates a new build summary for the specified project.
+     *
+     * @param project The project being summarized, must not be {@code null}.
+     * @param time The build time of the project in milliseconds.
+     * @param cause The cause of the build failure, may be {@code null}.
+     */
+    public BuildFailure(MavenProject project, Duration time, Throwable cause) {
+        this(project, time, time, cause);
+    }
+
+    /**
+     * Creates a new build summary for the specified project.
+     *
+     * @param project The project being summarized, must not be {@code null}.
+     * @param execTime The exec time of the project in milliseconds.
+     * @param wallTime The wall time of the project in milliseconds.
+     * @param cause The cause of the build failure, may be {@code null}.
+     */
+    public BuildFailure(MavenProject project, Duration execTime, Duration wallTime, Throwable cause) {
+        super(project, execTime, wallTime);
+        this.cause = cause;
+    }
+
+    /**
+     * Gets the cause of the build failure.
+     *
+     * @return The cause of the build failure or {@code null} if unknown.
+     */
+    public Throwable getCause() {
+        return cause;
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package org.apache.maven.extension.internal;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Provider;
+import javax.inject.Singleton;
+
+import java.util.Objects;
+
+import org.apache.maven.internal.CoreRealm;
+
+/**
+ * CoreExportsProvider
+ */
+@Named
+@Singleton
+public class CoreExportsProvider implements Provider<CoreExports> {
+
+    private final CoreExports exports;
+
+    @Inject
+    public CoreExportsProvider(CoreRealm coreRealm) {
+        this(new CoreExports(CoreExtensionEntry.discoverFrom(coreRealm.getRealm())));
+    }
+
+    public CoreExportsProvider(CoreExports exports) {
+        this.exports = Objects.requireNonNull(exports);
+    }
+
+    @Override
+    public CoreExports get() {
+        return exports;
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package org.apache.maven.plugin;
+
+import org.apache.maven.model.Plugin;
+import org.codehaus.plexus.component.composition.CycleDetectedInComponentGraphException;
+
+/**
+ * Exception occurring trying to resolve a plugin.
+ *
+ */
+public class CycleDetectedInPluginGraphException extends Exception {
+    private final Plugin plugin;
+
+    public CycleDetectedInPluginGraphException(Plugin plugin, CycleDetectedInComponentGraphException e) {
+        super("A cycle was detected in the component graph of the plugin: " + plugin.getArtifactId());
+
+        this.plugin = plugin;
+    }
+
+    public Plugin getPlugin() {
+        return plugin;
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package org.apache.maven.execution;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.maven.api.Constants;
+import org.apache.maven.artifact.InvalidRepositoryException;
+import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.bridge.MavenRepositorySystem;
+import org.apache.maven.settings.Mirror;
+import org.apache.maven.settings.Proxy;
+import org.apache.maven.settings.Repository;
+import org.apache.maven.settings.Server;
+import org.apache.maven.settings.Settings;
+import org.apache.maven.settings.SettingsUtils;
+import org.apache.maven.toolchain.model.PersistedToolchains;
+import org.apache.maven.toolchain.model.ToolchainModel;
+
+/**
+ * Assists in populating an execution request for invocation of Maven.
+ */
+@Named
+@Singleton
+public class DefaultMavenExecutionRequestPopulator implements MavenExecutionRequestPopulator {
+
+    private final MavenRepositorySystem repositorySystem;
+
+    @Inject
+    public DefaultMavenExecutionRequestPopulator(MavenRepositorySystem repositorySystem) {
+        this.repositorySystem = repositorySystem;
+    }
+
+    @Override
+    public MavenExecutionRequest populateFromToolchains(MavenExecutionRequest request, PersistedToolchains toolchains)
+            throws MavenExecutionRequestPopulationException {
+        if (toolchains != null) {
+            Map<String, List<ToolchainModel>> groupedToolchains = new HashMap<>(2);
+
+            for (ToolchainModel model : toolchains.getToolchains()) {
+                if (!groupedToolchains.containsKey(model.getType())) {
+                    groupedToolchains.put(model.getType(), new ArrayList<>());
+                }
+
+                groupedToolchains.get(model.getType()).add(model);
+            }
+
+            request.setToolchains(groupedToolchains);
+        }
+        return request;
+    }
+
+    @Override
+    public MavenExecutionRequest populateDefaults(MavenExecutionRequest request)
+            throws MavenExecutionRequestPopulationException {
+        baseDirectory(request);
+
+        localRepository(request);
+
+        populateDefaultPluginGroups(request);
+
+        return request;
+    }
+
+    //
+    //
+    //
+
+    private void populateDefaultPluginGroups(MavenExecutionRequest request) {
+        request.addPluginGroup("org.apache.maven.plugins");
+        request.addPluginGroup("org.codehaus.mojo");
+    }
+
+    private void localRepository(MavenExecutionRequest request) throws MavenExecutionRequestPopulationException {
+        // ------------------------------------------------------------------------
+        // Local Repository
+        //
+        // 1. Use a value has been passed in via the configuration
+        // 2. Use value in the resultant settings
+        // 3. Use default value
+        // ------------------------------------------------------------------------
+
+        if (request.getLocalRepository() == null) {
+            request.setLocalRepository(createLocalRepository(request));
+        }
+
+        if (request.getLocalRepositoryPath() == null) {
+            request.setLocalRepositoryPath(new File(request.getLocalRepository().getBasedir()).getAbsoluteFile());
+        }
+    }
+
+    // ------------------------------------------------------------------------
+    // Artifact Transfer Mechanism
+    // ------------------------------------------------------------------------
+
+    private ArtifactRepository createLocalRepository(MavenExecutionRequest request)
+            throws MavenExecutionRequestPopulationException {
+        String localRepositoryPath = null;
+
+        if (request.getLocalRepositoryPath() != null) {
+            localRepositoryPath = request.getLocalRepositoryPath().getAbsolutePath();
+        }
+
+        if (localRepositoryPath == null || localRepositoryPath.isEmpty()) {
+            String path = request.getUserProperties().getProperty(Constants.MAVEN_USER_CONF);
+            if (path == null) {
+                path = request.getSystemProperties().getProperty("user.home") + File.separator + ".m2";
+            }
+            localRepositoryPath = new File(path, "repository").getAbsolutePath();
+        }
+
+        try {
+            return repositorySystem.createLocalRepository(new File(localRepositoryPath));
+        } catch (Exception e) {
+            throw new MavenExecutionRequestPopulationException("Cannot create local repository.", e);
+        }
+    }
+
+    private void baseDirectory(MavenExecutionRequest request) {
+        if (request.getBaseDirectory() == null && request.getPom() != null) {
+            request.setBaseDirectory(request.getPom().getAbsoluteFile().getParentFile());
+        }
+    }
+
+    /*if_not[MAVEN4]*/
+
+    @Override
+    @Deprecated
+    public MavenExecutionRequest populateFromSettings(MavenExecutionRequest request, Settings settings)
+            throws MavenExecutionRequestPopulationException {
+        if (settings == null) {
+            return request;
+        }
+
+        request.setOffline(settings.isOffline());
+
+        request.setInteractiveMode(settings.isInteractiveMode());
+
+        request.setPluginGroups(settings.getPluginGroups());
+
+        request.setLocalRepositoryPath(settings.getLocalRepository());
+
+        for (Server server : settings.getServers()) {
+            server = server.clone();
+
+            request.addServer(server);
+        }
+
+        //  <proxies>
+        //    <proxy>
+        //      <active>true</active>
+        //      <protocol>http</protocol>
+        //      <host>proxy.somewhere.com</host>
+        //      <port>8080</port>
+        //      <username>proxyuser</username>
+        //      <password>somepassword</password>
+        //      <nonProxyHosts>www.google.com|*.somewhere.com</nonProxyHosts>
+        //    </proxy>
+        //  </proxies>
+
+        for (Proxy proxy : settings.getProxies()) {
+            if (!proxy.isActive()) {
+                continue;
+            }
+
+            proxy = proxy.clone();
+
+            request.addProxy(proxy);
+        }
+
+        // <mirrors>
+        //   <mirror>
+        //     <id>nexus</id>
+        //     <mirrorOf>*</mirrorOf>
+        //     <url>http://repository.sonatype.org/content/groups/public</url>
+        //   </mirror>
+        // </mirrors>
+
+        for (Mirror mirror : settings.getMirrors()) {
+            mirror = mirror.clone();
+
+            request.addMirror(mirror);
+        }
+
+        request.setActiveProfiles(settings.getActiveProfiles());
+
+        for (org.apache.maven.settings.Profile rawProfile : settings.getProfiles()) {
+            request.addProfile(SettingsUtils.convertFromSettingsProfile(rawProfile));
+
+            if (settings.getActiveProfiles().contains(rawProfile.getId())) {
+                List<Repository> remoteRepositories = rawProfile.getRepositories();
+                for (Repository remoteRepository : remoteRepositories) {
+                    try {
+                        request.addRemoteRepository(MavenRepositorySystem.buildArtifactRepository(remoteRepository));
+                    } catch (InvalidRepositoryException e) {
+                        // do nothing for now
+                    }
+                }
+
+                List<Repository> pluginRepositories = rawProfile.getPluginRepositories();
+                for (Repository pluginRepo : pluginRepositories) {
+                    try {
+                        request.addPluginArtifactRepository(MavenRepositorySystem.buildArtifactRepository(pluginRepo));
+                    } catch (InvalidRepositoryException e) {
+                        // do nothing for now
+                    }
+                }
+            }
+        }
+
+        return request;
+    }
+
+    /*end[MAVEN4]*/
+
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package org.apache.maven.graph;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.apache.maven.execution.ProjectDependencyGraph;
+import org.apache.maven.project.CycleDetectedException;
+import org.apache.maven.project.DuplicateProjectException;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.ProjectSorter;
+
+/**
+ * Describes the interdependencies between projects in the reactor.
+ *
+ */
+public class DefaultProjectDependencyGraph implements ProjectDependencyGraph {
+
+    private final ProjectSorter sorter;
+
+    private final List<MavenProject> allProjects;
+
+    private final Map<MavenProject, Integer> order;
+
+    private final Map<String, MavenProject> projects;
+
+    /**
+     * Creates a new project dependency graph based on the specified projects.
+     *
+     * @param projects The projects to create the dependency graph with
+     * @throws DuplicateProjectException
+     * @throws CycleDetectedException
+     */
+    public DefaultProjectDependencyGraph(Collection<MavenProject> projects)
+            throws CycleDetectedException, DuplicateProjectException {
+        this(projects, projects);
+    }
+
+    /**
+     * Creates a new project dependency graph based on the specified projects.
+     *
+     * @param allProjects All collected projects.
+     * @param projects    The projects to create the dependency graph with.
+     * @throws DuplicateProjectException
+     * @throws CycleDetectedException
+     * @since 3.5.0
+     * @deprecated Use {@link #DefaultProjectDependencyGraph(Collection, Collection)} instead.
+     */
+    @Deprecated
+    public DefaultProjectDependencyGraph(List<MavenProject> allProjects, Collection<MavenProject> projects)
+            throws CycleDetectedException, DuplicateProjectException {
+        this((Collection<MavenProject>) allProjects, projects);
+    }
+
+    /**
+     * Creates a new project dependency graph based on the specified projects.
+     *
+     * @param allProjects All collected projects.
+     * @param projects    The projects to create the dependency graph with.
+     * @throws DuplicateProjectException
+     * @throws CycleDetectedException
+     * @since 4.0.0
+     */
+    public DefaultProjectDependencyGraph(Collection<MavenProject> allProjects, Collection<MavenProject> projects)
+            throws CycleDetectedException, DuplicateProjectException {
+        this.allProjects = Collections.unmodifiableList(new ArrayList<>(allProjects));
+        this.sorter = new ProjectSorter(projects);
+        this.order = new HashMap<>();
+        this.projects = new HashMap<>();
+        List<MavenProject> sorted = this.sorter.getSortedProjects();
+        for (int index = 0; index < sorted.size(); index++) {
+            MavenProject project = sorted.get(index);
+            String id = ProjectSorter.getId(project);
+            this.projects.put(id, project);
+            this.order.put(project, index);
+        }
+    }
+
+    /**
+     * @since 3.5.0
+     */
+    @Override
+    public List<MavenProject> getAllProjects() {
+        return this.allProjects;
+    }
+
+    @Override
+    public List<MavenProject> getSortedProjects() {
+        return new ArrayList<>(sorter.getSortedProjects());
+    }
+
+    @Override
+    public List<MavenProject> getDownstreamProjects(MavenProject project, boolean transitive) {
+        Objects.requireNonNull(project, "project cannot be null");
+
+        Set<String> projectIds = new HashSet<>();
+
+        getDownstreamProjects(ProjectSorter.getId(project), projectIds, transitive);
+
+        return getSortedProjects(projectIds);
+    }
+
+    private void getDownstreamProjects(String projectId, Set<String> projectIds, boolean transitive) {
+        for (String id : sorter.getDependents(projectId)) {
+            if (projectIds.add(id) && transitive) {
+                getDownstreamProjects(id, projectIds, transitive);
+            }
+        }
+    }
+
+    @Override
+    public List<MavenProject> getUpstreamProjects(MavenProject project, boolean transitive) {
+        Objects.requireNonNull(project, "project cannot be null");
+
+        Set<String> projectIds = new HashSet<>();
+
+        getUpstreamProjects(ProjectSorter.getId(project), projectIds, transitive);
+
+        return getSortedProjects(projectIds);
+    }
+
+    private void getUpstreamProjects(String projectId, Collection<String> projectIds, boolean transitive) {
+        for (String id : sorter.getDependencies(projectId)) {
+            if (projectIds.add(id) && transitive) {
+                getUpstreamProjects(id, projectIds, transitive);
+            }
+        }
+    }
+
+    private List<MavenProject> getSortedProjects(Set<String> projectIds) {
+        return projectIds.stream()
+                .map(projects::get)
+                .sorted(Comparator.comparingInt(order::get))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public String toString() {
+        return sorter.getSortedProjects().toString();
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package org.apache.maven.rtinfo.internal;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Objects;
+import java.util.Properties;
+
+import org.apache.maven.rtinfo.RuntimeInformation;
+import org.eclipse.aether.version.InvalidVersionSpecificationException;
+import org.eclipse.aether.version.Version;
+import org.eclipse.aether.version.VersionConstraint;
+import org.eclipse.aether.version.VersionScheme;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Provides information about the current Maven runtime.
+ */
+@Named
+@Singleton
+public class DefaultRuntimeInformation implements RuntimeInformation {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
+    private final VersionScheme versionScheme;
+
+    private final String mavenVersion;
+
+    @Inject
+    public DefaultRuntimeInformation(VersionScheme versionScheme) {
+        this.versionScheme = versionScheme;
+        this.mavenVersion = loadMavenVersion();
+    }
+
+    @Override
+    public String getMavenVersion() {
+        return mavenVersion;
+    }
+
+    private String loadMavenVersion() {
+        Properties props = new Properties();
+
+        String resource = "META-INF/maven/org.apache.maven/maven-core/pom.properties";
+
+        try (InputStream is = DefaultRuntimeInformation.class.getResourceAsStream("/" + resource)) {
+            if (is != null) {
+                props.load(is);
+            } else {
+                logger.warn("Could not locate " + resource + " on classpath, Maven runtime information not available");
+            }
+        } catch (IOException e) {
+            String msg = "Could not parse " + resource + ", Maven runtime information not available";
+            if (logger.isDebugEnabled()) {
+                logger.warn(msg, e);
+            } else {
+                logger.warn(msg);
+            }
+        }
+
+        String version = props.getProperty("version", "").trim();
+
+        if (!version.startsWith("${")) {
+            return version;
+        } else {
+            return "";
+        }
+    }
+
+    @Override
+    public boolean isMavenVersion(String versionRange) {
+        if (Objects.requireNonNull(versionRange, "versionRange cannot be null").isEmpty()) {
+            throw new IllegalArgumentException("versionRange cannot be empty");
+        }
+
+        VersionConstraint constraint;
+        try {
+            constraint = versionScheme.parseVersionConstraint(versionRange);
+        } catch (InvalidVersionSpecificationException e) {
+            throw new IllegalArgumentException(e.getMessage(), e);
+        }
+
+        Version current;
+        try {
+            String mavenVersion = getMavenVersion();
+            if (mavenVersion.isEmpty()) {
+                throw new IllegalArgumentException("Could not determine current Maven version");
+            }
+
+            current = versionScheme.parseVersion(mavenVersion);
+        } catch (InvalidVersionSpecificationException e) {
+            throw new IllegalStateException("Could not parse current Maven version: " + e.getMessage(), e);
+        }
+
+        if (constraint.getRange() == null) {
+            return constraint.getVersion().compareTo(current) <= 0;
+        }
+        return constraint.containsVersion(current);
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package org.apache.maven.api.feature;
+
+import java.util.Map;
+import java.util.Properties;
+
+import org.apache.maven.api.Constants;
+import org.apache.maven.api.annotations.Nullable;
+
+/**
+ * Centralized class for Maven Core feature information.
+ * Features configured are supposed to be final in a given maven session.
+ *
+ * @since 4.0.0
+ */
+public final class Features {
+
+    private Features() {}
+
+    /**
+     * Check if the personality is "maven3".
+     */
+    public static boolean mavenMaven3Personality(@Nullable Map<String, ?> userProperties) {
+        return doGet(userProperties, Constants.MAVEN_MAVEN3_PERSONALITY, false);
+    }
+
+    /**
+     * Check if the consumer POM feature is active.
+     */
+    public static boolean consumerPom(@Nullable Map<String, ?> userProperties) {
+        return doGet(userProperties, Constants.MAVEN_CONSUMER_POM, !mavenMaven3Personality(userProperties));
+    }
+
+    /**
+     * Check if build POM deployment is enabled.
+     */
+    public static boolean deployBuildPom(@Nullable Map<String, ?> userProperties) {
+        return doGet(userProperties, Constants.MAVEN_DEPLOY_BUILD_POM, true);
+    }
+
+    private static boolean doGet(Properties userProperties, String key, boolean def) {
+        return doGet(userProperties != null ? userProperties.get(key) : null, def);
+    }
+
+    private static boolean doGet(Map<String, ?> userProperties, String key, boolean def) {
+        return doGet(userProperties != null ? userProperties.get(key) : null, def);
+    }
+
+    private static boolean doGet(Object val, boolean def) {
+        if (val instanceof Boolean bool) {
+            return bool;
+        } else if (val != null) {
+            return Boolean.parseBoolean(val.toString());
+        } else {
+            return def;
+        }
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package org.apache.maven.model;
+
+import java.util.stream.Collectors;
+
+/**
+ * Class InputLocation.
+ *
+ * @version $Revision$ $Date$
+ */
+@SuppressWarnings("all")
+public final class InputLocation implements java.io.Serializable, Cloneable, InputLocationTracker {
+
+    // --------------------------/
+    // - Class/Member Variables -/
+    // --------------------------/
+
+    /**
+     * The one-based line number. The value will be non-positive if
+     * unknown.
+     */
+    private int lineNumber = -1;
+
+    /**
+     * The one-based column number. The value will be non-positive
+     * if unknown.
+     */
+    private int columnNumber = -1;
+
+    /**
+     * Field source.
+     */
+    private InputSource source;
+
+    /**
+     * Field locations.
+     */
+    private java.util.Map<Object, InputLocation> locations;
+
+    /**
+     * Field location.
+     */
+    private InputLocation location;
+
+    /**
+     * Field importedFrom.
+     */
+    private InputLocation importedFrom;
+
+    // ----------------/
+    // - Constructors -/
+    // ----------------/
+
+    public InputLocation(org.apache.maven.api.model.InputLocation location) {
+        this.lineNumber = location.getLineNumber();
+        this.columnNumber = location.getColumnNumber();
+        this.source = location.getSource() != null ? new InputSource(location.getSource()) : null;
+        this.locations = location.getLocations().isEmpty()
+                ? null
+                : location.getLocations().entrySet().stream()
+                        .collect(Collectors.toMap(
+                                e -> e.getKey(),
+                                e -> e.getValue() == location ? this : new InputLocation(e.getValue())));
+        this.importedFrom = location.getImportedFrom() != null ? new InputLocation(location.getImportedFrom()) : null;
+    }
+
+    public InputLocation(int lineNumber, int columnNumber) {
+        this.lineNumber = lineNumber;
+        this.columnNumber = columnNumber;
+    } // -- org.apache.maven.model.InputLocation(int, int)
+
+    public InputLocation(int lineNumber, int columnNumber, InputSource source) {
+        this.lineNumber = lineNumber;
+        this.columnNumber = columnNumber;
+        this.source = source;
+    } // -- org.apache.maven.model.InputLocation(int, int, InputSource)
+
+    // -----------/
+    // - Methods -/
+    // -----------/
+
+    /**
+     * Method clone.
+     *
+     * @return InputLocation
+     */
+    public InputLocation clone() {
+        try {
+            InputLocation copy = (InputLocation) super.clone();
+
+            if (copy.locations != null) {
+                copy.locations = new java.util.LinkedHashMap(copy.locations);
+            }
+
+            return copy;
+        } catch (Exception ex) {
+            throw (RuntimeException)
+                    new UnsupportedOperationException(getClass().getName() + " does not support clone()").initCause(ex);
+        }
+    } // -- InputLocation clone()
+
+    /**
+     * Get the one-based column number. The value will be
+     * non-positive if unknown.
+     *
+     * @return int
+     */
+    public int getColumnNumber() {
+        return this.columnNumber;
+    } // -- int getColumnNumber()
+
+    /**
+     * Get the one-based line number. The value will be
+     * non-positive if unknown.
+     *
+     * @return int
+     */
+    public int getLineNumber() {
+        return this.lineNumber;
+    } // -- int getLineNumber()
+
+    /**
+     *
+     *
+     * @param key
+     * @return InputLocation
+     */
+    @Override
+    public InputLocation getLocation(Object key) {
+        if (key instanceof String string) {
+            switch (string) {
+                case "": {
+                    return this.location;
+                }
+                default: {
+                    return getOtherLocation(key);
+                }
+            }
+        } else {
+            return getOtherLocation(key);
+        }
+    } // -- InputLocation getLocation( Object )
+
+    /**
+     *
+     *
+     * @return Map
+     */
+    public java.util.Map<Object, InputLocation> getLocations() {
+        return locations;
+    } // -- java.util.Map<Object, InputLocation> getLocations()
+
+    /**
+     *
+     *
+     * @param key
+     * @param location
+     */
+    @Override
+    public void setLocation(Object key, InputLocation location) {
+        if (key instanceof String string) {
+            switch (string) {
+                case "": {
+                    this.location = location;
+                    return;
+                }
+                default: {
+                    setOtherLocation(key, location);
+                    return;
+                }
+            }
+        } else {
+            setOtherLocation(key, location);
+        }
+    } // -- void setLocation( Object, InputLocation )
+
+    /**
+     *
+     *
+     * @param key
+     * @param location
+     */
+    public void setOtherLocation(Object key, InputLocation location) {
+        if (location != null) {
+            if (this.locations == null) {
+                this.locations = new java.util.LinkedHashMap<>();
+            }
+            this.locations.put(key, location);
+        }
+    } // -- void setOtherLocation( Object, InputLocation )
+
+    /**
+     *
+     *
+     * @param key
+     * @return InputLocation
+     */
+    private InputLocation getOtherLocation(Object key) {
+        return (locations != null) ? locations.get(key) : null;
+    } // -- InputLocation getOtherLocation( Object )
+
+    /**
+     * Get the source field.
+     *
+     * @return InputSource
+     */
+    public InputSource getSource() {
+        return this.source;
+    } // -- InputSource getSource()
+
+    /**
+     * Gets the parent InputLocation where this InputLocation may have been imported from.
+     * Can return {@code null}.
+     *
+     * @return InputLocation
+     * @since 4.0.0
+     */
+    public InputLocation getImportedFrom() {
+        return importedFrom;
+    }
+
+    /**
+     * Set the imported from location.
+     *
+     * @param importedFrom
+     */
+    public void setImportedFrom(InputLocation importedFrom) {
+        this.importedFrom = importedFrom;
+    }
+
+    /**
+     * Method merge.
+     *
+     * @param target
+     * @param sourceDominant
+     * @param source
+     * @return InputLocation
+     */
+    public static InputLocation merge(InputLocation target, InputLocation source, boolean sourceDominant) {
+        if (source == null) {
+            return target;
+        } else if (target == null) {
+            return source;
+        }
+
+        InputLocation result = new InputLocation(target.getLineNumber(), target.getColumnNumber(), target.getSource());
+
+        java.util.Map<Object, InputLocation> locations;
+        java.util.Map<Object, InputLocation> sourceLocations = source.getLocations();
+        java.util.Map<Object, InputLocation> targetLocations = target.getLocations();
+        if (sourceLocations == null) {
+            locations = targetLocations;
+        } else if (targetLocations == null) {
+            locations = sourceLocations;
+        } else {
+            locations = new java.util.LinkedHashMap();
+            locations.putAll(sourceDominant ? targetLocations : sourceLocations);
+            locations.putAll(sourceDominant ? sourceLocations : targetLocations);
+        }
+        result.setLocations(locations);
+
+        return result;
+    } // -- InputLocation merge( InputLocation, InputLocation, boolean )
+
+    /**
+     * Method merge.
+     *
+     * @param target
+     * @param indices
+     * @param source
+     * @return InputLocation
+     */
+    public static InputLocation merge(
+            InputLocation target, InputLocation source, java.util.Collection<Integer> indices) {
+        if (source == null) {
+            return target;
+        } else if (target == null) {
+            return source;
+        }
+
+        InputLocation result = new InputLocation(target.getLineNumber(), target.getColumnNumber(), target.getSource());
+
+        java.util.Map<Object, InputLocation> locations;
+        java.util.Map<Object, InputLocation> sourceLocations = source.getLocations();
+        java.util.Map<Object, InputLocation> targetLocations = target.getLocations();
+        if (sourceLocations == null) {
+            locations = targetLocations;
+        } else if (targetLocations == null) {
+            locations = sourceLocations;
+        } else {
+            locations = new java.util.LinkedHashMap<>();
+            for (java.util.Iterator<Integer> it = indices.iterator(); it.hasNext(); ) {
+                InputLocation location;
+                Integer index = it.next();
+                if (index.intValue() < 0) {
+                    location = sourceLocations.get(Integer.valueOf(~index.intValue()));
+                } else {
+                    location = targetLocations.get(index);
+                }
+                locations.put(Integer.valueOf(locations.size()), location);
+            }
+        }
+        result.setLocations(locations);
+
+        return result;
+    } // -- InputLocation merge( InputLocation, InputLocation, java.util.Collection )
+
+    /**
+     *
+     *
+     * @param locations
+     */
+    public void setLocations(java.util.Map<Object, InputLocation> locations) {
+        this.locations = locations;
+    } // -- void setLocations( java.util.Map )
+
+    public org.apache.maven.api.model.InputLocation toApiLocation() {
+        if (locations != null && locations.values().contains(this)) {
+            if (locations.size() == 1 && locations.values().iterator().next() == this) {
+                return new org.apache.maven.api.model.InputLocation(
+                        lineNumber,
+                        columnNumber,
+                        source != null ? source.toApiSource() : null,
+                        locations.keySet().iterator().next());
+            } else {
+                return new org.apache.maven.api.model.InputLocation(
+                        lineNumber, columnNumber, source != null ? source.toApiSource() : null);
+            }
+        } else {
+            return new org.apache.maven.api.model.InputLocation(
+                    lineNumber,
+                    columnNumber,
+                    source != null ? source.toApiSource() : null,
+                    locations != null
+                            ? locations.entrySet().stream().collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()
+                                    .toApiLocation()))
+                            : null);
+        }
+    }
+
+    // -----------------/
+    // - Inner Classes -/
+    // -----------------/
+
+    /**
+     * Class StringFormatter.
+     *
+     * @version $Revision$ $Date$
+     */
+    public abstract static class StringFormatter {
+
+        // -----------/
+        // - Methods -/
+        // -----------/
+
+        /**
+         * Method toString.
+         *
+         * @param location
+         * @return String
+         */
+        public abstract String toString(InputLocation location);
+    }
+
+    @Override
+    public String toString() {
+        return getLineNumber() + " : " + getColumnNumber() + ", " + getSource();
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package org.apache.maven.model;
+
+/**
+ * Class InputSource.
+ *
+ * @version $Revision$ $Date$
+ */
+@SuppressWarnings("all")
+public class InputSource implements java.io.Serializable, Cloneable {
+
+    // --------------------------/
+    // - Class/Member Variables -/
+    // --------------------------/
+
+    /**
+     *
+     *
+     *             The identifier of the POM in the format {@code
+     * <groupId>:<artifactId>:<version>}.
+     *
+     *
+     */
+    private String modelId;
+
+    /**
+     *
+     *
+     *             The path/URL of the POM or {@code null} if
+     * unknown.
+     *
+     *
+     */
+    private String location;
+
+    /**
+     *
+     *
+     *             The location of the POM from which this POM was
+     * imported from or {@code null} if unknown.
+     */
+    private InputLocation importedFrom;
+
+    // ----------------/
+    // - Constructors -/
+    // ----------------/
+
+    public InputSource() {}
+
+    public InputSource(org.apache.maven.api.model.InputSource source) {
+        this.modelId = source.getModelId();
+        this.location = source.getLocation();
+        this.importedFrom = source.getImportedFrom() != null ? new InputLocation(source.getImportedFrom()) : null;
+    }
+
+    // -----------/
+    // - Methods -/
+    // -----------/
+
+    /**
+     * Method clone.
+     *
+     * @return InputSource
+     */
+    public InputSource clone() {
+        try {
+            InputSource copy = (InputSource) super.clone();
+
+            return copy;
+        } catch (Exception ex) {
+            throw (RuntimeException)
+                    new UnsupportedOperationException(getClass().getName() + " does not support clone()").initCause(ex);
+        }
+    } // -- InputSource clone()
+
+    /**
+     * Get the path/URL of the POM or {@code null} if unknown.
+     *
+     * @return String
+     */
+    public String getLocation() {
+        return this.location;
+    } // -- String getLocation()
+
+    /**
+     * Get the identifier of the POM in the format {@code
+     * <groupId>:<artifactId>:<version>}.
+     *
+     * @return String
+     */
+    public String getModelId() {
+        return this.modelId;
+    } // -- String getModelId()
+
+    /**
+     * Set the path/URL of the POM or {@code null} if unknown.
+     *
+     * @param location
+     */
+    public void setLocation(String location) {
+        this.location = location;
+    } // -- void setLocation( String )
+
+    /**
+     * Set the identifier of the POM in the format {@code
+     * <groupId>:<artifactId>:<version>}.
+     *
+     * @param modelId
+     */
+    public void setModelId(String modelId) {
+        this.modelId = modelId;
+    } // -- void setModelId( String )
+
+    /**
+     * Get the location of the POM from which this POM was
+     *
+     * @return
+     */
+    public InputLocation getImportedFrom() {
+        return importedFrom;
+    }
+
+    /**
+     * Set the location of the POM from which this POM was imported from.
+     *
+     * @param importedFrom
+     */
+    public void setImportedFrom(InputLocation importedFrom) {
+        this.importedFrom = importedFrom;
+    }
+
+    @Override
+    public String toString() {
+        return getModelId() + " " + getLocation();
+    }
+
+    public org.apache.maven.api.model.InputSource toApiSource() {
+        return new org.apache.maven.api.model.InputSource(modelId, location);
+    }
+}
