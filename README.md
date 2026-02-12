@@ -1,7 +1,9 @@
 # SDP-detection-LLMs
-Dataset used in Paper
+Dataset used in Paper (includes anonymized files)
 
-Contained within are the 50 classes, enums, and interfaces analyzed.
+Please ignore past versions of the repository!
+
+Contained within are the 100 classes, enums, and interfaces analyzed.
 
 To use the Java Anonymizer:
 
