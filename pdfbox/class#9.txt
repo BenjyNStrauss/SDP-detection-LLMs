@@ -1,0 +1,37 @@
+package ident$1.ident$2.ident$3.ident$4;
+import java.ident$7.ident$8;
+import java.ident$7.ident$9;
+import java.ident$7.ident$10;
+import ident$1.ident$2.ident$3.ident$11.ident$12;
+import ident$1.ident$2.ident$3.ident$11.ident$13;
+final class ident$16 extends ident$18
+{
+@Override
+public ident$21 ident$22(ident$9 ident$23, ident$10 ident$24,
+ident$12 ident$25, int ident$27) throws ident$8
+{
+ident$13 ident$29 = ident$25.ident$30(ident$13.ident$31);
+if(ident$29 == null || ident$29.ident$34(ident$13.ident$35))
+{
+ident$18 ident$36 = new ident$38();
+ident$36.ident$22(ident$23, ident$24, ident$25, ident$27);
+return new ident$21(ident$25);
+}
+throw new ident$8("literal$0" + ident$29.ident$41());
+}
+@Override
+protected void ident$44(ident$9 ident$45, ident$10 ident$23, ident$12 ident$25)
+throws ident$8
+{
+ident$13 ident$29 = ident$25.ident$30(ident$13.ident$31);
+if(ident$29 == null || ident$29.ident$34(ident$13.ident$35))
+{
+ident$18 ident$36 = new ident$38();
+ident$36.ident$44(ident$45, ident$23, ident$25);
+}
+else
+{
+throw new ident$8("literal$0" + ident$29.ident$41());
+}
+}
+}

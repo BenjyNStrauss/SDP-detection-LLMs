@@ -1,0 +1,80 @@
+package ident$1.ident$2.ident$3.ident$4.ident$5;
+import ident$1.ident$2.ident$3.ident$7.ident$8;
+import ident$1.ident$2.ident$3.ident$7.ident$9;
+import ident$1.ident$2.ident$3.ident$7.ident$10;
+import ident$1.ident$2.ident$3.ident$7.ident$11;
+import ident$1.ident$2.ident$3.ident$4.ident$12;
+import ident$1.ident$2.ident$3.ident$4.ident$13;
+import ident$1.ident$2.ident$3.ident$4.ident$14;
+import ident$1.ident$2.ident$3.ident$4.ident$15.ident$16;
+import ident$1.ident$2.ident$3.ident$4.ident$15.ident$17;
+import ident$1.ident$2.ident$3.ident$4.ident$5.ident$18.ident$19;
+import ident$1.ident$2.ident$3.ident$4.ident$5.ident$18.ident$20;
+import ident$1.ident$2.ident$3.ident$4.ident$5.ident$21.ident$22;
+import java.ident$24.ident$25;
+public class ident$28 implements ident$16
+{
+private final ident$17 ident$32;
+public static ident$28 ident$34(ident$8 ident$35, ident$13 ident$36) throws ident$25
+{
+if (ident$35 == null)
+{
+return null;
+}
+if (!(ident$35 instanceof ident$11))
+{
+throw new ident$25("literal$0" + ident$35.ident$44().ident$45());
+}
+ident$11 ident$32 = (ident$11)ident$35;
+String ident$47 = ident$32.ident$48(ident$10.ident$49);
+if (ident$10.ident$50.ident$45().ident$51(ident$47))
+{
+return new ident$22(new ident$17(ident$32), ident$36);
+}
+else if (ident$10.ident$53.ident$45().ident$51(ident$47))
+{
+ident$14 ident$54 = ident$36 != null ? ident$36.ident$55() : null;
+ident$9 ident$56 = ident$32.ident$57(ident$10.ident$58);
+if (ident$56 != null && ident$10.ident$59.ident$51(ident$56.ident$60(ident$10.ident$61)))
+{
+return new ident$20(ident$32, ident$54);
+}
+return new ident$19(ident$32, ident$54);
+}
+else if (ident$10.ident$62.ident$45().ident$51(ident$47))
+{
+return new ident$63(ident$32);
+}
+else
+{
+throw new ident$25("literal$1" + ident$47);
+}
+}
+protected ident$28(ident$11 ident$32, ident$10 ident$47)
+{
+this.ident$32 = new ident$17(ident$32);
+ident$32.ident$66(ident$10.ident$67, ident$10.ident$68.ident$45());
+ident$32.ident$66(ident$10.ident$49, ident$47.ident$45());
+}
+protected ident$28(ident$17 ident$32, ident$10 ident$47)
+{
+this.ident$32 = ident$32;
+ident$32.ident$69().ident$66(ident$10.ident$67, ident$10.ident$68.ident$45());
+ident$32.ident$69().ident$66(ident$10.ident$49, ident$47.ident$45());
+}
+protected ident$28(ident$12 ident$70, ident$10 ident$47)
+{
+ident$32 = new ident$17(ident$70);
+ident$32.ident$69().ident$66(ident$10.ident$67, ident$10.ident$68.ident$45());
+ident$32.ident$69().ident$66(ident$10.ident$49, ident$47.ident$45());
+}
+@Override
+public final ident$11 ident$69()
+{
+return ident$32.ident$69();
+}
+public final ident$17 ident$72()
+{
+return ident$32;
+}
+}

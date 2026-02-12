@@ -1,0 +1,58 @@
+package ident$1.ident$2.ident$3.ident$4;
+import java.ident$7.ident$8;
+import java.ident$9.ident$10;
+import java.ident$9.ident$11;
+import java.ident$9.ident$12;
+import ident$1.ident$2.ident$3.ident$13.ident$14;
+public final class ident$18
+{
+public static final ident$18 ident$20 = new ident$18();
+private final ident$12<ident$14, ident$23> ident$24 = new ident$11<>();
+private ident$18()
+{
+ident$23 ident$25 = new ident$26();
+ident$23 ident$27 = new ident$28();
+ident$23 ident$29 = new ident$30();
+ident$23 ident$31 = new ident$32();
+ident$23 ident$33 = new ident$34();
+ident$23 ident$35 = new ident$36();
+ident$23 ident$37 = new ident$38();
+ident$23 ident$39 = new ident$40();
+ident$23 ident$41 = new ident$42();
+ident$23 ident$43 = new ident$44();
+ident$24.ident$45(ident$14.ident$46, ident$25);
+ident$24.ident$45(ident$14.ident$47, ident$25);
+ident$24.ident$45(ident$14.ident$48, ident$27);
+ident$24.ident$45(ident$14.ident$49, ident$27);
+ident$24.ident$45(ident$14.ident$50, ident$29);
+ident$24.ident$45(ident$14.ident$51, ident$29);
+ident$24.ident$45(ident$14.ident$52, ident$31);
+ident$24.ident$45(ident$14.ident$53, ident$31);
+ident$24.ident$45(ident$14.ident$54, ident$33);
+ident$24.ident$45(ident$14.ident$55, ident$33);
+ident$24.ident$45(ident$14.ident$56, ident$35);
+ident$24.ident$45(ident$14.ident$57, ident$35);
+ident$24.ident$45(ident$14.ident$58, ident$37);
+ident$24.ident$45(ident$14.ident$59, ident$37);
+ident$24.ident$45(ident$14.ident$60, ident$39);
+ident$24.ident$45(ident$14.ident$61, ident$41);
+ident$24.ident$45(ident$14.ident$62, ident$43);
+}
+public ident$23 ident$63(String ident$65) throws ident$8
+{
+return ident$63(ident$14.ident$68(ident$65));
+}
+public ident$23 ident$63(ident$14 ident$65) throws ident$8
+{
+ident$23 ident$4 = ident$24.ident$69(ident$65);
+if (ident$4 == null)
+{
+throw new ident$8("literal$0" + ident$65);
+}
+return ident$4;
+}
+ident$10<ident$23> ident$73()
+{
+return ident$24.ident$74();
+}
+}

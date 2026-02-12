@@ -1,0 +1,156 @@
+package ident$1.ident$2.ident$3.ident$4;
+import java.ident$7.ident$8;
+import java.ident$7.ident$9;
+import java.ident$10.ident$11.ident$12;
+import java.ident$13.ident$14;
+import java.ident$13.ident$15;
+import ident$1.ident$2.ident$3.ident$16.ident$17.ident$18;
+import ident$1.ident$2.ident$3.ident$16.ident$17.ident$19;
+import ident$1.ident$2.ident$3.ident$20.ident$21;
+import ident$1.ident$2.ident$3.ident$20.ident$22;
+import ident$1.ident$2.ident$3.ident$20.ident$23;
+import ident$1.ident$2.ident$3.ident$20.ident$24;
+import ident$1.ident$2.ident$3.ident$20.ident$25;
+import ident$1.ident$2.ident$3.ident$20.ident$26;
+import ident$1.ident$2.ident$3.ident$20.ident$27;
+import ident$1.ident$2.ident$3.ident$20.ident$28;
+import ident$1.ident$2.ident$3.ident$20.ident$29;
+public class ident$32
+{
+private final ident$9 ident$35;
+public static final byte[] ident$38 = { 32 };
+public static final byte[] ident$39 = { 0ident$40 };
+public ident$32( ident$9 ident$41 )
+{
+ident$35 = ident$41;
+}
+public void ident$43(ident$22 ident$44) throws ident$8
+{
+ident$46(ident$44);
+}
+public void ident$43(ident$18 ident$47) throws ident$8
+{
+ident$46(ident$47);
+}
+public void ident$48(Object... ident$50) throws ident$8
+{
+for (Object ident$52 : ident$50)
+{
+ident$46(ident$52);
+}
+ident$35.ident$53("literal$0".ident$54(ident$12.ident$55));
+}
+public void ident$48( ident$14<?> ident$50 ) throws ident$8
+{
+for (Object ident$52 : ident$50)
+{
+ident$46(ident$52);
+}
+}
+private void ident$46(Object ident$56) throws ident$8
+{
+if (ident$56 instanceof ident$22)
+{
+ident$46((ident$22) ident$56);
+}
+else if (ident$56 instanceof ident$18)
+{
+ident$46((ident$18) ident$56);
+}
+else
+{
+throw new ident$8("literal$1" + ident$56);
+}
+}
+private void ident$46(ident$18 ident$47) throws ident$8
+{
+if (ident$47.ident$62().ident$63(ident$19.ident$64))
+{
+ident$35.ident$53(ident$19.ident$64.ident$54(ident$12.ident$65));
+ident$35.ident$53(ident$39);
+ident$24 ident$66 = ident$47.ident$67();
+for (ident$27 ident$68 : ident$66.ident$69())
+{
+ident$22 ident$70 = ident$66.ident$71(ident$68);
+ident$68.ident$72(ident$35);
+ident$35.ident$53(ident$38);
+ident$46(ident$70);
+ident$35.ident$53(ident$39);
+}
+ident$35.ident$53(ident$19.ident$73.ident$54(ident$12.ident$65));
+ident$35.ident$53(ident$39);
+ident$35.ident$53(ident$47.ident$74());
+ident$35.ident$53(ident$39);
+ident$35.ident$53(ident$19.ident$75.ident$54(ident$12.ident$65));
+ident$35.ident$53(ident$39);
+}
+else
+{
+ident$35.ident$53(ident$47.ident$62().ident$54(ident$12.ident$65));
+ident$35.ident$53(ident$39);
+}
+}
+private void ident$46( ident$22 ident$56 ) throws ident$8
+{
+if( ident$56 instanceof ident$29 )
+{
+ident$76.ident$77((ident$29)ident$56, ident$35);
+ident$35.ident$53( ident$38 );
+}
+else if( ident$56 instanceof ident$25 )
+{
+((ident$25)ident$56).ident$72( ident$35 );
+ident$35.ident$53( ident$38 );
+}
+else if( ident$56 instanceof ident$26 )
+{
+((ident$26)ident$56).ident$72( ident$35 );
+ident$35.ident$53( ident$38 );
+}
+else if( ident$56 instanceof ident$23 )
+{
+((ident$23)ident$56).ident$72( ident$35 );
+ident$35.ident$53( ident$38 );
+}
+else if( ident$56 instanceof ident$27 )
+{
+((ident$27)ident$56).ident$72( ident$35 );
+ident$35.ident$53( ident$38 );
+}
+else if( ident$56 instanceof ident$21 )
+{
+ident$21 ident$78 = (ident$21)ident$56;
+ident$35.ident$53(ident$76.ident$79);
+for( int ident$81=0; ident$81<ident$78.ident$82(); ident$81++ )
+{
+ident$46(ident$78.ident$83(ident$81));
+}
+ident$35.ident$53(ident$76.ident$84);
+ident$35.ident$53(ident$38);
+}
+else if( ident$56 instanceof ident$24 )
+{
+ident$24 ident$85 = (ident$24)ident$56;
+ident$35.ident$53( ident$76.ident$86 );
+for (ident$15.ident$87<ident$27, ident$22> ident$88 : ident$85.ident$89())
+{
+if (ident$88.ident$90() != null)
+{
+ident$46(ident$88.ident$92());
+ident$46(ident$88.ident$90());
+}
+}
+ident$35.ident$53( ident$76.ident$93 );
+ident$35.ident$53( ident$38 );
+}
+else if (ident$56 instanceof ident$28)
+{
+ident$35.ident$53("literal$2".ident$54(ident$12.ident$55));
+ident$35.ident$53(ident$38);
+}
+else
+{
+throw new ident$8( "literal$1" + ident$56 );
+}
+}
+}

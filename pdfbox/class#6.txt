@@ -1,0 +1,166 @@
+package ident$1.ident$2.ident$3.ident$4.ident$5.ident$6;
+import ident$1.ident$2.ident$3.ident$8.ident$9;
+import ident$1.ident$2.ident$3.ident$8.ident$10;
+import ident$1.ident$2.ident$3.ident$8.ident$11;
+import ident$1.ident$2.ident$3.ident$4.ident$12.ident$13;
+import java.ident$15.ident$16.ident$17;
+import java.ident$15.ident$16.ident$18;
+import java.ident$19.ident$20;
+public final class ident$24 extends ident$26
+{
+private ident$28 ident$29;
+public ident$24()
+{
+super(ident$11.ident$31);
+}
+public ident$24(ident$9 ident$32)
+{
+super(ident$32);
+}
+@Override
+public String ident$35()
+{
+return ident$11.ident$31.ident$35();
+}
+@Override
+public ident$17 ident$37(ident$18 ident$38) throws ident$20
+{
+int ident$41 = ident$38.ident$42();
+int ident$43 = ident$38.ident$44();
+ident$17 ident$45 = new ident$17(ident$41, ident$43, ident$17.ident$47);
+ident$18 ident$48 = ident$45.ident$49();
+ident$13 ident$50 = ident$51();
+ident$13 ident$52 = ident$53();
+float ident$55 = ident$50.ident$56();
+float ident$57 = ident$50.ident$58();
+float ident$59 = ident$52.ident$56();
+float ident$60 = ident$52.ident$58();
+float ident$61 = ident$57 - ident$55;
+float ident$62 = ident$60 - ident$59;
+float[] ident$63 = new float[3];
+for (int ident$65 = 0; ident$65 < ident$43; ident$65++)
+{
+for (int ident$66 = 0; ident$66 < ident$41; ident$66++)
+{
+ident$38.ident$67(ident$66, ident$65, ident$63);
+ident$63[0] = 255;
+ident$63[1] = 255;
+ident$63[2] = 255;
+ident$63[0] *= 100;
+ident$63[1] = ident$55 + ident$63[1] * ident$61;
+ident$63[2] = ident$59 + ident$63[2] * ident$62;
+float[] ident$68 = ident$69(ident$63);
+ident$68[0] *= 255;
+ident$68[1] *= 255;
+ident$68[2] *= 255;
+ident$48.ident$70(ident$66, ident$65, ident$68);
+}
+}
+return ident$45;
+}
+@Override
+public ident$17 ident$71(ident$18 ident$38)
+{
+return null;
+}
+@Override
+public float[] ident$69(float[] ident$73)
+{
+float ident$74 = (ident$73[0] + 16ident$75) * (1ident$75 116ident$75);
+float ident$66 = ident$76 * ident$77(ident$74 + ident$73[1] * (1ident$75 500ident$75));
+float ident$65 = ident$78 * ident$77(ident$74);
+float ident$79 = ident$80 * ident$77(ident$74 - ident$73[2] * (1ident$75 200ident$75));
+return ident$81(ident$66, ident$65, ident$79);
+}
+private float ident$77(float ident$66)
+{
+if (ident$66 > 6.0 29.0)
+{
+return ident$66 * ident$66 * ident$66;
+}
+else
+{
+return (108ident$75 841ident$75) * (ident$66 - (4ident$75 29ident$75));
+}
+}
+@Override
+public int ident$84()
+{
+return 3;
+}
+@Override
+public float[] ident$85(int ident$86)
+{
+ident$13 ident$87 = ident$51();
+ident$13 ident$88 = ident$53();
+return new float[] { 0, 100, ident$87.ident$56(), ident$87.ident$58(), ident$88.ident$56(), ident$88.ident$58() };
+}
+@Override
+public ident$28 ident$89()
+{
+if (ident$29 == null)
+{
+ident$29 = new ident$28(new float[] {
+0,
+Math.ident$91(0, ident$51().ident$56()),
+Math.ident$91(0, ident$53().ident$56()) },
+this);
+}
+return ident$29;
+}
+private ident$9 ident$93()
+{
+ident$9 ident$94 = new ident$9();
+ident$94.ident$95(new ident$10(-100));
+ident$94.ident$95(new ident$10(100));
+ident$94.ident$95(new ident$10(-100));
+ident$94.ident$95(new ident$10(100));
+return ident$94;
+}
+public ident$13 ident$51()
+{
+ident$9 ident$96 = ident$97.ident$98(ident$11.ident$99);
+if (ident$96 == null)
+{
+ident$96 = ident$93();
+}
+return new ident$13(ident$96, 0);
+}
+public ident$13 ident$53()
+{
+ident$9 ident$96 = ident$97.ident$98(ident$11.ident$99);
+if (ident$96 == null)
+{
+ident$96 = ident$93();
+}
+return new ident$13(ident$96, 1);
+}
+public void ident$101(ident$13 ident$94)
+{
+ident$102(ident$94, 0);
+}
+public void ident$103(ident$13 ident$94)
+{
+ident$102(ident$94, 2);
+}
+private void ident$102(ident$13 ident$94, int ident$104)
+{
+ident$9 ident$96 = ident$97.ident$98(ident$11.ident$99);
+if (ident$96 == null)
+{
+ident$96 = ident$93();
+}
+if (ident$94 == null)
+{
+ident$96.ident$105(ident$104, new ident$10(-100));
+ident$96.ident$105(ident$104 + 1, new ident$10(100));
+}
+else
+{
+ident$96.ident$105(ident$104, new ident$10(ident$94.ident$56()));
+ident$96.ident$105(ident$104 + 1, new ident$10(ident$94.ident$58()));
+}
+ident$97.ident$106(ident$11.ident$99, ident$96);
+ident$29 = null;
+}
+}

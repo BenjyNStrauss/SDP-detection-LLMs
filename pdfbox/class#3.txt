@@ -1,0 +1,21 @@
+package ident$1.ident$2.ident$3.ident$4;
+public class ident$7
+{
+private static ident$10 ident$11 = null;
+static
+{
+ident$13(new ident$15());
+}
+public static void ident$13(ident$10 ident$17)
+{
+ident$11 = ident$17;
+}
+public static ident$10 ident$18()
+{
+return ident$11;
+}
+public static ident$20 ident$21()
+{
+return ident$11 != null ? ident$11.ident$22() : null;
+}
+}

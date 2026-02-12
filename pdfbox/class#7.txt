@@ -1,0 +1,174 @@
+package ident$1.ident$2.ident$3.ident$4;
+import java.ident$7.ident$8;
+import java.ident$7.ident$9;
+import java.ident$10.ident$11;
+import java.ident$10.ident$12;
+import java.ident$10.ident$13;
+import java.ident$10.ident$14;
+import java.ident$10.ident$15;
+import java.ident$10.ident$16;
+import ident$1.ident$2.ident$3.ident$17.ident$18;
+import ident$1.ident$2.ident$3.ident$17.ident$19;
+import ident$1.ident$2.ident$3.ident$17.ident$20;
+import ident$1.ident$2.ident$3.ident$17.ident$21;
+import ident$1.ident$2.ident$3.ident$17.ident$22;
+import ident$1.ident$2.ident$3.ident$17.ident$23;
+import ident$1.ident$2.ident$3.ident$17.ident$24;
+import ident$1.ident$2.ident$3.ident$4.ident$25.ident$26;
+import ident$1.ident$2.ident$3.ident$4.ident$25.ident$27;
+public class ident$30
+{
+private final ident$14<ident$27> ident$33 = new ident$11<>();
+private final ident$15<Long> ident$36 = new ident$16<>();
+private final ident$24 ident$37;
+private long ident$39 = -1;
+public ident$30(ident$21 ident$40)
+{
+ident$37 = ident$40.ident$41();
+}
+public ident$24 ident$42() throws ident$8
+{
+ident$37.ident$44(ident$23.ident$45, ident$23.ident$46);
+if (ident$39 == -1)
+{
+throw new IllegalArgumentException("literal$0");
+}
+ident$37.ident$50(ident$23.ident$51, ident$39);
+ident$14<Long> ident$52 = ident$53();
+ident$18 ident$54 = new ident$18();
+for ( Long ident$56 : ident$52 )
+{
+ident$54.ident$57(ident$22.ident$58(ident$56));
+}
+ident$37.ident$44(ident$23.ident$59, ident$54);
+int[] ident$61 = ident$62();
+ident$18 ident$63 = new ident$18();
+for (int ident$64 : ident$61)
+{
+ident$63.ident$57(ident$22.ident$58(ident$64));
+}
+ident$37.ident$44(ident$23.ident$65, ident$63);
+try (ident$9 ident$67 = this.ident$37.ident$69(ident$23.ident$70))
+{
+ident$71(ident$67, ident$61);
+ident$67.ident$72();
+}
+ident$15<ident$23> ident$73 = this.ident$37.ident$73();
+for ( ident$23 ident$74 : ident$73 )
+{
+if (ident$23.ident$75.ident$76(ident$74) || ident$23.ident$77.ident$76(ident$74) || ident$23.ident$78.ident$76(ident$74))
+{
+continue;
+}
+if (ident$23.ident$80.ident$76(ident$74))
+{
+continue;
+}
+ident$19 ident$81 = this.ident$37.ident$82(ident$74);
+ident$81.ident$83(ident$84);
+}
+return this.ident$37;
+}
+public void ident$87(ident$20 ident$88)
+{
+ident$88.ident$89((ident$90, ident$91) ->
+{
+if (ident$23.ident$77.ident$76(ident$90) || ident$23.ident$75.ident$76(ident$90) || ident$23.ident$80.ident$76(ident$90)
+|| ident$23.ident$92.ident$76(ident$90) || ident$23.ident$78.ident$76(ident$90))
+{
+ident$37.ident$44(ident$90, ident$91);
+}
+});
+}
+public void ident$93(ident$27 ident$94)
+{
+if (ident$36.ident$95(ident$94.ident$96().ident$97()))
+{
+return;
+}
+ident$36.ident$57(ident$94.ident$96().ident$97());
+ident$33.ident$57(ident$94);
+}
+private int[] ident$62()
+{
+long[] ident$98 = new long[3];
+for (ident$27 ident$94 : ident$33)
+{
+ident$98[0] = Math.ident$100(ident$98[0], ident$94.ident$101());
+ident$98[1] = Math.ident$100(ident$98[1], ident$94.ident$102());
+ident$98[2] = Math.ident$100(ident$98[2], ident$94.ident$103());
+}
+int[] ident$104 = new int[3];
+for ( int ident$56 = 0; ident$56 < ident$104.ident$105; ident$56++ )
+{
+while (ident$98[ident$56] > 0)
+{
+ident$104[ident$56]++;
+ident$98[ident$56] >>= 8;
+}
+}
+return ident$104;
+}
+public void ident$107(long ident$108)
+{
+this.ident$39 = ident$108;
+}
+private ident$14<Long> ident$53()
+{
+ident$13<Long> ident$109 = new ident$13<>();
+Long ident$110 = null;
+Long ident$105 = null;
+ident$15<Long> ident$112 = new ident$16<>();
+ident$112.ident$57(0ident$113);
+ident$112.ident$114(ident$36);
+for ( Long ident$115 : ident$112 )
+{
+if (ident$110 == null)
+{
+ident$110 = ident$115;
+ident$105 = 1ident$113;
+}
+if (ident$110 + ident$105 == ident$115)
+{
+ident$105 += 1;
+}
+if (ident$110 + ident$105 < ident$115)
+{
+ident$109.ident$57(ident$110);
+ident$109.ident$57(ident$105);
+ident$110 = ident$115;
+ident$105 = 1ident$113;
+}
+}
+ident$109.ident$57(ident$110);
+ident$109.ident$57(ident$105);
+return ident$109;
+}
+private void ident$116(ident$9 ident$117, long ident$118, int ident$119) throws ident$8
+{
+byte[] ident$121 = new byte[ident$119];
+for ( int ident$56 = 0; ident$56 < ident$119; ident$56++ )
+{
+ident$121[ident$56] = (byte)(ident$118 & 0ident$122);
+ident$118 >>= 8;
+}
+for ( int ident$56 = 0; ident$56 < ident$119; ident$56++ )
+{
+ident$117.ident$123(ident$121[ident$119-ident$56-1]);
+}
+}
+private void ident$71(ident$9 ident$117, int[] ident$104) throws ident$8
+{
+ident$12.ident$124(ident$33);
+ident$26 ident$125 = ident$26.ident$126;
+ident$116(ident$117, ident$125.ident$101(), ident$104[0]);
+ident$116(ident$117, ident$125.ident$102(), ident$104[1]);
+ident$116(ident$117, ident$125.ident$103(), ident$104[2]);
+for (ident$27 ident$94 : ident$33)
+{
+ident$116(ident$117, ident$94.ident$101(), ident$104[0]);
+ident$116(ident$117, ident$94.ident$102(), ident$104[1]);
+ident$116(ident$117, ident$94.ident$103(), ident$104[2]);
+}
+}
+}

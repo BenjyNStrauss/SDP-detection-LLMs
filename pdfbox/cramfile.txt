@@ -1,0 +1,1879 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.pdfbox.cos;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+
+/**
+ * This class represents an integer number in a PDF document.
+ *
+ * @author Ben Litchfield
+ */
+public final class COSInteger extends COSNumber
+{
+
+    /**
+     * The lowest integer to be kept in the {@link #STATIC} array.
+     */
+    private static final int LOW = -100;
+
+    /**
+     * The highest integer to be kept in the {@link #STATIC} array.
+     */
+    private static final int HIGH = 256;
+
+    /**
+     * Static instances of all COSIntegers in the range from {@link #LOW}
+     * to {@link #HIGH}.
+     */
+    private static final COSInteger[] STATIC = new COSInteger[HIGH - LOW + 1];
+
+    /**
+     * Constant for the number zero.
+     * @since Apache PDFBox 1.1.0
+     */
+    public static final COSInteger ZERO = get(0); 
+
+    /**
+     * Constant for the number one.
+     * @since Apache PDFBox 1.1.0
+     */
+    public static final COSInteger ONE = get(1); 
+
+    /**
+     * Constant for the number two.
+     * @since Apache PDFBox 1.1.0
+     */
+    public static final COSInteger TWO = get(2); 
+
+    /**
+     * Constant for the number three.
+     * @since Apache PDFBox 1.1.0
+     */
+    public static final COSInteger THREE = get(3); 
+
+    /**
+     * Constant for an out of range value which is bigger than Log.MAX_VALUE.
+     */
+    static final COSInteger OUT_OF_RANGE_MAX = getInvalid(true);
+
+    /**
+     * Constant for an out of range value which is smaller than Log.MIN_VALUE.
+     */
+    static final COSInteger OUT_OF_RANGE_MIN = getInvalid(false);
+
+    /**
+     * Returns a COSInteger instance with the given value.
+     *
+     * @param val integer value
+     * @return COSInteger instance
+     */
+    public static COSInteger get(long val)
+    {
+        if (LOW <= val && val <= HIGH)
+        {
+            int index = (int) val - LOW;
+            // no synchronization needed
+            if (STATIC[index] == null)
+            {
+                STATIC[index] = new COSInteger(val, true);
+            }
+            return STATIC[index];
+        }
+        return new COSInteger(val, true);
+    }
+
+    private static COSInteger getInvalid(boolean maxValue)
+    {
+        return maxValue ? new COSInteger(Long.MAX_VALUE, false)
+                : new COSInteger(Long.MIN_VALUE, false);
+    }
+
+    private final long value;
+    private final boolean isValid;
+
+    /**
+     * constructor.
+     *
+     * @param val The integer value of this object.
+     * @param valid indicates if the value is valid.
+     */
+    private COSInteger(long val, boolean valid)
+    {
+        value = val;
+        isValid = valid;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(Object o)
+    {
+        return o instanceof COSInteger && ((COSInteger)o).intValue() == intValue();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode()
+    {
+        //taken from java.lang.Long
+        return (int)(value ^ (value >> 32));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString()
+    {
+        return "COSInt{" + value + "}";
+    }
+
+    /**
+     * polymorphic access to value as float.
+     *
+     * @return The float value of this object.
+     */
+    @Override
+    public float floatValue()
+    {
+        return value;
+    }
+
+    /**
+     * Polymorphic access to value as int
+     * This will get the integer value of this object.
+     *
+     * @return The int value of this object,
+     */
+    @Override
+    public int intValue()
+    {
+        return (int)value;
+    }
+
+    /**
+     * Polymorphic access to value as int
+     * This will get the integer value of this object.
+     *
+     * @return The int value of this object,
+     */
+    @Override
+    public long longValue()
+    {
+        return value;
+    }
+
+    /**
+     * Indicates whether this instance represents a valid value.
+     * 
+     * @return true if the value is valid
+     */
+    public boolean isValid()
+    {
+        return isValid;
+    }
+
+    /**
+     * visitor pattern double dispatch method.
+     *
+     * @param visitor The object to notify when visiting this object.
+     * @throws IOException If an error occurs while visiting this object.
+     */
+    @Override
+    public void accept(ICOSVisitor visitor) throws IOException
+    {
+        visitor.visitFromInt(this);
+    }
+
+    /**
+     * This will output this string as a PDF object.
+     *
+     * @param output The stream to write to.
+     * @throws IOException If there is an error writing to the stream.
+     */
+    public void writePDF( OutputStream output ) throws IOException
+    {
+        output.write(String.valueOf(value).getBytes(StandardCharsets.ISO_8859_1));
+    }
+
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.pdfbox.pdfwriter;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Map;
+import org.apache.pdfbox.contentstream.operator.Operator;
+import org.apache.pdfbox.contentstream.operator.OperatorName;
+import org.apache.pdfbox.cos.COSArray;
+import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSBoolean;
+import org.apache.pdfbox.cos.COSDictionary;
+import org.apache.pdfbox.cos.COSFloat;
+import org.apache.pdfbox.cos.COSInteger;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.cos.COSNull;
+import org.apache.pdfbox.cos.COSString;
+
+/**
+ * A class that will take a list of tokens and write out a stream with them.
+ *
+ * @author Ben Litchfield
+ */
+public class ContentStreamWriter
+{
+    private final OutputStream output;
+    /**
+     * space character.
+     */
+    public static final byte[] SPACE = { 32 };
+
+    /**
+     * standard line separator
+     */
+    public static final byte[] EOL = { 0x0A };
+
+    /**
+     * This will create a new content stream writer.
+     *
+     * @param out The stream to write the data to.
+     */
+    public ContentStreamWriter( OutputStream out )
+    {
+        output = out;
+    }
+
+    /**
+     * Writes a single operand token.
+     *
+     * @param base The operand to write to the stream.
+     * @throws IOException If there is an error writing to the stream.
+     */
+    public void writeToken(COSBase base) throws IOException
+    {
+        writeObject(base);
+    }
+
+    /**
+     *  Writes a single operator token.
+     *
+     * @param op The operator to write to the stream.
+     * @throws IOException If there is an error writing to the stream.
+     */
+    public void writeToken(Operator op) throws IOException
+    {
+        writeObject(op);
+    }
+
+    /**
+     * Writes a series of tokens followed by a new line.
+     * 
+     * @param tokens The tokens to write to the stream.
+     * @throws IOException If there is an error writing to the stream.
+     */
+    public void writeTokens(Object... tokens) throws IOException
+    {
+        for (Object token : tokens)
+        {
+            writeObject(token);
+        }
+        output.write("\n".getBytes(StandardCharsets.US_ASCII));
+    }
+
+    /**
+     * This will write out the list of tokens to the stream.
+     *
+     * @param tokens The tokens to write to the stream.
+     * @throws IOException If there is an error writing to the stream.
+     */
+    public void writeTokens( List<?> tokens ) throws IOException
+    {
+        for (Object token : tokens)
+        {
+            writeObject(token);
+        }
+    }
+
+    private void writeObject(Object o) throws IOException
+    {
+        if (o instanceof COSBase)
+        {
+            writeObject((COSBase) o);
+        }
+        else if (o instanceof Operator)
+        {
+            writeObject((Operator) o);
+        }
+        else
+        {
+            throw new IOException("Error:Unknown type in content stream:" + o);
+        }
+    }
+
+    private void writeObject(Operator op) throws IOException
+    {
+        if (op.getName().equals(OperatorName.BEGIN_INLINE_IMAGE))
+        {
+            output.write(OperatorName.BEGIN_INLINE_IMAGE.getBytes(StandardCharsets.ISO_8859_1));
+            output.write(EOL);
+            COSDictionary dic = op.getImageParameters();
+            for (COSName key : dic.keySet())
+            {
+                COSBase value = dic.getDictionaryObject(key);
+                key.writePDF(output);
+                output.write(SPACE);
+                writeObject(value);
+                output.write(EOL);
+            }
+            output.write(OperatorName.BEGIN_INLINE_IMAGE_DATA.getBytes(StandardCharsets.ISO_8859_1));
+            output.write(EOL);
+            output.write(op.getImageData());
+            output.write(EOL);
+            output.write(OperatorName.END_INLINE_IMAGE.getBytes(StandardCharsets.ISO_8859_1));
+            output.write(EOL);
+        }
+        else
+        {
+            output.write(op.getName().getBytes(StandardCharsets.ISO_8859_1));
+            output.write(EOL);
+        }
+    }
+
+    private void writeObject( COSBase o ) throws IOException
+    {
+        if( o instanceof COSString )
+        {
+            COSWriter.writeString((COSString)o, output);
+            output.write( SPACE );
+        }
+        else if( o instanceof COSFloat )
+        {
+            ((COSFloat)o).writePDF( output );
+            output.write( SPACE );
+        }
+        else if( o instanceof COSInteger )
+        {
+            ((COSInteger)o).writePDF( output );
+            output.write( SPACE );
+        }
+        else if( o instanceof COSBoolean )
+        {
+            ((COSBoolean)o).writePDF( output );
+            output.write( SPACE );
+        }
+        else if( o instanceof COSName )
+        {
+            ((COSName)o).writePDF( output );
+            output.write( SPACE );
+        }
+        else if( o instanceof COSArray )
+        {
+            COSArray array = (COSArray)o;
+            output.write(COSWriter.ARRAY_OPEN);
+            for( int i=0; i<array.size(); i++ )
+            {
+                writeObject(array.get(i));
+            }
+            output.write(COSWriter.ARRAY_CLOSE);
+            output.write(SPACE);
+        }
+        else if( o instanceof COSDictionary )
+        {
+            COSDictionary obj = (COSDictionary)o;
+            output.write( COSWriter.DICT_OPEN );
+            for (Map.Entry<COSName, COSBase> entry : obj.entrySet())
+            {
+                if (entry.getValue() != null)
+                {
+                    writeObject(entry.getKey());
+                    writeObject(entry.getValue());
+                }
+            }
+            output.write( COSWriter.DICT_CLOSE );
+            output.write( SPACE );
+        }
+        else if (o instanceof COSNull)
+        {
+            output.write("null".getBytes(StandardCharsets.US_ASCII));
+            output.write(SPACE);
+        }
+        else
+        {
+            throw new IOException( "Error:Unknown type in content stream:" + o );
+        }
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.pdfbox.filter;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import org.apache.pdfbox.cos.COSDictionary;
+import org.apache.pdfbox.cos.COSName;
+
+/**
+ * Decrypts data encrypted by a security handler, reproducing the data as it was before encryption.
+ * @author Adam Nichols
+ */
+final class CryptFilter extends Filter
+{
+    @Override
+    public DecodeResult decode(InputStream encoded, OutputStream decoded,
+                                         COSDictionary parameters, int index) throws IOException
+    {
+        COSName encryptionName = parameters.getCOSName(COSName.NAME);
+        if(encryptionName == null || encryptionName.equals(COSName.IDENTITY)) 
+        {
+            // currently the only supported implementation is the Identity crypt filter
+            Filter identityFilter = new IdentityFilter();
+            identityFilter.decode(encoded, decoded, parameters, index);
+            return new DecodeResult(parameters);
+        }
+        throw new IOException("Unsupported crypt filter " + encryptionName.getName());
+    }
+
+    @Override
+    protected void encode(InputStream input, OutputStream encoded, COSDictionary parameters)
+            throws IOException
+    {
+        COSName encryptionName = parameters.getCOSName(COSName.NAME);
+        if(encryptionName == null || encryptionName.equals(COSName.IDENTITY))
+        {
+            // currently the only supported implementation is the Identity crypt filter
+            Filter identityFilter = new IdentityFilter();
+            identityFilter.encode(input, encoded, parameters);
+        }
+        else
+        {
+            throw new IOException("Unsupported crypt filter " + encryptionName.getName());
+        }
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.pdfbox.filter;
+
+import java.io.IOException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.pdfbox.cos.COSName;
+
+/**
+ * Factory for Filter classes.
+ *
+ * @author Ben Litchfield
+ */
+public final class FilterFactory
+{
+    /**
+     * Singleton instance.
+     */
+    public static final FilterFactory INSTANCE = new FilterFactory();
+
+    private final Map<COSName, Filter> filters = new HashMap<>();
+
+    private FilterFactory()
+    {
+        Filter flate = new FlateFilter();
+        Filter dct = new DCTFilter();
+        Filter ccittFax = new CCITTFaxFilter();
+        Filter lzw = new LZWFilter();
+        Filter asciiHex = new ASCIIHexFilter();
+        Filter ascii85 = new ASCII85Filter();
+        Filter runLength = new RunLengthDecodeFilter();
+        Filter crypt = new CryptFilter();
+        Filter jpx = new JPXFilter();
+        Filter jbig2 = new JBIG2Filter();
+
+        filters.put(COSName.FLATE_DECODE, flate);
+        filters.put(COSName.FLATE_DECODE_ABBREVIATION, flate);
+        filters.put(COSName.DCT_DECODE, dct);
+        filters.put(COSName.DCT_DECODE_ABBREVIATION, dct);
+        filters.put(COSName.CCITTFAX_DECODE, ccittFax);
+        filters.put(COSName.CCITTFAX_DECODE_ABBREVIATION, ccittFax);
+        filters.put(COSName.LZW_DECODE, lzw);
+        filters.put(COSName.LZW_DECODE_ABBREVIATION, lzw);
+        filters.put(COSName.ASCII_HEX_DECODE, asciiHex);
+        filters.put(COSName.ASCII_HEX_DECODE_ABBREVIATION, asciiHex);
+        filters.put(COSName.ASCII85_DECODE, ascii85);
+        filters.put(COSName.ASCII85_DECODE_ABBREVIATION, ascii85);
+        filters.put(COSName.RUN_LENGTH_DECODE, runLength);
+        filters.put(COSName.RUN_LENGTH_DECODE_ABBREVIATION, runLength);
+        filters.put(COSName.CRYPT, crypt);
+        filters.put(COSName.JPX_DECODE, jpx);
+        filters.put(COSName.JBIG2_DECODE, jbig2);
+    }
+
+    /**
+     * Returns a filter instance given its name as a string.
+     * @param filterName the name of the filter to retrieve
+     * @return the filter that matches the name
+     * @throws IOException if the filter name was invalid
+     */
+    public Filter getFilter(String filterName) throws IOException
+    {
+        return getFilter(COSName.getPDFName(filterName));
+    }
+
+    /**
+     * Returns a filter instance given its COSName.
+     * @param filterName the name of the filter to retrieve
+     * @return the filter that matches the name
+     * @throws IOException if the filter name was invalid
+     */
+    public Filter getFilter(COSName filterName) throws IOException
+    {
+        Filter filter = filters.get(filterName);
+        if (filter == null)
+        {
+            throw new IOException("Invalid filter: " + filterName);
+        }
+        return filter;
+    }
+
+    // returns all available filters, for testing
+    Collection<Filter> getAllFilters()
+    {
+        return filters.values();
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.pdfbox.pdmodel;
+
+import java.util.Calendar;
+import java.util.Set;
+import java.util.TreeSet;
+
+import org.apache.pdfbox.cos.COSDictionary;
+import org.apache.pdfbox.cos.COSName;
+
+import org.apache.pdfbox.pdmodel.common.COSObjectable;
+
+/**
+ * This is the document metadata.  Each getXXX method will return the entry if
+ * it exists or null if it does not exist.  If you pass in null for the setXXX
+ * method then it will clear the value.
+ *
+ * @author Ben Litchfield
+ * @author Gerardo Ortiz
+ *
+ */
+public class PDDocumentInformation implements COSObjectable
+{
+    private final COSDictionary info;
+
+    /**
+     * Default Constructor.
+     */
+    public PDDocumentInformation()
+    {
+        info = new COSDictionary();
+    }
+
+    /**
+     * Constructor that is used for a preexisting dictionary.
+     *
+     * @param dic The underlying dictionary.
+     */
+    public PDDocumentInformation( COSDictionary dic )
+    {
+        info = dic;
+    }
+
+    /**
+     * This will get the underlying dictionary that this object wraps.
+     *
+     * @return The underlying info dictionary.
+     */
+    @Override
+    public COSDictionary getCOSObject()
+    {
+        return info;
+    }    
+    
+    /**
+     * Return the properties String value.
+     * <p>
+     * Allows to retrieve the
+     * low level date for validation purposes.
+     * </p> 
+     * 
+     * @param propertyKey the dictionaries key
+     * @return the properties value
+     */
+     public Object getPropertyStringValue(String propertyKey)
+     {
+         return info.getString(propertyKey);
+     }    
+
+    /**
+     * This will get the title of the document.  This will return null if no title exists.
+     *
+     * @return The title of the document.
+     */
+    public String getTitle()
+    {
+        return info.getString( COSName.TITLE );
+    }
+
+    /**
+     * This will set the title of the document.
+     *
+     * @param title The new title for the document.
+     */
+    public void setTitle( String title )
+    {
+        info.setString( COSName.TITLE, title );
+    }
+
+    /**
+     * This will get the author of the document.  This will return null if no author exists.
+     *
+     * @return The author of the document.
+     */
+    public String getAuthor()
+    {
+        return info.getString( COSName.AUTHOR );
+    }
+
+    /**
+     * This will set the author of the document.
+     *
+     * @param author The new author for the document.
+     */
+    public void setAuthor( String author )
+    {
+        info.setString( COSName.AUTHOR, author );
+    }
+
+    /**
+     * This will get the subject of the document.  This will return null if no subject exists.
+     *
+     * @return The subject of the document.
+     */
+    public String getSubject()
+    {
+        return info.getString( COSName.SUBJECT );
+    }
+
+    /**
+     * This will set the subject of the document.
+     *
+     * @param subject The new subject for the document.
+     */
+    public void setSubject( String subject )
+    {
+        info.setString( COSName.SUBJECT, subject );
+    }
+
+    /**
+     * This will get the keywords of the document.  This will return null if no keywords exists.
+     *
+     * @return The keywords of the document.
+     */
+    public String getKeywords()
+    {
+        return info.getString( COSName.KEYWORDS );
+    }
+
+    /**
+     * This will set the keywords of the document.
+     *
+     * @param keywords The new keywords for the document.
+     */
+    public void setKeywords( String keywords )
+    {
+        info.setString( COSName.KEYWORDS, keywords );
+    }
+
+    /**
+     * This will get the creator of the document.  This will return null if no creator exists.
+     *
+     * @return The creator of the document.
+     */
+    public String getCreator()
+    {
+        return info.getString( COSName.CREATOR );
+    }
+
+    /**
+     * This will set the creator of the document.
+     *
+     * @param creator The new creator for the document.
+     */
+    public void setCreator( String creator )
+    {
+        info.setString( COSName.CREATOR, creator );
+    }
+
+    /**
+     * This will get the producer of the document.  This will return null if no producer exists.
+     *
+     * @return The producer of the document.
+     */
+    public String getProducer()
+    {
+        return info.getString( COSName.PRODUCER );
+    }
+
+    /**
+     * This will set the producer of the document.
+     *
+     * @param producer The new producer for the document.
+     */
+    public void setProducer( String producer )
+    {
+        info.setString( COSName.PRODUCER, producer );
+    }
+
+    /**
+     * This will get the creation date of the document.  This will return null if no creation date exists.
+     *
+     * @return The creation date of the document.
+     */
+    public Calendar getCreationDate()
+    {
+        return info.getDate( COSName.CREATION_DATE );
+    }
+
+    /**
+     * This will set the creation date of the document.
+     *
+     * @param date The new creation date for the document.
+     */
+    public void setCreationDate( Calendar date )
+    {
+        info.setDate( COSName.CREATION_DATE, date );
+    }
+
+    /**
+     * This will get the modification date of the document.  This will return null if no modification date exists.
+     *
+     * @return The modification date of the document.
+     */
+    public Calendar getModificationDate()
+    {
+        return info.getDate( COSName.MOD_DATE );
+    }
+
+    /**
+     * This will set the modification date of the document.
+     *
+     * @param date The new modification date for the document.
+     */
+    public void setModificationDate( Calendar date )
+    {
+        info.setDate( COSName.MOD_DATE, date );
+    }
+
+    /**
+     * This will get the trapped value for the document.
+     * This will return null if one is not found.
+     *
+     * @return The trapped value for the document.
+     */
+    public String getTrapped()
+    {
+        return info.getNameAsString( COSName.TRAPPED );
+    }
+
+    /**
+     * This will get the keys of all metadata information fields for the document.
+     *
+     * @return all metadata key strings.
+     * @since Apache PDFBox 1.3.0
+     */
+    public Set<String> getMetadataKeys()
+    {
+        Set<String> keys = new TreeSet<>();
+        for (COSName key : info.keySet())
+        {
+            keys.add(key.getName());
+        }
+        return keys;
+    }
+
+    /**
+     *  This will get the value of a custom metadata information field for the document.
+     *  This will return null if one is not found.
+     *
+     * @param fieldName Name of custom metadata field from pdf document.
+     *
+     * @return String Value of metadata field
+     */
+    public String getCustomMetadataValue(String fieldName)
+    {
+        return info.getString( fieldName );
+    }
+
+    /**
+     * Set the custom metadata value.
+     *
+     * @param fieldName The name of the custom metadata field.
+     * @param fieldValue The value to the custom metadata field.
+     */
+    public void setCustomMetadataValue( String fieldName, String fieldValue )
+    {
+        info.setString( fieldName, fieldValue );
+    }
+
+    /**
+     * This will set the trapped of the document.  This will be
+     * 'True', 'False', or 'Unknown'.
+     *
+     * @param value The new trapped value for the document.
+     * 
+     * @throws IllegalArgumentException if the parameter is invalid.
+     */
+    public void setTrapped( String value )
+    {
+        if( value != null &&
+            !value.equals( "True" ) &&
+            !value.equals( "False" ) &&
+            !value.equals( "Unknown" ) )
+        {
+            throw new IllegalArgumentException( "Valid values for trapped are " +
+                                        "'True', 'False', or 'Unknown'" );
+        }
+
+        info.setName( COSName.TRAPPED, value );
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.pdfbox.pdfparser;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
+import org.apache.pdfbox.cos.COSArray;
+import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSDictionary;
+import org.apache.pdfbox.cos.COSDocument;
+import org.apache.pdfbox.cos.COSInteger;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.cos.COSStream;
+import org.apache.pdfbox.pdfparser.xref.FreeXReference;
+import org.apache.pdfbox.pdfparser.xref.XReferenceEntry;
+
+/**
+ * @author Alexander Funk
+ */
+public class PDFXRefStream
+{
+
+    private final List<XReferenceEntry> streamData = new ArrayList<>();
+
+    private final Set<Long> objectNumbers = new TreeSet<>();
+
+    private final COSStream stream;
+
+    private long size = -1;
+
+    /**
+     * Create a fresh XRef stream like for a fresh file or an incremental update.
+     * 
+     * @param cosDocument the COSDocmernt to be used to create a new COSStream
+     */
+    public PDFXRefStream(COSDocument cosDocument)
+    {
+        stream = cosDocument.createCOSStream();
+    }
+
+    /**
+     * Returns the stream of the XRef.
+     * @return the XRef stream
+     * @throws IOException if something went wrong
+     */
+    public COSStream getStream() throws IOException
+    {
+        stream.setItem(COSName.TYPE, COSName.XREF);
+        if (size == -1)
+        {
+            throw new IllegalArgumentException("size is not set in xrefstream");
+        }
+        stream.setLong(COSName.SIZE, size);
+    
+        List<Long> indexEntry = getIndexEntry();
+        COSArray indexAsArray = new COSArray();
+        for ( Long i : indexEntry )
+        {
+            indexAsArray.add(COSInteger.get(i));
+        }
+        stream.setItem(COSName.INDEX, indexAsArray);
+
+        int[] wEntry = getWEntry();
+        COSArray wAsArray = new COSArray();
+        for (int j : wEntry)
+        {
+            wAsArray.add(COSInteger.get(j));
+        }
+        stream.setItem(COSName.W, wAsArray);
+        
+        try (OutputStream outputStream = this.stream.createOutputStream(COSName.FLATE_DECODE))
+        {
+            writeStreamData(outputStream, wEntry);
+            outputStream.flush();
+        }
+    
+        Set<COSName> keySet = this.stream.keySet();
+        for ( COSName cosName : keySet )
+        {
+            // "Other cross-reference stream entries not listed in Table 17 may be indirect; in fact, 
+            // some (such as Root in Table 15) shall be indirect."
+            if (COSName.ROOT.equals(cosName) || COSName.INFO.equals(cosName) || COSName.PREV.equals(cosName))
+            {
+                continue;
+            }
+            // this one too, because it has already been written in COSWriter.doWriteBody()
+            if (COSName.ENCRYPT.equals(cosName))
+            {
+                continue;
+            }
+            COSBase dictionaryObject = this.stream.getDictionaryObject(cosName);
+            dictionaryObject.setDirect(true);
+        }
+        return this.stream;
+    }
+
+    /**
+     * Copy all Trailer Information to this file.
+     * 
+     * @param trailerDict dictionary to be added as trailer info
+     */
+    public void addTrailerInfo(COSDictionary trailerDict)
+    {
+        trailerDict.forEach((key, value) ->
+        {
+            if (COSName.INFO.equals(key) || COSName.ROOT.equals(key) || COSName.ENCRYPT.equals(key) 
+                    || COSName.ID.equals(key) || COSName.PREV.equals(key))
+            {
+                stream.setItem(key, value);
+            }
+        });
+    }
+
+    /**
+     * Add an new entry to the XRef stream.
+     * 
+     * @param entry new entry to be added
+     */
+    public void addEntry(XReferenceEntry entry)
+    {
+        if (objectNumbers.contains(entry.getReferencedKey().getNumber()))
+        {
+            return;
+        }
+        objectNumbers.add(entry.getReferencedKey().getNumber());
+        streamData.add(entry);
+    }
+
+    /**
+     * determines the minimal length required for all the lengths.
+     * 
+     * @return the length information
+     */
+    private int[] getWEntry()
+    {
+        long[] wMax = new long[3];
+        for (XReferenceEntry entry : streamData)
+        {
+            wMax[0] = Math.max(wMax[0], entry.getFirstColumnValue());
+            wMax[1] = Math.max(wMax[1], entry.getSecondColumnValue());
+            wMax[2] = Math.max(wMax[2], entry.getThirdColumnValue());
+        }
+        // find the max bytes needed to display that column
+        int[] w = new int[3];
+        for ( int i = 0; i < w.length; i++ )
+        {
+            while (wMax[i] > 0)
+            {
+                w[i]++;
+                wMax[i] >>= 8;
+            }
+        }
+        return w;
+    }
+
+    /**
+     * Set the size of the XRef stream.
+     * 
+     * @param streamSize size to bet set as stream size
+     */
+    public void setSize(long streamSize)
+    {
+        this.size = streamSize;
+    }
+
+    private List<Long> getIndexEntry()
+    {
+        LinkedList<Long> linkedList = new LinkedList<>();
+        Long first = null;
+        Long length = null;
+        Set<Long> objNumbers = new TreeSet<>();
+        // add object number 0 to the set
+        objNumbers.add(0L);
+        objNumbers.addAll(objectNumbers);
+        for ( Long objNumber : objNumbers )
+        {
+            if (first == null)
+            {
+                first = objNumber;
+                length = 1L;
+            }
+            if (first + length == objNumber)
+            {
+                length += 1;
+            }
+            if (first + length < objNumber)
+            {
+                linkedList.add(first);
+                linkedList.add(length);
+                first = objNumber;
+                length = 1L;
+            }
+        }
+        linkedList.add(first);
+        linkedList.add(length);
+
+        return linkedList;
+    }
+
+    private void writeNumber(OutputStream os, long number, int bytes) throws IOException
+    {
+        byte[] buffer = new byte[bytes];
+        for ( int i = 0; i < bytes; i++ )
+        {
+            buffer[i] = (byte)(number & 0xff);
+            number >>= 8;
+        }
+
+        for ( int i = 0; i < bytes; i++ )
+        {
+            os.write(buffer[bytes-i-1]);
+        }
+    }
+
+    private void writeStreamData(OutputStream os, int[] w) throws IOException
+    {
+        Collections.sort(streamData);
+        FreeXReference nullEntry = FreeXReference.NULL_ENTRY;
+        writeNumber(os, nullEntry.getFirstColumnValue(), w[0]);
+        writeNumber(os, nullEntry.getSecondColumnValue(), w[1]);
+        writeNumber(os, nullEntry.getThirdColumnValue(), w[2]);
+        // iterate over all streamData and write it in the required format
+        for (XReferenceEntry entry : streamData)
+        {
+            writeNumber(os, entry.getFirstColumnValue(), w[0]);
+            writeNumber(os, entry.getSecondColumnValue(), w[1]);
+            writeNumber(os, entry.getThirdColumnValue(), w[2]);
+        }
+    }
+
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.pdfbox.pdmodel.graphics.color;
+
+import org.apache.pdfbox.cos.COSArray;
+import org.apache.pdfbox.cos.COSFloat;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.pdmodel.common.PDRange;
+
+import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
+import java.io.IOException;
+
+/**
+ * A Lab colour space is a CIE-based ABC colour space with two transformation stages.
+ *
+ * @author Ben Litchfield
+ * @author John Hewson
+ */
+public final class PDLab extends PDCIEDictionaryBasedColorSpace
+{
+    private PDColor initialColor;
+    
+    /**
+     * Creates a new Lab color space.
+     */
+    public PDLab()
+    {
+        super(COSName.LAB);
+    }
+
+    /**
+     * Creates a new Lab color space from a PDF array.
+     * @param lab the color space array
+     */
+    public PDLab(COSArray lab)
+    {
+        super(lab);
+    }
+    
+    @Override
+    public String getName()
+    {
+        return COSName.LAB.getName();
+    }
+
+    //
+    // WARNING: this method is performance sensitive, modify with care!
+    //
+    @Override
+    public BufferedImage toRGBImage(WritableRaster raster) throws IOException
+    {
+        int width = raster.getWidth();
+        int height = raster.getHeight();
+
+        BufferedImage rgbImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        WritableRaster rgbRaster = rgbImage.getRaster();
+
+        PDRange aRange = getARange();
+        PDRange bRange = getBRange();
+        float minA = aRange.getMin();
+        float maxA = aRange.getMax();
+        float minB = bRange.getMin();
+        float maxB = bRange.getMax();
+        float deltaA = maxA - minA;
+        float deltaB = maxB - minB;
+
+        // always three components: ABC
+        float[] abc = new float[3];
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                raster.getPixel(x, y, abc);
+
+                // 0..255 -> 0..1
+                abc[0] /= 255;
+                abc[1] /= 255;
+                abc[2] /= 255;
+                
+                // scale to range
+                abc[0] *= 100;
+                abc[1] = minA + abc[1] * deltaA;
+                abc[2] = minB + abc[2] * deltaB;
+
+                float[] rgb = toRGB(abc);
+
+                // 0..1 -> 0..255
+                rgb[0] *= 255;
+                rgb[1] *= 255;
+                rgb[2] *= 255;
+
+                rgbRaster.setPixel(x, y, rgb);
+            }
+        }
+
+        return rgbImage;
+    }
+
+    @Override
+    public BufferedImage toRawImage(WritableRaster raster)
+    {
+        // Not handled at the moment.
+       return null;
+    }
+
+    @Override
+    public float[] toRGB(float[] value)
+    {
+        // CIE LAB to RGB, see http://en.wikipedia.org/wiki/Lab_color_space
+
+        // L*
+        float lstar = (value[0] + 16f) * (1f / 116f);
+
+        // TODO: how to use the blackpoint? scale linearly between black & white?
+
+        // XYZ
+        float x = wpX * inverse(lstar + value[1] * (1f / 500f));
+        float y = wpY * inverse(lstar);
+        float z = wpZ * inverse(lstar - value[2] * (1f / 200f));
+        
+        return convXYZtoRGB(x, y, z);
+    }
+
+    // reverse transformation (f^-1)
+    private float inverse(float x)
+    {
+        if (x > 6.0 / 29.0)
+        {
+            return x * x * x;
+        }
+        else
+        {
+            return (108f / 841f) * (x - (4f / 29f));
+        }
+    }
+
+    @Override
+    public int getNumberOfComponents()
+    {
+        return 3;
+    }
+
+    @Override
+    public float[] getDefaultDecode(int bitsPerComponent)
+    {
+        PDRange a = getARange();
+        PDRange b = getBRange();
+        return new float[] { 0, 100, a.getMin(), a.getMax(), b.getMin(), b.getMax() };
+    }
+
+    @Override
+    public PDColor getInitialColor()
+    {
+        if (initialColor == null)
+        {
+            initialColor = new PDColor(new float[] {
+                    0,
+                    Math.max(0, getARange().getMin()),
+                    Math.max(0, getBRange().getMin()) },
+                    this);
+        }
+        return initialColor;
+    }
+
+    /**
+     * creates a range array with default values (-100..100 -100..100).
+     * @return the new range array.
+     */
+    private COSArray getDefaultRangeArray()
+    {
+        COSArray range = new COSArray();
+        range.add(new COSFloat(-100));
+        range.add(new COSFloat(100));
+        range.add(new COSFloat(-100));
+        range.add(new COSFloat(100));
+        return range;
+    }
+
+    /**
+     * This will get the valid range for the "a" component.
+     * If none is found then the default will be returned, which is -100..100.
+     * @return the "a" range.
+     */
+    public PDRange getARange()
+    {
+        COSArray rangeArray = dictionary.getCOSArray(COSName.RANGE);
+        if (rangeArray == null)
+        {
+            rangeArray = getDefaultRangeArray();
+        }
+        return new PDRange(rangeArray, 0);
+    }
+
+    /**
+     * This will get the valid range for the "b" component.
+     * If none is found  then the default will be returned, which is -100..100.
+     * @return the "b" range.
+     */
+    public PDRange getBRange()
+    {
+        COSArray rangeArray = dictionary.getCOSArray(COSName.RANGE);
+        if (rangeArray == null)
+        {
+            rangeArray = getDefaultRangeArray();
+        }
+        return new PDRange(rangeArray, 1);
+    }
+
+    /**
+     * This will set the a range for the "a" component.
+     * @param range the new range for the "a" component, 
+     * or null if defaults (-100..100) are to be set.
+     */
+    public void setARange(PDRange range)
+    {
+        setComponentRangeArray(range, 0);
+    }
+
+    /**
+     * This will set the "b" range for this color space.
+     * @param range the new range for the "b" component,
+     * or null if defaults (-100..100) are to be set.
+     */
+    public void setBRange(PDRange range)
+    {
+        setComponentRangeArray(range, 2);
+    }
+
+    private void setComponentRangeArray(PDRange range, int index)
+    {
+        COSArray rangeArray = dictionary.getCOSArray(COSName.RANGE);
+        if (rangeArray == null)
+        {
+            rangeArray = getDefaultRangeArray();
+        }
+        if (range == null)
+        {
+            // reset to defaults
+            rangeArray.set(index, new COSFloat(-100));
+            rangeArray.set(index + 1, new COSFloat(100));
+        }
+        else
+        {
+            rangeArray.set(index, new COSFloat(range.getMin()));
+            rangeArray.set(index + 1, new COSFloat(range.getMax()));
+        }
+        dictionary.setItem(COSName.RANGE, rangeArray);
+        initialColor = null;
+    }
+
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.pdfbox.pdmodel.graphics;
+
+import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSDictionary;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.cos.COSStream;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDResources;
+import org.apache.pdfbox.pdmodel.ResourceCache;
+import org.apache.pdfbox.pdmodel.common.COSObjectable;
+import org.apache.pdfbox.pdmodel.common.PDStream;
+import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
+import org.apache.pdfbox.pdmodel.graphics.form.PDTransparencyGroup;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+
+import java.io.IOException;
+
+/**
+ * An external object, or "XObject".
+ *
+ * @author Ben Litchfield
+ * @author John Hewson
+ */
+public class PDXObject implements COSObjectable
+{
+    private final PDStream stream;
+
+    /**
+     * Creates a new XObject instance of the appropriate type for the COS stream.
+     *
+     * @param base The stream which is wrapped by this XObject.
+     * @param resources the resources of this XObject
+     * @return A new XObject instance.
+     * @throws java.io.IOException if there is an error creating the XObject.
+     */
+    public static PDXObject createXObject(COSBase base, PDResources resources) throws IOException
+    {
+        if (base == null)
+        {
+            // TODO throw an exception?
+            return null;
+        }
+
+        if (!(base instanceof COSStream))
+        {
+            throw new IOException("Unexpected object type: " + base.getClass().getName());
+        }
+
+        COSStream stream = (COSStream)base;
+        String subtype = stream.getNameAsString(COSName.SUBTYPE);
+
+        if (COSName.IMAGE.getName().equals(subtype))
+        {
+            return new PDImageXObject(new PDStream(stream), resources);
+        }
+        else if (COSName.FORM.getName().equals(subtype))
+        {
+            ResourceCache cache = resources != null ? resources.getResourceCache() : null;
+            COSDictionary group = stream.getCOSDictionary(COSName.GROUP);
+            if (group != null && COSName.TRANSPARENCY.equals(group.getCOSName(COSName.S)))
+            {
+                return new PDTransparencyGroup(stream, cache);
+            }
+            return new PDFormXObject(stream, cache);
+        }
+        else if (COSName.PS.getName().equals(subtype))
+        {
+            return new PDPostScriptXObject(stream);
+        }
+        else
+        {
+            throw new IOException("Invalid XObject Subtype: " + subtype);
+        }
+    }
+
+    /**
+     * Creates a new XObject from the given stream and subtype.
+     * 
+     * @param stream The stream to read.
+     * @param subtype the subtype to be used for this XObject
+     */
+    protected PDXObject(COSStream stream, COSName subtype)
+    {
+        this.stream = new PDStream(stream);
+        // could be used for writing:
+        stream.setName(COSName.TYPE, COSName.XOBJECT.getName());
+        stream.setName(COSName.SUBTYPE, subtype.getName());
+    }
+
+    /**
+     * Creates a new XObject from the given stream and subtype.
+     * 
+     * @param stream The stream to read.
+     * @param subtype the subtype to be used for this XObject
+     */
+    protected PDXObject(PDStream stream, COSName subtype)
+    {
+        this.stream = stream;
+        // could be used for writing:
+        stream.getCOSObject().setName(COSName.TYPE, COSName.XOBJECT.getName());
+        stream.getCOSObject().setName(COSName.SUBTYPE, subtype.getName());
+    }
+
+    /**
+     * Creates a new XObject of the given subtype for writing.
+     * @param document The document in which to create the XObject.
+     * @param subtype The subtype of the new XObject.
+     */
+    protected PDXObject(PDDocument document, COSName subtype)
+    {
+        stream = new PDStream(document);
+        stream.getCOSObject().setName(COSName.TYPE, COSName.XOBJECT.getName());
+        stream.getCOSObject().setName(COSName.SUBTYPE, subtype.getName());
+    }
+
+    /**
+     * Returns the stream.
+     * {@inheritDoc}
+     */
+    @Override
+    public final COSStream getCOSObject()
+    {
+        return stream.getCOSObject();
+    }
+
+    /**
+     * Returns the stream.
+     * @return The stream for this object.
+     */
+    public final PDStream getStream()
+    {
+        return stream;
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.pdfbox.pdmodel;
+
+import org.apache.pdfbox.cos.COSObject;
+import org.apache.pdfbox.pdmodel.documentinterchange.markedcontent.PDPropertyList;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.graphics.PDXObject;
+import org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace;
+import org.apache.pdfbox.pdmodel.graphics.pattern.PDAbstractPattern;
+import org.apache.pdfbox.pdmodel.graphics.shading.PDShading;
+import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
+
+/**
+ * A document-wide cache for page resources.
+ *
+ * @author John Hewson
+ */
+public interface ResourceCache
+{
+    /**
+     * Returns the font resource for the given indirect object, if it is in the cache.
+     * 
+     * @param indirect the indirect reference of the font to be returned
+     * @return the cached instance of the referenced font, if available
+     */
+    PDFont getFont(COSObject indirect);
+
+    /**
+     * Returns the color space resource for the given indirect object, if it is in the cache.
+     * 
+     * @param indirect the indirect reference of the colorspace to be returned
+     * @return the cached instance of the referenced colorspace, if available
+     */
+    PDColorSpace getColorSpace(COSObject indirect);
+
+    /**
+     * Returns the extended graphics state resource for the given indirect object, if it is in the cache.
+     * 
+     * @param indirect the indirect reference of the extended graphics state to be returned
+     * @return the cached instance of the referenced extended graphics state, if available
+     */
+    PDExtendedGraphicsState getExtGState(COSObject indirect);
+        
+    /**
+     * Returns the shading resource for the given indirect object, if it is in the cache.
+     * 
+     * @param indirect the indirect reference of the shading to be returned
+     * @return the cached instance of the referenced shading, if available
+     */
+    PDShading getShading(COSObject indirect);
+    
+    /**
+     * Returns the pattern resource for the given indirect object, if it is in the cache.
+     *
+     * @param indirect the indirect reference of the pattern to be returned
+     * @return the cached instance of the referenced pattern, if available
+     */
+    PDAbstractPattern getPattern(COSObject indirect);
+        
+    /**
+     * Returns the property list resource for the given indirect object, if it is in the cache.
+     * 
+     * @param indirect the indirect reference of the property list to be returned
+     * @return the cached instance of the referenced property list, if available
+     */
+    PDPropertyList getProperties(COSObject indirect);
+        
+    /**
+     * Returns the XObject resource for the given indirect object, if it is in the cache.
+     * 
+     * @param indirect the indirect reference of the XObject to be returned
+     * @return the cached instance of the referenced XObject, if available
+     */
+    PDXObject getXObject(COSObject indirect);
+
+    /**
+     * Puts the given indirect font resource in the cache.
+     * 
+     * @param indirect the indirect reference of the font to be cached
+     * @param font the font to be cached
+     */
+    void put(COSObject indirect, PDFont font);
+
+    /**
+     * Puts the given indirect color space resource in the cache.
+     * 
+     * @param indirect the indirect reference of the colorspace to be cached
+     * @param colorSpace the colorspace to be cached
+     */
+    void put(COSObject indirect, PDColorSpace colorSpace);
+
+    /**
+     * Puts the given indirect extended graphics state resource in the cache.
+     * 
+     * @param indirect the indirect reference of the extended graphics state to be cached
+     * @param extGState the extended graphics state to be cached
+     */
+    void put(COSObject indirect, PDExtendedGraphicsState extGState);
+
+    /**
+     * Puts the given indirect shading resource in the cache.
+     * 
+     * @param indirect the indirect reference of the shading to be cached
+     * @param shading the shading to be cached
+     */
+    void put(COSObject indirect, PDShading shading);
+
+    /**
+     * Puts the given indirect pattern resource in the cache.
+     * 
+     * @param indirect the indirect reference of the pattern to be cached
+     * @param pattern the pattern to be cached
+     */
+    void put(COSObject indirect, PDAbstractPattern pattern);
+
+    /**
+     * Puts the given indirect property list resource in the cache.
+     * 
+     * @param indirect the indirect reference of the property list to be cached
+     * @param propertyList the property list to be cached
+     */
+    void put(COSObject indirect, PDPropertyList propertyList);
+    
+    /**
+     * Puts the given indirect XObject resource in the cache.
+     * 
+     * @param indirect the indirect reference of the XObject to be cached
+     * @param xobject the XObject to be cached
+     */
+    void put(COSObject indirect, PDXObject xobject);
+
+    /**
+     * Removes the given indirect color space resource from the cache.
+     * 
+     * @param indirect the indirect reference of the color space to be removed
+     * 
+     * @return the removed resource if present
+     */
+    PDColorSpace removeColorSpace(COSObject indirect);
+
+    /**
+     * Removes the given indirect extended graphics state resource from the cache.
+     * 
+     * @param indirect the indirect reference of the extended graphics state to be removed
+     * 
+     * @return the removed resource if present
+     */
+    PDExtendedGraphicsState removeExtState(COSObject indirect);
+
+    /**
+     * Removes the given indirect font resource from the cache.
+     * 
+     * @param indirect the indirect reference of the font to be removed
+     * 
+     * @return the removed resource if present
+     */
+    PDFont removeFont(COSObject indirect);
+
+    /**
+     * Removes the given indirect shading resource from the cache.
+     * 
+     * @param indirect the indirect reference of the shading to be removed
+     * 
+     * @return the removed resource if present
+     */
+    PDShading removeShading(COSObject indirect);
+
+    /**
+     * Removes the given indirect pattern resource from the cache.
+     * 
+     * @param indirect the indirect reference of the pattern to be removed
+     * 
+     * @return the removed resource if present
+     */
+    PDAbstractPattern removePattern(COSObject indirect);
+
+    /**
+     * Removes the given indirect property list resource from the cache.
+     * 
+     * @param indirect the indirect reference of the property list to be removed
+     * 
+     * @return the removed resource if present
+     */
+    PDPropertyList removeProperties(COSObject indirect);
+
+    /**
+     * Removes the given indirect XObject resource from the cache.
+     * 
+     * @param indirect the indirect reference of the XObject to be removed
+     * 
+     * @return the removed resource if present
+     */
+    PDXObject removeXObject(COSObject indirect);
+
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.pdfbox.pdmodel;
+
+/**
+ * Factory which provides a function to create an instance of a ResourceCache to be used to cache resources while
+ * processing a pdf.
+ * 
+ * A DefaultResourceCache is used as default implementation. I can be replaced with an individual implementation.
+ * 
+ * Setting the function to null disables the cache.
+ */
+public class ResourceCacheFactory
+{
+    private static ResourceCacheCreateFunction resourceCacheCreateFunction = null;
+
+    static
+    {
+        setResourceCacheCreateFunction(new DefaultResourceCacheCreateImpl());
+    }
+    
+    /**
+     * Use the given function to create an instance of a resource cache. Caching is disabled if a null value is
+     * provided.
+     */
+    public static void setResourceCacheCreateFunction(ResourceCacheCreateFunction function)
+    {
+        resourceCacheCreateFunction = function;
+    }
+
+    /**
+     * Get the current function to be used to create an instance of a resource cache.
+     * 
+     * @return the current function or null.
+     */
+    public static ResourceCacheCreateFunction getResourceCacheCreateFunction()
+    {
+        return resourceCacheCreateFunction;
+    }
+
+    /**
+     * Create an instance of a resource cache using the provided function. Returns null if the function is set to null.
+     * 
+     * @return an instance of a resource cache.
+     */
+    public static ResourceCache createResourceCache()
+    {
+        return resourceCacheCreateFunction != null ? resourceCacheCreateFunction.create() : null;
+    }
+    
+}

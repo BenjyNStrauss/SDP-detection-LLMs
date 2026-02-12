@@ -1,0 +1,84 @@
+package ident$1.ident$2.ident$3.ident$4;
+import java.ident$7.ident$8;
+import java.ident$7.ident$9;
+import java.ident$10.ident$11.ident$12;
+public final class ident$16 extends ident$18
+{
+private static final int ident$22 = -100;
+private static final int ident$23 = 256;
+private static final ident$16[] ident$24 = new ident$16[ident$23 - ident$22 + 1];
+public static final ident$16 ident$26 = ident$27(0);
+public static final ident$16 ident$28 = ident$27(1);
+public static final ident$16 ident$29 = ident$27(2);
+public static final ident$16 ident$30 = ident$27(3);
+static final ident$16 ident$31 = ident$32(ident$33);
+static final ident$16 ident$34 = ident$32(ident$35);
+public static ident$16 ident$27(long ident$37)
+{
+if (ident$22 <= ident$37 && ident$37 <= ident$23)
+{
+int ident$39 = (int) ident$37 - ident$22;
+if (ident$24[ident$39] == null)
+{
+ident$24[ident$39] = new ident$16(ident$37, ident$33);
+}
+return ident$24[ident$39];
+}
+return new ident$16(ident$37, ident$33);
+}
+private static ident$16 ident$32(boolean ident$43)
+{
+return ident$43 ? new ident$16(Long.ident$45, ident$35)
+: new ident$16(Long.ident$46, ident$35);
+}
+private final long ident$47;
+private final boolean ident$48;
+private ident$16(long ident$37, boolean ident$49)
+{
+ident$47 = ident$37;
+ident$48 = ident$49;
+}
+@Override
+public boolean ident$51(Object ident$53)
+{
+return ident$53 instanceof ident$16 && ((ident$16)ident$53).ident$55() == ident$55();
+}
+@Override
+public int ident$56()
+{
+return (int)(ident$47 ^ (ident$47 >> 32));
+}
+@Override
+public String ident$58()
+{
+return "literal$0" + ident$47 + "literal$1";
+}
+@Override
+public float ident$60()
+{
+return ident$47;
+}
+@Override
+public int ident$55()
+{
+return (int)ident$47;
+}
+@Override
+public long ident$61()
+{
+return ident$47;
+}
+public boolean ident$48()
+{
+return ident$48;
+}
+@Override
+public void ident$63(ident$64 ident$65) throws ident$8
+{
+ident$65.ident$67(this);
+}
+public void ident$69( ident$9 ident$70 ) throws ident$8
+{
+ident$70.ident$71(String.ident$72(ident$47).ident$73(ident$12.ident$74));
+}
+}

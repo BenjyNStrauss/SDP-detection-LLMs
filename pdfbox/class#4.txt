@@ -1,0 +1,33 @@
+package ident$1.ident$2.ident$3.ident$4;
+import ident$1.ident$2.ident$3.ident$6.ident$7;
+import ident$1.ident$2.ident$3.ident$4.ident$8.ident$9.ident$10;
+import ident$1.ident$2.ident$3.ident$4.ident$11.ident$12;
+import ident$1.ident$2.ident$3.ident$4.ident$13.ident$14;
+import ident$1.ident$2.ident$3.ident$4.ident$13.ident$15.ident$16;
+import ident$1.ident$2.ident$3.ident$4.ident$13.ident$17.ident$18;
+import ident$1.ident$2.ident$3.ident$4.ident$13.ident$19.ident$20;
+import ident$1.ident$2.ident$3.ident$4.ident$13.ident$21.ident$22;
+public interface ident$25
+{
+ident$12 ident$26(ident$7 ident$27);
+ident$16 ident$28(ident$7 ident$27);
+ident$22 ident$29(ident$7 ident$27);
+ident$20 ident$30(ident$7 ident$27);
+ident$18 ident$31(ident$7 ident$27);
+ident$10 ident$32(ident$7 ident$27);
+ident$14 ident$33(ident$7 ident$27);
+void ident$35(ident$7 ident$27, ident$12 ident$11);
+void ident$35(ident$7 ident$27, ident$16 ident$36);
+void ident$35(ident$7 ident$27, ident$22 ident$37);
+void ident$35(ident$7 ident$27, ident$20 ident$19);
+void ident$35(ident$7 ident$27, ident$18 ident$17);
+void ident$35(ident$7 ident$27, ident$10 ident$38);
+void ident$35(ident$7 ident$27, ident$14 ident$39);
+ident$16 ident$40(ident$7 ident$27);
+ident$22 ident$41(ident$7 ident$27);
+ident$12 ident$42(ident$7 ident$27);
+ident$20 ident$43(ident$7 ident$27);
+ident$18 ident$44(ident$7 ident$27);
+ident$10 ident$45(ident$7 ident$27);
+ident$14 ident$46(ident$7 ident$27);
+}

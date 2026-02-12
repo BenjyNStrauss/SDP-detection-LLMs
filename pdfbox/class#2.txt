@@ -1,0 +1,125 @@
+package ident$1.ident$2.ident$3.ident$4;
+import java.ident$7.ident$8;
+import java.ident$7.ident$9;
+import java.ident$7.ident$10;
+import ident$1.ident$2.ident$3.ident$11.ident$12;
+import ident$1.ident$2.ident$3.ident$11.ident$13;
+import ident$1.ident$2.ident$3.ident$4.ident$14.ident$15;
+public class ident$18 implements ident$15
+{
+private final ident$12 ident$22;
+public ident$18()
+{
+ident$22 = new ident$12();
+}
+public ident$18( ident$12 ident$24 )
+{
+ident$22 = ident$24;
+}
+@Override
+public ident$12 ident$26()
+{
+return ident$22;
+}
+public Object ident$29(String ident$31)
+{
+return ident$22.ident$32(ident$31);
+}
+public String ident$33()
+{
+return ident$22.ident$32( ident$13.ident$34 );
+}
+public void ident$36( String ident$37 )
+{
+ident$22.ident$38( ident$13.ident$34, ident$37 );
+}
+public String ident$39()
+{
+return ident$22.ident$32( ident$13.ident$40 );
+}
+public void ident$41( String ident$42 )
+{
+ident$22.ident$38( ident$13.ident$40, ident$42 );
+}
+public String ident$43()
+{
+return ident$22.ident$32( ident$13.ident$44 );
+}
+public void ident$45( String ident$46 )
+{
+ident$22.ident$38( ident$13.ident$44, ident$46 );
+}
+public String ident$47()
+{
+return ident$22.ident$32( ident$13.ident$48 );
+}
+public void ident$49( String ident$50 )
+{
+ident$22.ident$38( ident$13.ident$48, ident$50 );
+}
+public String ident$51()
+{
+return ident$22.ident$32( ident$13.ident$52 );
+}
+public void ident$53( String ident$54 )
+{
+ident$22.ident$38( ident$13.ident$52, ident$54 );
+}
+public String ident$55()
+{
+return ident$22.ident$32( ident$13.ident$56 );
+}
+public void ident$57( String ident$58 )
+{
+ident$22.ident$38( ident$13.ident$56, ident$58 );
+}
+public ident$8 ident$59()
+{
+return ident$22.ident$60( ident$13.ident$61 );
+}
+public void ident$62( ident$8 ident$63 )
+{
+ident$22.ident$64( ident$13.ident$61, ident$63 );
+}
+public ident$8 ident$65()
+{
+return ident$22.ident$60( ident$13.ident$66 );
+}
+public void ident$67( ident$8 ident$63 )
+{
+ident$22.ident$64( ident$13.ident$66, ident$63 );
+}
+public String ident$68()
+{
+return ident$22.ident$69( ident$13.ident$70 );
+}
+public ident$9<String> ident$71()
+{
+ident$9<String> ident$72 = new ident$10<>();
+for (ident$13 ident$74 : ident$22.ident$75())
+{
+ident$72.ident$76(ident$74.ident$77());
+}
+return ident$72;
+}
+public String ident$78(String ident$79)
+{
+return ident$22.ident$32( ident$79 );
+}
+public void ident$80( String ident$79, String ident$81 )
+{
+ident$22.ident$38( ident$79, ident$81 );
+}
+public void ident$82( String ident$83 )
+{
+if( ident$83 != null &&
+!ident$83.ident$86( "literal$0" ) &&
+!ident$83.ident$86( "literal$1" ) &&
+!ident$83.ident$86( "literal$2" ) )
+{
+throw new IllegalArgumentException( "literal$3" +
+"literal$4" );
+}
+ident$22.ident$89( ident$13.ident$70, ident$83 );
+}
+}
