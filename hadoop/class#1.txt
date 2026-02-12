@@ -1,0 +1,49 @@
+package ident$1.ident$2.ident$3.ident$4;
+import ident$1.ident$2.ident$3.ident$6.ident$7;
+@ident$7.ident$8
+public enum ident$11 {
+ident$12("literal$0", 1),
+ident$13("literal$1", 2);
+private final String ident$17;
+private final int ident$19;
+private Integer ident$21 = null;
+private static ident$11[] ident$24 = {ident$13};
+public static ident$11[] ident$24() {
+return ident$24;
+}
+ident$11(String ident$17, int ident$19) {
+this.ident$17 = ident$17;
+this.ident$19 = ident$19;
+}
+public static boolean ident$28(ident$11 ident$19) {
+if (ident$19.ident$30() == ident$12.ident$30()) {
+return ident$31;
+}
+for (ident$11 ident$33 : ident$11.ident$34()) {
+if (ident$33.ident$30() == ident$19.ident$30()) {
+return ident$35;
+}
+}
+return ident$31;
+}
+public void ident$37(int ident$38) {
+this.ident$21 = ident$38;
+}
+public int ident$39() {
+return ident$21;
+}
+public String ident$40() {
+return ident$17;
+}
+public int ident$30() {
+return ident$19;
+}
+@Override
+public String ident$42() {
+return "literal$2" +
+"literal$3" + ident$17 + 'char-literal$4' +
+"literal$5" + ident$19 +
+"literal$6" + ident$21 +
+'char-literal$7';
+}
+}

@@ -1,0 +1,18 @@
+package ident$1.ident$2.ident$3.ident$4;
+import java.ident$7.ident$8;
+import java.ident$7.ident$9;
+import java.ident$10.ident$11;
+import java.ident$10.ident$12;
+import java.ident$10.ident$13;
+import ident$1.ident$2.ident$3.ident$14.ident$15;
+import ident$1.ident$2.ident$3.ident$14.ident$16;
+import ident$1.ident$2.ident$3.ident$4.ident$17.ident$18;
+import static java.ident$10.ident$20.ident$21;
+@ident$15.ident$22
+@ident$16.ident$23
+public interface ident$26 extends ident$18, ident$8 {
+int ident$29();
+ident$30 ident$31();
+ident$12<ident$13.ident$32<ident$30, String>> ident$34(ident$11<ident$30> ident$35)
+throws ident$9, IllegalArgumentException;
+}

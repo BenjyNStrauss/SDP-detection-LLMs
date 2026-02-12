@@ -1,0 +1,1050 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.hadoop.fs;
+
+import java.io.Closeable;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.hadoop.classification.InterfaceAudience;
+import org.apache.hadoop.classification.InterfaceStability;
+import org.apache.hadoop.fs.statistics.IOStatisticsSource;
+
+import static java.util.Objects.requireNonNull;
+
+/**
+ * API for bulk deletion of objects/files,
+ * <i>but not directories</i>.
+ * After use, call {@code close()} to release any resources and
+ * to guarantee store IOStatistics are updated.
+ * <p>
+ * Callers MUST have no expectation that parent directories will exist after the
+ * operation completes; if an object store needs to explicitly look for and create
+ * directory markers, that step will be omitted.
+ * <p>
+ * Be aware that on some stores (AWS S3) each object listed in a bulk delete counts
+ * against the write IOPS limit; large page sizes are counterproductive here, as
+ * are attempts at parallel submissions across multiple threads.
+ * @see <a href="https://issues.apache.org/jira/browse/HADOOP-16823">HADOOP-16823.
+ *  Large DeleteObject requests are their own Thundering Herd</a>
+ */
+@InterfaceAudience.Public
+@InterfaceStability.Unstable
+public interface BulkDelete extends IOStatisticsSource, Closeable {
+
+  /**
+   * The maximum number of objects/files to delete in a single request.
+   * @return a number greater than zero.
+   */
+  int pageSize();
+
+  /**
+   * Base path of a bulk delete operation.
+   * All paths submitted in {@link #bulkDelete(Collection)} must be under this path.
+   * @return base path of a bulk delete operation.
+   */
+  Path basePath();
+
+  /**
+   * Delete a list of files/objects.
+   * <ul>
+   *   <li>Files must be under the path provided in {@link #basePath()}.</li>
+   *   <li>The size of the list must be equal to or less than the page size
+   *       declared in {@link #pageSize()}.</li>
+   *   <li>Directories are not supported; the outcome of attempting to delete
+   *       directories is undefined (ignored; undetected, listed as failures...).</li>
+   *   <li>The operation is not atomic.</li>
+   *   <li>The operation is treated as idempotent: network failures may
+   *        trigger resubmission of the request -any new objects created under a
+   *        path in the list may then be deleted.</li>
+   *    <li>There is no guarantee that any parent directories exist after this call.
+   *    </li>
+   * </ul>
+   * @param paths list of paths which must be absolute and under the base path.
+   * provided in {@link #basePath()}.
+   * @return a list of paths which failed to delete, with the exception message.
+   * @throws IOException IO problems including networking, authentication and more.
+   * @throws IllegalArgumentException if a path argument is invalid.
+   */
+  List<Map.Entry<Path, String>> bulkDelete(Collection<Path> paths)
+      throws IOException, IllegalArgumentException;
+
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.hadoop.fs.shell;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.LinkedList;
+
+import org.apache.hadoop.classification.VisibleForTesting;
+
+import org.apache.hadoop.classification.InterfaceAudience;
+import org.apache.hadoop.classification.InterfaceStability;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.PathIOException;
+
+/**
+ * Concat the given files.
+ */
+@InterfaceAudience.Private
+@InterfaceStability.Unstable
+public class Concat extends FsCommand {
+  public static void registerCommands(CommandFactory factory) {
+    factory.addClass(Concat.class, "-concat");
+  }
+
+  public static final String NAME = "concat";
+  public static final String USAGE = "<target path> <src path> <src path> ...";
+  public static final String DESCRIPTION = "Concatenate existing source files"
+      + " into the target file. Target file and source files should be in the"
+      + " same directory.";
+  private static FileSystem testFs; // test only.
+
+  @Override
+  protected void processArguments(LinkedList<PathData> args)
+      throws IOException {
+    if (args.size() < 1) {
+      throw new IOException("Target path not specified. " + USAGE);
+    }
+    if (args.size() < 3) {
+      throw new IOException(
+          "The number of source paths is less than 2. " + USAGE);
+    }
+    PathData target = args.removeFirst();
+    LinkedList<PathData> srcList = args;
+    if (!target.exists || !target.stat.isFile()) {
+      throw new FileNotFoundException(String
+          .format("Target path %s does not exist or is" + " not file.",
+              target.path));
+    }
+    Path[] srcArray = new Path[srcList.size()];
+    for (int i = 0; i < args.size(); i++) {
+      PathData src = srcList.get(i);
+      if (!src.exists || !src.stat.isFile()) {
+        throw new FileNotFoundException(
+            String.format("%s does not exist or is not file.", src.path));
+      }
+      srcArray[i] = src.path;
+    }
+    FileSystem fs = target.fs;
+    if (testFs != null) {
+      fs = testFs;
+    }
+    try {
+      fs.concat(target.path, srcArray);
+    } catch (UnsupportedOperationException exception) {
+      throw new PathIOException("Dest filesystem '" + fs.getUri().getScheme()
+          + "' doesn't support concat.", exception);
+    }
+  }
+
+  @VisibleForTesting
+  static void setTestFs(FileSystem fs) {
+    testFs = fs;
+  }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.hadoop.crypto;
+
+import org.apache.hadoop.classification.InterfaceAudience;
+
+/**
+ * Versions of the client/server protocol used for HDFS encryption.
+ */
+@InterfaceAudience.Private
+public enum CryptoProtocolVersion {
+  UNKNOWN("Unknown", 1),
+  ENCRYPTION_ZONES("Encryption zones", 2);
+
+  private final String description;
+  private final int version;
+  private Integer unknownValue = null;
+
+  private static CryptoProtocolVersion[] supported = {ENCRYPTION_ZONES};
+
+  /**
+   * @return Array of supported protocol versions.
+   */
+  public static CryptoProtocolVersion[] supported() {
+    return supported;
+  }
+
+  CryptoProtocolVersion(String description, int version) {
+    this.description = description;
+    this.version = version;
+  }
+
+  /**
+   * Returns if a given protocol version is supported.
+   *
+   * @param version version number
+   * @return true if the version is supported, else false
+   */
+  public static boolean supports(CryptoProtocolVersion version) {
+    if (version.getVersion() == UNKNOWN.getVersion()) {
+      return false;
+    }
+    for (CryptoProtocolVersion v : CryptoProtocolVersion.values()) {
+      if (v.getVersion() == version.getVersion()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public void setUnknownValue(int unknown) {
+    this.unknownValue = unknown;
+  }
+
+  public int getUnknownValue() {
+    return unknownValue;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public int getVersion() {
+    return version;
+  }
+
+  @Override
+  public String toString() {
+    return "CryptoProtocolVersion{" +
+        "description='" + description + '\'' +
+        ", version=" + version +
+        ", unknownValue=" + unknownValue +
+        '}';
+  }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.hadoop.util;
+
+import org.apache.hadoop.classification.VisibleForTesting;
+import org.apache.hadoop.classification.InterfaceAudience;
+import org.apache.hadoop.classification.InterfaceStability;
+import org.apache.hadoop.util.DiskChecker.DiskErrorException;
+
+import java.util.concurrent.ConcurrentHashMap;
+
+/**
+ * The factory class to create instance of {@link DiskValidator}.
+ */
+@InterfaceAudience.Private
+@InterfaceStability.Unstable
+public final class DiskValidatorFactory {
+  @VisibleForTesting
+  static final ConcurrentHashMap<Class<? extends DiskValidator>, DiskValidator>
+      INSTANCES = new ConcurrentHashMap<>();
+
+  private DiskValidatorFactory() {
+  }
+
+  /**
+   * Returns a {@link DiskValidator} instance corresponding to the passed clazz.
+   * @param clazz a class extends {@link DiskValidator}
+   * @return disk validator.
+   */
+  public static DiskValidator
+      getInstance(Class<? extends DiskValidator> clazz) {
+    DiskValidator diskValidator;
+    if (INSTANCES.containsKey(clazz)) {
+      diskValidator = INSTANCES.get(clazz);
+    } else {
+      diskValidator = ReflectionUtils.newInstance(clazz, null);
+      // check the return of putIfAbsent() to see if any other thread have put
+      // the instance with the same key into INSTANCES
+      DiskValidator diskValidatorRet =
+          INSTANCES.putIfAbsent(clazz, diskValidator);
+      if (diskValidatorRet != null) {
+        diskValidator = diskValidatorRet;
+      }
+    }
+
+    return diskValidator;
+  }
+
+  /**
+   * Returns {@link DiskValidator} instance corresponding to its name.
+   * The diskValidator parameter can be "basic" for {@link BasicDiskValidator}
+   * or "read-write" for {@link ReadWriteDiskValidator}.
+   * @param diskValidator canonical class name, for example, "basic"
+   * @throws DiskErrorException if the class cannot be located
+   * @return disk validator.
+   */
+  @SuppressWarnings("unchecked")
+  public static DiskValidator getInstance(String diskValidator)
+      throws DiskErrorException {
+    @SuppressWarnings("rawtypes")
+    Class clazz;
+
+    if (diskValidator.equalsIgnoreCase(BasicDiskValidator.NAME)) {
+      clazz = BasicDiskValidator.class;
+    } else if (diskValidator.equalsIgnoreCase(ReadWriteDiskValidator.NAME)) {
+      clazz = ReadWriteDiskValidator.class;
+    } else {
+      try {
+        clazz = Class.forName(diskValidator);
+      } catch (ClassNotFoundException cnfe) {
+        throw new DiskErrorException(diskValidator
+            + " DiskValidator class not found.", cnfe);
+      }
+    }
+
+    return getInstance(clazz);
+  }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.hadoop.ipc;
+
+import java.io.IOException;
+import java.security.PrivilegedExceptionAction;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.apache.hadoop.ipc.Server.Call;
+import org.apache.hadoop.ipc.protobuf.RpcHeaderProtos.RpcResponseHeaderProto.RpcStatusProto;
+import org.apache.hadoop.security.UserGroupInformation;
+
+public abstract class ExternalCall<T> extends Call {
+  private final PrivilegedExceptionAction<T> action;
+  private final AtomicBoolean done = new AtomicBoolean();
+  private T result;
+  private Throwable error;
+
+  public ExternalCall(PrivilegedExceptionAction<T> action) {
+    this.action = action;
+  }
+
+  @Override
+  public String getDetailedMetricsName() {
+    return "(external)";
+  }
+
+  public abstract UserGroupInformation getRemoteUser();
+
+  public final T get() throws InterruptedException, ExecutionException {
+    waitForCompletion();
+    if (error != null) {
+      throw new ExecutionException(error);
+    }
+    return result;
+  }
+
+  // wait for response to be triggered to support postponed calls
+  private void waitForCompletion() throws InterruptedException {
+    synchronized(done) {
+      while (!done.get()) {
+        try {
+          done.wait();
+        } catch (InterruptedException ie) {
+          if (Thread.interrupted()) {
+            throw ie;
+          }
+        }
+      }
+    }
+  }
+
+  boolean isDone() {
+    return done.get();
+  }
+
+  // invoked by ipc handler
+  @Override
+  public final Void run() throws IOException {
+    try {
+      result = action.run();
+      sendResponse();
+    } catch (Throwable t) {
+      abortResponse(t);
+    }
+    return null;
+  }
+
+  @Override
+  final void doResponse(Throwable t, RpcStatusProto status) {
+    synchronized(done) {
+      error = t;
+      done.set(true);
+      done.notify();
+    }
+  }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.hadoop.metrics2.sink.ganglia;
+
+import org.apache.hadoop.metrics2.MetricsInfo;
+import org.apache.hadoop.metrics2.MetricsVisitor;
+import org.apache.hadoop.metrics2.sink.ganglia.AbstractGangliaSink.GangliaSlope;
+
+/**
+ * Since implementations of Metric are not public, hence use a visitor to figure
+ * out the type and slope of the metric. Counters have "positive" slope.
+ */
+class GangliaMetricVisitor implements MetricsVisitor {
+  private static final String INT32 = "int32";
+  private static final String FLOAT = "float";
+  private static final String DOUBLE = "double";
+
+  private String type;
+  private GangliaSlope slope;
+
+  /**
+   * @return the type of a visited metric
+   */
+  String getType() {
+    return type;
+  }
+
+  /**
+   * @return the slope of a visited metric. Slope is positive for counters and
+   *         null for others
+   */
+  GangliaSlope getSlope() {
+    return slope;
+  }
+
+  @Override
+  public void gauge(MetricsInfo info, int value) {
+    // MetricGaugeInt.class ==> "int32"
+    type = INT32;
+    slope = null; // set to null as cannot figure out from Metric
+  }
+
+  @Override
+  public void gauge(MetricsInfo info, long value) {
+    // MetricGaugeLong.class ==> "float"
+    type = FLOAT;
+    slope = null; // set to null as cannot figure out from Metric
+  }
+
+  @Override
+  public void gauge(MetricsInfo info, float value) {
+    // MetricGaugeFloat.class ==> "float"
+    type = FLOAT;
+    slope = null; // set to null as cannot figure out from Metric
+  }
+
+  @Override
+  public void gauge(MetricsInfo info, double value) {
+    // MetricGaugeDouble.class ==> "double"
+    type = DOUBLE;
+    slope = null; // set to null as cannot figure out from Metric
+  }
+
+  @Override
+  public void counter(MetricsInfo info, int value) {
+    // MetricCounterInt.class ==> "int32"
+    type = INT32;
+    // counters have positive slope
+    slope = GangliaSlope.positive;
+  }
+
+  @Override
+  public void counter(MetricsInfo info, long value) {
+    // MetricCounterLong.class ==> "float"
+    type = FLOAT;
+    // counters have positive slope
+    slope = GangliaSlope.positive;
+  }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.hadoop.fs;
+
+import java.io.IOException;
+
+/**
+ * Whether the given Path of the FileSystem has the capability to perform lease recovery.
+ */
+public interface LeaseRecoverable {
+
+  /**
+   * Start the lease recovery of a file.
+   *
+   * @param file path to a file.
+   * @return true if the file is already closed, and it does not require lease recovery.
+   * @throws IOException if an error occurs during lease recovery.
+   * @throws UnsupportedOperationException if lease recovery is not supported by this filesystem.
+   */
+  boolean recoverLease(Path file) throws IOException;
+
+  /**
+   * Get the close status of a file.
+   * @param file The string representation of the path to the file
+   * @return return true if file is closed
+   * @throws IOException If an I/O error occurred
+   * @throws UnsupportedOperationException if isFileClosed is not supported by this filesystem.
+   */
+  boolean isFileClosed(Path file) throws IOException;
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.hadoop.ipc;
+
+import java.io.IOException;
+
+import org.apache.hadoop.classification.InterfaceAudience;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.ipc.internal.ShadedProtobufHelper;
+import org.apache.hadoop.security.proto.SecurityProtos.TokenProto;
+import org.apache.hadoop.security.token.Token;
+import org.apache.hadoop.security.token.TokenIdentifier;
+
+import org.apache.hadoop.thirdparty.protobuf.ByteString;
+import org.apache.hadoop.thirdparty.protobuf.ServiceException;
+
+/**
+ * Helper methods for protobuf related RPC implementation.
+ * This is deprecated because it references protobuf 2.5 classes
+ * as well as the shaded ones -and so needs an unshaded protobuf-2.5
+ * JAR on the classpath during execution.
+ * It MUST NOT be used internally; it is retained in case existing,
+ * external applications already use it.
+ * @deprecated hadoop code MUST use {@link ShadedProtobufHelper}.
+ */
+@InterfaceAudience.Private
+@Deprecated
+public class ProtobufHelper {
+
+  private ProtobufHelper() {
+    // Hidden constructor for class with only static helper methods
+  }
+
+  /**
+   * Return the IOException thrown by the remote server wrapped in
+   * ServiceException as cause.
+   * @param se ServiceException that wraps IO exception thrown by the server
+   * @return Exception wrapped in ServiceException or
+   *         a new IOException that wraps the unexpected ServiceException.
+   */
+  public static IOException getRemoteException(ServiceException se) {
+    return ShadedProtobufHelper.getRemoteException(se);
+  }
+
+  /**
+   * Extract the remote exception from an unshaded version of the protobuf
+   * libraries.
+   * Kept for backward compatibility.
+   * Return the IOException thrown by the remote server wrapped in
+   * ServiceException as cause.
+   * @param se ServiceException that wraps IO exception thrown by the server
+   * @return Exception wrapped in ServiceException or
+   *         a new IOException that wraps the unexpected ServiceException.
+   */
+  @Deprecated
+  public static IOException getRemoteException(
+      com.google.protobuf.ServiceException se) {
+    Throwable e = se.getCause();
+    if (e == null) {
+      return new IOException(se);
+    }
+    return e instanceof IOException ? (IOException) e : new IOException(se);
+  }
+
+  /**
+   * Get the ByteString for frequently used fixed and small set strings.
+   * @param key string
+   * @return the ByteString for frequently used fixed and small set strings.
+   */
+  public static ByteString getFixedByteString(Text key) {
+    return ShadedProtobufHelper.getFixedByteString(key);
+  }
+
+  /**
+   * Get the ByteString for frequently used fixed and small set strings.
+   * @param key string
+   * @return ByteString for frequently used fixed and small set strings.
+   */
+  public static ByteString getFixedByteString(String key) {
+    return ShadedProtobufHelper.getFixedByteString(key);
+  }
+
+  /**
+   * Get the byte string of a non-null byte array.
+   * If the array is 0 bytes long, return a singleton to reduce object allocation.
+   * @param bytes bytes to convert.
+   * @return a value
+   */
+  public static ByteString getByteString(byte[] bytes) {
+    // return singleton to reduce object allocation
+    return ShadedProtobufHelper.getByteString(bytes);
+  }
+
+  /**
+   * Get a token from a TokenProto payload.
+   * @param tokenProto marshalled token
+   * @return the token.
+   */
+  public static Token<? extends TokenIdentifier> tokenFromProto(
+      TokenProto tokenProto) {
+    return ShadedProtobufHelper.tokenFromProto(tokenProto);
+  }
+
+  /**
+   * Create a {@code TokenProto} instance
+   * from a hadoop token.
+   * This builds and caches the fields
+   * (identifier, password, kind, service) but not
+   * renewer or any payload.
+   * @param tok token
+   * @return a marshallable protobuf class.
+   */
+  public static TokenProto protoFromToken(Token<?> tok) {
+    return ShadedProtobufHelper.protoFromToken(tok);
+  }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.hadoop.ipc;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import org.apache.hadoop.thirdparty.com.google.common.base.Joiner;
+import org.apache.hadoop.thirdparty.com.google.common.collect.HashMultimap;
+import org.apache.hadoop.thirdparty.com.google.common.collect.Multimap;
+
+import org.apache.hadoop.classification.InterfaceStability;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Used to registry custom methods to refresh at runtime.
+ * Each identifier maps to one or more RefreshHandlers.
+ */
+@InterfaceStability.Unstable
+public class RefreshRegistry {
+  public static final Logger LOG =
+      LoggerFactory.getLogger(RefreshRegistry.class);
+
+  // Used to hold singleton instance
+  private static class RegistryHolder {
+    @SuppressWarnings("All")
+    public static RefreshRegistry registry = new RefreshRegistry();
+  }
+
+  // Singleton access
+  public static RefreshRegistry defaultRegistry() {
+    return RegistryHolder.registry;
+  }
+
+  private final Multimap<String, RefreshHandler> handlerTable;
+
+  public RefreshRegistry() {
+    handlerTable = HashMultimap.create();
+  }
+
+  /**
+   * Registers an object as a handler for a given identity.
+   * Note: will prevent handler from being GC'd, object should unregister itself
+   *  when done
+   * @param identifier a unique identifier for this resource,
+   *                   such as org.apache.hadoop.blacklist
+   * @param handler the object to register
+   */
+  public synchronized void register(String identifier, RefreshHandler handler) {
+    if (identifier == null) {
+      throw new NullPointerException("Identifier cannot be null");
+    }
+    handlerTable.put(identifier, handler);
+  }
+
+  /**
+   * Remove the registered object for a given identity.
+   * @param identifier the resource to unregister
+   * @param handler input handler.
+   * @return the true if removed
+   */
+  public synchronized boolean unregister(String identifier, RefreshHandler handler) {
+    return handlerTable.remove(identifier, handler);
+  }
+
+  public synchronized void unregisterAll(String identifier) {
+    handlerTable.removeAll(identifier);
+  }
+
+  /**
+   * Lookup the responsible handler and return its result.
+   * This should be called by the RPC server when it gets a refresh request.
+   * @param identifier the resource to refresh
+   * @param args the arguments to pass on, not including the program name
+   * @throws IllegalArgumentException on invalid identifier
+   * @return the response from the appropriate handler
+   */
+  public synchronized Collection<RefreshResponse> dispatch(String identifier, String[] args) {
+    Collection<RefreshHandler> handlers = handlerTable.get(identifier);
+
+    if (handlers.size() == 0) {
+      String msg = "Identifier '" + identifier +
+        "' does not exist in RefreshRegistry. Valid options are: " +
+        Joiner.on(", ").join(handlerTable.keySet());
+
+      throw new IllegalArgumentException(msg);
+    }
+
+    ArrayList<RefreshResponse> responses =
+      new ArrayList<RefreshResponse>(handlers.size());
+
+    // Dispatch to each handler and store response
+    for(RefreshHandler handler : handlers) {
+      RefreshResponse response;
+
+      // Run the handler
+      try {
+        response = handler.handleRefresh(identifier, args);
+        if (response == null) {
+          throw new NullPointerException("Handler returned null.");
+        }
+
+        LOG.info(handlerName(handler) + " responds to '" + identifier +
+          "', says: '" + response.getMessage() + "', returns " +
+          response.getReturnCode());
+      } catch (Exception e) {
+        response = new RefreshResponse(-1, e.getLocalizedMessage());
+      }
+
+      response.setSenderName(handlerName(handler));
+      responses.add(response);
+    }
+
+    return responses;
+  }
+
+  private String handlerName(RefreshHandler h) {
+    return h.getClass().getName() + '@' + Integer.toHexString(h.hashCode());
+  }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.hadoop.fs.shell;
+
+import java.io.IOException;
+import java.util.LinkedList;
+
+import org.apache.hadoop.classification.InterfaceAudience;
+import org.apache.hadoop.classification.InterfaceStability;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.PathIsNotDirectoryException;
+import org.apache.hadoop.util.Preconditions;
+
+/**
+ * Snapshot related operations
+ */
+@InterfaceAudience.Private
+@InterfaceStability.Unstable
+
+class SnapshotCommands extends FsCommand {
+  private final static String CREATE_SNAPSHOT = "createSnapshot";
+  private final static String DELETE_SNAPSHOT = "deleteSnapshot";
+  private final static String RENAME_SNAPSHOT = "renameSnapshot";
+  
+  public static void registerCommands(CommandFactory factory) {
+    factory.addClass(CreateSnapshot.class, "-" + CREATE_SNAPSHOT);
+    factory.addClass(DeleteSnapshot.class, "-" + DELETE_SNAPSHOT);
+    factory.addClass(RenameSnapshot.class, "-" + RENAME_SNAPSHOT);
+  }
+  
+  /**
+   *  Create a snapshot
+   */
+  public static class CreateSnapshot extends FsCommand {
+    public static final String NAME = CREATE_SNAPSHOT;
+    public static final String USAGE = "<snapshotDir> [<snapshotName>]";
+    public static final String DESCRIPTION = "Create a snapshot on a directory";
+
+    private String snapshotName = null;
+
+    @Override
+    protected void processPath(PathData item) throws IOException {
+      if (!item.stat.isDirectory()) {
+        throw new PathIsNotDirectoryException(item.toString());
+      }
+    }
+    
+    @Override
+    protected void processOptions(LinkedList<String> args) throws IOException {
+      if (args.size() == 0) {
+        throw new IllegalArgumentException("<snapshotDir> is missing.");
+      } 
+      if (args.size() > 2) {
+        throw new IllegalArgumentException("Too many arguments.");
+      }
+      if (args.size() == 2) {
+        snapshotName = args.removeLast();
+      }
+    }
+
+    @Override
+    protected void processArguments(LinkedList<PathData> items)
+    throws IOException {
+      super.processArguments(items);
+      if (numErrors != 0) { // check for error collecting paths
+        return;
+      }
+      assert(items.size() == 1);
+      PathData sroot = items.getFirst();
+      Path snapshotPath = sroot.fs.createSnapshot(sroot.path, snapshotName);
+      out.println("Created snapshot " + snapshotPath);
+    }    
+  }
+
+  /**
+   * Delete a snapshot
+   */
+  public static class DeleteSnapshot extends FsCommand {
+    public static final String NAME = DELETE_SNAPSHOT;
+    public static final String USAGE = "<snapshotDir> <snapshotName>";
+    public static final String DESCRIPTION = 
+        "Delete a snapshot from a directory";
+
+    private String snapshotName;
+
+    @Override
+    protected void processPath(PathData item) throws IOException {
+      if (!item.stat.isDirectory()) {
+        throw new PathIsNotDirectoryException(item.toString());
+      }
+    }
+
+    @Override
+    protected void processOptions(LinkedList<String> args) throws IOException {
+      if (args.size() != 2) {
+        throw new IllegalArgumentException("Incorrect number of arguments.");
+      }
+      snapshotName = args.removeLast();
+    }
+
+    @Override
+    protected void processArguments(LinkedList<PathData> items)
+        throws IOException {
+      super.processArguments(items);
+      if (numErrors != 0) { // check for error collecting paths
+        return;
+      }
+      assert (items.size() == 1);
+      PathData sroot = items.getFirst();
+      sroot.fs.deleteSnapshot(sroot.path, snapshotName);
+      out.println("Deleted snapshot " + snapshotName + " under " + sroot.path);
+    }
+  }
+  
+  /**
+   * Rename a snapshot
+   */
+  public static class RenameSnapshot extends FsCommand {
+    public static final String NAME = RENAME_SNAPSHOT;
+    public static final String USAGE = "<snapshotDir> <oldName> <newName>";
+    public static final String DESCRIPTION = 
+        "Rename a snapshot from oldName to newName";
+    
+    private String oldName;
+    private String newName;
+    
+    @Override
+    protected void processPath(PathData item) throws IOException {
+      if (!item.stat.isDirectory()) {
+        throw new PathIsNotDirectoryException(item.toString());
+      }
+    }
+
+    @Override
+    protected void processOptions(LinkedList<String> args) throws IOException {
+      if (args.size() != 3) {
+        throw new IllegalArgumentException("Incorrect number of arguments.");
+      }
+      newName = args.removeLast();
+      oldName = args.removeLast();
+    }
+
+    @Override
+    protected void processArguments(LinkedList<PathData> items)
+        throws IOException {
+      super.processArguments(items);
+      if (numErrors != 0) { // check for error collecting paths
+        return;
+      }
+      Preconditions.checkArgument(items.size() == 1);
+      PathData sroot = items.getFirst();
+      sroot.fs.renameSnapshot(sroot.path, oldName, newName);
+      out.println("Renamed snapshot " + oldName + " to " + newName +
+          " under " + sroot.path);
+    }
+    
+  }
+}
+

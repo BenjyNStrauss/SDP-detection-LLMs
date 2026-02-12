@@ -1,0 +1,6 @@
+package ident$1.ident$2.ident$3.ident$4;
+import java.ident$7.ident$8;
+public interface ident$11 {
+boolean ident$13(ident$14 ident$15) throws ident$8;
+boolean ident$17(ident$14 ident$15) throws ident$8;
+}

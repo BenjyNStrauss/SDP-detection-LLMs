@@ -1,0 +1,47 @@
+package ident$1.ident$2.ident$3.ident$4.ident$5.ident$6;
+import ident$1.ident$2.ident$3.ident$4.ident$8;
+import ident$1.ident$2.ident$3.ident$4.ident$9;
+import ident$1.ident$2.ident$3.ident$4.ident$5.ident$6.ident$10.ident$11;
+class ident$13 implements ident$9 {
+private static final String ident$19 = "literal$0";
+private static final String ident$20 = "literal$1";
+private static final String ident$21 = "literal$2";
+private String ident$22;
+private ident$11 ident$23;
+String ident$24() {
+return ident$22;
+}
+ident$11 ident$26() {
+return ident$23;
+}
+@Override
+public void ident$30(ident$8 ident$31, int ident$33) {
+ident$22 = ident$19;
+ident$23 = null;
+}
+@Override
+public void ident$30(ident$8 ident$31, long ident$33) {
+ident$22 = ident$20;
+ident$23 = null;
+}
+@Override
+public void ident$30(ident$8 ident$31, float ident$33) {
+ident$22 = ident$20;
+ident$23 = null;
+}
+@Override
+public void ident$30(ident$8 ident$31, double ident$33) {
+ident$22 = ident$21;
+ident$23 = null;
+}
+@Override
+public void ident$38(ident$8 ident$31, int ident$33) {
+ident$22 = ident$19;
+ident$23 = ident$11.ident$39;
+}
+@Override
+public void ident$38(ident$8 ident$31, long ident$33) {
+ident$22 = ident$20;
+ident$23 = ident$11.ident$39;
+}
+}

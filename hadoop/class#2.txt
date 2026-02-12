@@ -1,0 +1,49 @@
+package ident$1.ident$2.ident$3.ident$4;
+import ident$1.ident$2.ident$3.ident$6.ident$7;
+import ident$1.ident$2.ident$3.ident$6.ident$8;
+import ident$1.ident$2.ident$3.ident$6.ident$9;
+import ident$1.ident$2.ident$3.ident$4.ident$10.ident$11;
+import java.ident$4.ident$13.ident$14;
+@ident$8.ident$15
+@ident$9.ident$16
+public final class ident$20 {
+@ident$7
+static final ident$14<Class<? extends ident$24>, ident$24>
+ident$25 = new ident$14<>();
+private ident$20() {
+}
+public static ident$24
+ident$28(Class<? extends ident$24> ident$29) {
+ident$24 ident$30;
+if (ident$25.ident$32(ident$29)) {
+ident$30 = ident$25.ident$33(ident$29);
+} else {
+ident$30 = ident$35.ident$36(ident$29, null);
+ident$24 ident$38 =
+ident$25.ident$39(ident$29, ident$30);
+if (ident$38 != null) {
+ident$30 = ident$38;
+}
+}
+return ident$30;
+}
+@SuppressWarnings("literal$0")
+public static ident$24 ident$28(String ident$30)
+throws ident$11 {
+@SuppressWarnings("literal$1")
+Class ident$29;
+if (ident$30.ident$44(ident$45.ident$46)) {
+ident$29 = ident$45.class;
+} else if (ident$30.ident$44(ident$47.ident$46)) {
+ident$29 = ident$47.class;
+} else {
+try {
+ident$29 = Class.ident$49(ident$30);
+} catch (ClassNotFoundException ident$52) {
+throw new ident$11(ident$30
++ "literal$2", ident$52);
+}
+}
+return ident$28(ident$29);
+}
+}

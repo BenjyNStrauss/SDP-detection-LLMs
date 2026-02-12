@@ -1,0 +1,123 @@
+package ident$1.ident$2.ident$3.ident$4.ident$5;
+import java.ident$8.ident$9;
+import java.ident$10.ident$11;
+import ident$1.ident$2.ident$3.ident$12.ident$13;
+import ident$1.ident$2.ident$3.ident$12.ident$14;
+import ident$1.ident$2.ident$3.ident$4.ident$15;
+import ident$1.ident$2.ident$3.ident$4.ident$16;
+import ident$1.ident$2.ident$3.ident$10.ident$17;
+@ident$13.ident$18
+@ident$14.ident$19
+class ident$21 extends ident$23 {
+private final static String ident$28 = "literal$0";
+private final static String ident$29 = "literal$1";
+private final static String ident$30 = "literal$2";
+public static void ident$33(ident$34 ident$35) {
+ident$35.ident$36(ident$37.class, "literal$3" + ident$28);
+ident$35.ident$36(ident$38.class, "literal$3" + ident$29);
+ident$35.ident$36(ident$39.class, "literal$3" + ident$30);
+}
+public static class ident$37 extends ident$23 {
+public static final String ident$40 = ident$28;
+public static final String ident$41 = "literal$4";
+public static final String ident$42 = "literal$5";
+private String ident$43 = null;
+@Override
+protected void ident$47(ident$48 ident$49) throws ident$9 {
+if (!ident$49.ident$52.ident$53()) {
+throw new ident$16(ident$49.ident$56());
+}
+}
+@Override
+protected void ident$57(ident$11<String> ident$58) throws ident$9 {
+if (ident$58.ident$59() == 0) {
+throw new IllegalArgumentException("literal$6");
+}
+if (ident$58.ident$59() > 2) {
+throw new IllegalArgumentException("literal$7");
+}
+if (ident$58.ident$59() == 2) {
+ident$43 = ident$58.ident$61();
+}
+}
+@Override
+protected void ident$62(ident$11<ident$48> ident$63)
+throws ident$9 {
+super.ident$62(ident$63);
+if (ident$65 != 0) {
+return;
+}
+assert(ident$63.ident$59() == 1);
+ident$48 ident$68 = ident$63.ident$69();
+ident$15 ident$70 = ident$68.ident$4.ident$71(ident$68.ident$72, ident$43);
+ident$73.ident$74("literal$8" + ident$70);
+}
+}
+public static class ident$38 extends ident$23 {
+public static final String ident$40 = ident$29;
+public static final String ident$41 = "literal$9";
+public static final String ident$42 =
+"literal$10";
+private String ident$43;
+@Override
+protected void ident$47(ident$48 ident$49) throws ident$9 {
+if (!ident$49.ident$52.ident$53()) {
+throw new ident$16(ident$49.ident$56());
+}
+}
+@Override
+protected void ident$57(ident$11<String> ident$58) throws ident$9 {
+if (ident$58.ident$59() != 2) {
+throw new IllegalArgumentException("literal$11");
+}
+ident$43 = ident$58.ident$61();
+}
+@Override
+protected void ident$62(ident$11<ident$48> ident$63)
+throws ident$9 {
+super.ident$62(ident$63);
+if (ident$65 != 0) {
+return;
+}
+assert (ident$63.ident$59() == 1);
+ident$48 ident$68 = ident$63.ident$69();
+ident$68.ident$4.ident$75(ident$68.ident$72, ident$43);
+ident$73.ident$74("literal$12" + ident$43 + "literal$13" + ident$68.ident$72);
+}
+}
+public static class ident$39 extends ident$23 {
+public static final String ident$40 = ident$30;
+public static final String ident$41 = "literal$14";
+public static final String ident$42 =
+"literal$15";
+private String ident$76;
+private String ident$77;
+@Override
+protected void ident$47(ident$48 ident$49) throws ident$9 {
+if (!ident$49.ident$52.ident$53()) {
+throw new ident$16(ident$49.ident$56());
+}
+}
+@Override
+protected void ident$57(ident$11<String> ident$58) throws ident$9 {
+if (ident$58.ident$59() != 3) {
+throw new IllegalArgumentException("literal$11");
+}
+ident$77 = ident$58.ident$61();
+ident$76 = ident$58.ident$61();
+}
+@Override
+protected void ident$62(ident$11<ident$48> ident$63)
+throws ident$9 {
+super.ident$62(ident$63);
+if (ident$65 != 0) {
+return;
+}
+ident$17.ident$78(ident$63.ident$59() == 1);
+ident$48 ident$68 = ident$63.ident$69();
+ident$68.ident$4.ident$79(ident$68.ident$72, ident$76, ident$77);
+ident$73.ident$74("literal$16" + ident$76 + "literal$17" + ident$77 +
+"literal$13" + ident$68.ident$72);
+}
+}
+}
