@@ -1,0 +1,110 @@
+package ident$1.ident$2.ident$3.ident$4;
+import java.ident$7.ident$8.ident$9;
+import java.ident$7.ident$8.ident$10;
+import ident$1.ident$2.ident$3.ident$11;
+import ident$1.ident$2.ident$3.ident$12;
+import ident$1.ident$2.ident$3.ident$13;
+import ident$1.ident$2.ident$3.ident$14;
+import ident$1.ident$2.ident$3.ident$15;
+import ident$1.ident$2.ident$3.ident$16.ident$17;
+import ident$1.ident$2.ident$3.ident$16.ident$18;
+import ident$1.ident$2.ident$3.ident$19.ident$20;
+import ident$1.ident$2.ident$3.ident$7.ident$21;
+import ident$1.ident$22.ident$23;
+import ident$1.ident$22.ident$24;
+public abstract class ident$28 extends ident$20 implements ident$15, ident$17, ident$18, ident$31 {
+private static final ident$23 ident$35 = ident$24.ident$36(ident$28.class);
+protected static final String ident$39 = "literal$0";
+protected static final String ident$40 = "literal$1";
+protected static final String ident$41 = "literal$2";
+protected final ident$10 ident$42;
+protected final boolean ident$44;
+protected final ident$12 ident$45;
+protected final ident$14 ident$46;
+protected String ident$47;
+protected String ident$48;
+protected boolean ident$49;
+protected boolean ident$50;
+protected boolean ident$51 = ident$52;
+protected ident$14 ident$53;
+ident$28(final ident$10 ident$42, final boolean ident$44,
+final ident$12 ident$45, final boolean ident$49, ident$14 ident$54,
+final ident$14 ident$53) {
+this.ident$42 = ident$42;
+this.ident$44 = ident$44;
+this.ident$45 = ident$45;
+this.ident$49 = ident$49;
+this.ident$46 = ident$54;
+this.ident$53 = ident$21.ident$56(ident$53, "literal$3");
+}
+protected static boolean ident$57(
+ident$13 ident$58, ident$11 ident$59, InterruptedException ident$61, boolean ident$62) {
+boolean ident$63 = ident$58.ident$64().ident$65().ident$66();
+if (ident$63) {
+String ident$68 = "literal$4"
++ ident$58;
+ident$35.ident$69(ident$68);
+ident$58.ident$70(new ident$9(ident$68, ident$61));
+} else {
+ident$58.ident$70(ident$61);
+}
+ident$59.ident$73(ident$62);
+return ident$62;
+}
+protected static boolean ident$75(ident$13 ident$58, ident$11 ident$59, Exception ident$77, boolean ident$62) {
+ident$58.ident$70(ident$77);
+ident$59.ident$73(ident$62);
+return ident$62;
+}
+@Override
+public boolean ident$79() {
+return ident$49;
+}
+public void ident$81(boolean ident$49) {
+this.ident$49 = ident$49;
+}
+@Override
+public boolean ident$82() {
+return ident$50;
+}
+public void ident$83(boolean ident$50) {
+this.ident$50 = ident$50;
+}
+@Override
+public String ident$84() {
+return ident$47;
+}
+@Override
+public void ident$85(final String ident$47) {
+this.ident$47 = ident$47;
+}
+@Override
+public String ident$86() {
+return ident$48;
+}
+@Override
+public void ident$87(String ident$48) {
+this.ident$48 = ident$48;
+}
+@Override
+public boolean ident$88() {
+return ident$51;
+}
+public void ident$89(boolean ident$51) {
+this.ident$51 = ident$51;
+}
+@Override
+public void ident$90(ident$14 ident$91) {
+this.ident$53 = ident$91;
+}
+public ident$14 ident$92() {
+return ident$53;
+}
+protected enum State {
+ident$95,
+ident$96,
+ident$97
+}
+@Override
+public abstract String ident$98();
+}

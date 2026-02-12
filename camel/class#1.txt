@@ -1,0 +1,72 @@
+package ident$1.ident$2.ident$3.ident$4.ident$5;
+import static ident$1.ident$2.ident$3.ident$4.ident$5.ident$8.ident$9;
+public final class ident$13 {
+private static final String ident$16 = "literal$0";
+private ident$13() {
+}
+public static String ident$17(String ident$18, boolean ident$20) {
+if (ident$9(ident$18)) {
+return null;
+}
+StringBuilder ident$25 = new StringBuilder(ident$18.ident$27());
+String[] ident$28 = ident$18.ident$29("literal$1");
+boolean ident$30 = ident$31;
+for (String ident$33 : ident$28) {
+ident$33 = ident$33.ident$34();
+if (ident$33.ident$35("literal$2")) {
+continue;
+}
+if (ident$33.ident$35("literal$3")) {
+ident$33 = ident$33.ident$37(1);
+ident$33 = ident$33.ident$34();
+}
+if (ident$33.ident$35("literal$4") || ident$33.ident$35("literal$5") || ident$33.ident$35("literal$6")) {
+break;
+}
+if (ident$33.ident$35("literal$7")) {
+continue;
+}
+if (!ident$30) {
+ident$25.ident$39('char-literal$8');
+}
+String ident$40 = ident$33.ident$34();
+ident$25.ident$39(ident$40);
+boolean ident$41 = ident$9(ident$40);
+boolean ident$42 = ident$40.ident$43("literal$9");
+boolean ident$44 = !ident$25.ident$45();
+if (ident$44 && ident$20 && (ident$41 || ident$42)) {
+break;
+}
+ident$30 = ident$46;
+}
+String ident$40 = ident$25.ident$47();
+ident$40 = ident$40.ident$48("literal$10", "literal$11");
+ident$40 = ident$40.ident$48("literal$12", "literal$13");
+ident$40 = ident$40.ident$48("literal$14", "literal$13");
+ident$40 = ident$40.ident$48("literal$15", "literal$13");
+ident$40 = ident$40.ident$48("literal$16", "literal$13");
+ident$40 = ident$40.ident$48("literal$17", "literal$13");
+StringBuilder ident$49 = new StringBuilder(ident$40.ident$27() + 16);
+for (char ident$51 : ident$40.ident$52()) {
+if (Character.ident$54(ident$51) || ident$16.ident$55(ident$51) != -1) {
+ident$49.ident$39(ident$51);
+} else if (Character.ident$57(ident$51)) {
+ident$49.ident$39('char-literal$8');
+}
+}
+ident$40 = ident$49.ident$47();
+ident$40 = ident$40.ident$48("literal$18", "literal$19");
+ident$40 = ident$40.ident$48("literal$20", "literal$13");
+return ident$40.ident$34();
+}
+public static String ident$58(String ident$59) {
+if (ident$59 == null) {
+return "literal$11";
+}
+ident$59 = ident$59.ident$60("literal$21", "literal$22");
+ident$59 = ident$59.ident$60("literal$23", "literal$24");
+ident$59 = ident$59.ident$60("literal$25", "literal$26");
+ident$59 = ident$59.ident$60("literal$27", "literal$28");
+return ident$59;
+}
+}

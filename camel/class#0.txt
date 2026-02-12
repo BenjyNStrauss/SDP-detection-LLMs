@@ -1,0 +1,87 @@
+package ident$1.ident$2.ident$3.ident$4.ident$5;
+public final class ident$9 {
+private ident$9() {
+}
+public static boolean ident$13(String ident$15) {
+return ident$15 == null || ident$15.ident$18() || "literal$0".ident$19(ident$15);
+}
+public static String ident$20(String ident$21) {
+String ident$22 = ident$21;
+String[] ident$23 = ident$21.ident$24("literal$1");
+if (ident$23.ident$26 == 3 && ident$23[2].ident$19("literal$2")) {
+ident$22 = ident$23[0] + "literal$3" + ident$23[1];
+}
+return ident$22;
+}
+public static String ident$27(String ident$28, int ident$30, String ident$31) {
+String ident$15 = ident$28.ident$32("literal$4", "literal$5");
+ident$15 = ident$33(ident$15, "literal$6", ident$31, ident$30, ident$34);
+ident$15 = Character.ident$36(ident$15.ident$37(0)) + ident$15.ident$38(1);
+if (ident$15.ident$39(ident$31)) {
+ident$15 = ident$15.ident$38(ident$31.ident$26());
+}
+if (ident$15.ident$40(ident$31)) {
+ident$15 = ident$15.ident$38(0, ident$15.ident$26() - ident$31.ident$26());
+}
+return ident$15;
+}
+public static String ident$33(String ident$41, String ident$42, String ident$31, int ident$30, boolean ident$43) {
+if (ident$41 == null) {
+return null;
+} else {
+if (ident$31 == null) {
+ident$31 = System.ident$46();
+}
+if (ident$42 == null) {
+ident$42 = "literal$6";
+}
+if (ident$30 < 1) {
+ident$30 = 1;
+}
+int ident$47 = ident$41.ident$26();
+int ident$48 = 0;
+StringBuilder ident$50 = new StringBuilder(ident$47 + 32);
+int ident$52 = 0;
+while (ident$48 < ident$47) {
+if (ident$41.ident$37(ident$48) == 'char-literal$7') {
+ident$48++;
+continue;
+}
+int ident$55 = ident$41.ident$56('char-literal$7', ident$48);
+if (ident$55 < 0) {
+ident$55 = ident$47;
+if (ident$43 && ident$47 - ident$48 > ident$30) {
+if (ident$52 > 0) {
+ident$50.ident$57(ident$42);
+ident$52 += ident$42.ident$26();
+}
+ident$50.ident$57(ident$41, ident$48, ident$30 - ident$52);
+ident$50.ident$57(ident$31);
+ident$48 += ident$30 - ident$52;
+}
+}
+if (ident$52 + (ident$52 > 0 ? ident$42.ident$26() : 0) + ident$55 - ident$48 <= ident$30) {
+if (ident$52 > 0) {
+ident$50.ident$57(ident$42);
+ident$52 += ident$42.ident$26();
+}
+ident$50.ident$57(ident$41, ident$48, ident$55);
+ident$52 += ident$55 - ident$48;
+ident$48 = ident$55 + 1;
+} else {
+ident$50.ident$57(ident$31);
+ident$50.ident$57(ident$41, ident$48, ident$55);
+ident$52 = ident$55 - ident$48;
+ident$48 = ident$55 + 1;
+}
+}
+return ident$50.ident$58();
+}
+}
+public static String ident$59(String ident$60) {
+if (ident$60 != null) {
+return ident$60.ident$32("literal$8", "literal$6").ident$32("literal$9", "literal$10");
+}
+return ident$60;
+}
+}
