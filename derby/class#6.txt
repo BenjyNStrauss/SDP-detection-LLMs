@@ -1,0 +1,86 @@
+package ident$1.ident$2.ident$3;
+import java.ident$6.ident$7;
+import java.ident$6.ident$8;
+import java.ident$6.ident$9;
+import java.ident$6.ident$10;
+import java.ident$11.ident$12;
+import java.ident$13.ident$14;
+import java.ident$13.ident$15;
+import java.ident$13.ident$16;
+import java.ident$13.ident$17;
+import java.ident$13.ident$18.ident$19;
+public class ident$22 {
+public static void ident$25(String[] ident$27) throws ident$10 {
+ident$8 ident$29 = new ident$8() {
+public boolean ident$32(ident$7 ident$33) {
+return ident$33.ident$35().ident$36("literal$0");
+}
+};
+for (String ident$38 : ident$27) {
+for (ident$7 ident$39 : new ident$7(ident$38).ident$40(ident$29)) {
+new ident$22(ident$39).ident$41();
+}
+}
+}
+private static final ident$19 ident$44 =
+ident$19.ident$45("literal$1");
+private static final ident$19 ident$46 =
+ident$19.ident$45("literal$2");
+private static final ident$17<String> ident$47 = new ident$15<String>();
+static {
+ident$47.ident$48("literal$3");
+ident$47.ident$48("literal$4");
+ident$47.ident$48("literal$5");
+ident$47.ident$48("literal$6");
+}
+private final ident$7 ident$39;
+private final ident$16 ident$49;
+private ident$22(ident$7 ident$39) throws ident$10 {
+this.ident$39 = ident$39;
+ident$49 = new ident$16();
+ident$9 ident$51 = new ident$9(ident$39);
+try {
+ident$49.ident$53(ident$51);
+} finally {
+ident$51.ident$55();
+}
+}
+private void ident$41() {
+ident$14 ident$56 = ident$49.ident$57();
+while (ident$56.ident$59()) {
+String ident$60 = (String) ident$56.ident$61();
+String ident$62 = ident$49.ident$63(ident$60);
+ident$64(ident$60, ident$62);
+}
+}
+private void ident$64(String ident$60, String ident$62) {
+ident$65(ident$60, ident$62);
+ident$66(ident$60, ident$62);
+}
+private void ident$65(String ident$60, String ident$62) {
+ident$19 ident$67;
+if (ident$47.ident$69(ident$60)) {
+ident$67 = ident$46;
+} else {
+ident$67 = ident$44;
+}
+if (ident$67.ident$71(ident$62).ident$72()) {
+throw new AssertionError("literal$7" + ident$60 +
+"literal$8" + ident$39 + "literal$9" +
+"literal$10" +
+"literal$11" +
+ident$75().ident$35() + "literal$12");
+}
+}
+private void ident$66(String ident$60, String ident$62) {
+try {
+new ident$12(ident$62);
+} catch (Exception ident$56) {
+AssertionError ident$78 = new AssertionError(
+"literal$13" + ident$60 + "literal$8" + ident$39 + "literal$14" +
+"literal$15");
+ident$78.ident$79(ident$56);
+throw ident$78;
+}
+}
+}

@@ -1,0 +1,78 @@
+package ident$1.ident$2.ident$3;
+import java.ident$6.*;
+import javax.ident$8.ident$9.*;
+import ident$1.ident$10.ident$11.*;
+public class ident$14
+{
+private static final String ident$19 =
+"literal$0" +
+"literal$1" +
+"literal$2" +
+"literal$1" +
+"literal$3" +
+"literal$4";
+private ident$20 ident$21;
+public ident$14( ident$20 ident$22 )
+{
+ident$21 = ident$22;
+}
+public static void ident$24( String[] ident$25 )
+throws Exception
+{
+if ( (ident$25 == null) || (ident$25.ident$30 != 1) )
+{
+ident$31( ident$19 );
+System.ident$33(1);
+}
+String ident$34 = ident$25[ 0 ];
+ident$35 ident$36 = new ident$35( ident$34 );
+ident$38 ident$39 = ident$38.ident$40();
+ident$20 ident$41 = ident$39.ident$42();
+ident$14 ident$43 = new ident$14( ident$41 );
+ident$44 ident$45 = ident$43.ident$46( ident$36 );
+ident$47 ident$48 = ident$43.ident$49( ident$45 );
+ident$47 ident$50 = ident$43.ident$51( ident$45 );
+ident$43.ident$52( ident$45 );
+ident$31( "literal$1" + ident$34 + "literal$5" );
+}
+public ident$44 ident$46( ident$53 ident$54 )
+throws Exception
+{
+ident$44 ident$45 = ident$21.ident$55( ident$54 );
+ident$54.ident$56();
+return ident$45;
+}
+public ident$47 ident$49( ident$44 ident$58 )
+throws Exception
+{
+ident$47 ident$59 = ident$58.ident$60();
+ident$47 ident$61 = ident$62.ident$63( ident$59, ident$62.ident$64 );
+return ident$61;
+}
+public ident$47 ident$51( ident$44 ident$58 )
+throws Exception
+{
+ident$47 ident$59 = ident$58.ident$60();
+ident$47 ident$50 = ident$62.ident$63( ident$59, ident$62.ident$65 );
+return ident$50;
+}
+private void ident$52( ident$44 ident$58 ) throws Exception
+{
+ident$47 ident$59 = ident$58.ident$60();
+String ident$66 = "literal$6";
+ident$67( ident$59, "literal$7", ident$66 );
+ident$67( ident$59, "literal$8", ident$66 );
+}
+private void ident$67( ident$47 ident$59, String ident$68, String ident$66 ) throws Exception
+{
+ident$69 ident$70 = ident$59.ident$71( ident$68 );
+if ( (ident$70 != null) && (ident$70.ident$72() > 0) )
+{
+throw new Exception( ident$66 );
+}
+}
+private static void ident$31( String ident$74 )
+{
+System.ident$75.ident$31( ident$74 );
+}
+}

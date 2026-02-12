@@ -1,0 +1,86 @@
+package ident$1.ident$2.ident$3.ident$4.ident$5;
+class ident$7
+{
+private ident$7 () {}
+public final static int ident$13 = 1;
+public final static int ident$14 = 2;
+public static short ident$16 (byte[] ident$18, int ident$19, int ident$20)
+{
+switch (ident$20) {
+case ident$13:
+return ident$24 (ident$18, ident$19);
+case ident$14:
+return ident$25 (ident$18, ident$19);
+default:
+throw new java.lang.IllegalArgumentException();
+}
+}
+public static int ident$32 (byte[] ident$18, int ident$19, int ident$20)
+{
+switch (ident$20) {
+case ident$13:
+return ident$33 (ident$18, ident$19);
+case ident$14:
+return ident$34 (ident$18, ident$19);
+default:
+throw new java.lang.IllegalArgumentException();
+}
+}
+public static long ident$36 (byte[] ident$18, int ident$19, int ident$20)
+{
+switch (ident$20) {
+case ident$13:
+return ident$37 (ident$18, ident$19);
+case ident$14:
+return ident$38 (ident$18, ident$19);
+default:
+throw new java.lang.IllegalArgumentException();
+}
+}
+public static short ident$24 (byte[] ident$18, int ident$19)
+{
+return (short) (((ident$18[ident$19+0] & 0ident$39) << 8) +
+((ident$18[ident$19+1] & 0ident$39) << 0));
+}
+public static short ident$25 (byte[] ident$18, int ident$19)
+{
+return (short) (((ident$18[ident$19+0] & 0ident$39) << 0) +
+((ident$18[ident$19+1] & 0ident$39) << 8));
+}
+public static int ident$33 (byte[] ident$18, int ident$19)
+{
+return (int) (((ident$18[ident$19+0] & 0ident$39) << 24) +
+((ident$18[ident$19+1] & 0ident$39) << 16) +
+((ident$18[ident$19+2] & 0ident$39) << 8) +
+((ident$18[ident$19+3] & 0ident$39) << 0));
+}
+public static int ident$34 (byte[] ident$18, int ident$19)
+{
+return (int) (((ident$18[ident$19+0] & 0ident$39) << 0) +
+((ident$18[ident$19+1] & 0ident$39) << 8) +
+((ident$18[ident$19+2] & 0ident$39) << 16) +
+((ident$18[ident$19+3] & 0ident$39) << 24));
+}
+public static long ident$37 (byte[] ident$18, int ident$19)
+{
+return (long) (((ident$18[ident$19+0] & 0ident$40) << 56) +
+((ident$18[ident$19+1] & 0ident$40) << 48) +
+((ident$18[ident$19+2] & 0ident$40) << 40) +
+((ident$18[ident$19+3] & 0ident$40) << 32) +
+((ident$18[ident$19+4] & 0ident$40) << 24) +
+((ident$18[ident$19+5] & 0ident$40) << 16) +
+((ident$18[ident$19+6] & 0ident$40) << 8) +
+((ident$18[ident$19+7] & 0ident$40) << 0));
+}
+public static long ident$38 (byte[] ident$18, int ident$19)
+{
+return (long) (((ident$18[ident$19+0] & 0ident$40) << 0) +
+((ident$18[ident$19+1] & 0ident$40) << 8) +
+((ident$18[ident$19+2] & 0ident$40) << 16) +
+((ident$18[ident$19+3] & 0ident$40) << 24) +
+((ident$18[ident$19+4] & 0ident$40) << 32) +
+((ident$18[ident$19+5] & 0ident$40) << 40) +
+((ident$18[ident$19+6] & 0ident$40) << 48) +
+((ident$18[ident$19+7] & 0ident$40) << 56));
+}
+}

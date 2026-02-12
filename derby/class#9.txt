@@ -1,0 +1,18 @@
+package ident$1.ident$2.ident$3.ident$4.ident$5;
+import ident$1.ident$2.ident$3.ident$7.ident$8.ident$9.ident$10;
+import ident$1.ident$2.ident$3.ident$4.ident$11.ident$12.ident$13;
+public interface ident$16
+{
+String ident$18 = "literal$0";
+ident$19 ident$20(ident$13 ident$21, int ident$23, boolean ident$25);
+public ident$26 ident$27
+(
+ident$26 ident$28,
+int[] ident$29
+);
+public ident$26 ident$27
+(
+ident$30[] ident$31,
+String ident$32
+);
+}

@@ -1,0 +1,37 @@
+package ident$1.ident$2.ident$3.ident$4.ident$5.ident$6;
+public interface ident$9
+{
+public static final int ident$13 = 16;
+public static final int ident$14 = 32767;
+public static final int ident$15 = 1012;
+public static final int ident$16 = 5000;
+public static final int ident$17 = 1012;
+public static final int ident$18 = 32677;
+public static final int ident$19 = 1012;
+public static final int ident$20 = 128;
+public static final int ident$21 = 254;
+public static final int ident$22 = 32672;
+public static final int ident$23 = 2147483647;
+public static final int ident$24 = 32700;
+public static final int ident$25 = 4000;
+public static final int ident$26 = 30;
+public static final int ident$27 = 32672;
+public static final int ident$28 = 16336;
+public static final int ident$29 = 8;
+public static final int ident$30 = 128;
+public static final int ident$31 = 4096;
+public static final int ident$32 = 32768;
+public static final int ident$33 = 31;
+public static final int ident$34 = 5;
+public static final int ident$35 = 0;
+static final float ident$37 = -3.402ident$38+38ident$39;
+static final float ident$40 = +3.402ident$38+38ident$39;
+static final float ident$41 = +1.175ident$38-37ident$39;
+static final float ident$42 = -1.175ident$38-37ident$39;
+static final double ident$44 = -1.79769ident$38+308ident$45;
+static final double ident$46 = +1.79769ident$38+308ident$45;
+static final double ident$47 = +2.225ident$38-307ident$45;
+static final double ident$48 = -2.225ident$38-307ident$45;
+int ident$49 = ident$9.ident$22;
+int ident$50 = ident$49 3;
+}

@@ -1,0 +1,13 @@
+package ident$1.ident$2.ident$3.ident$4.ident$5;
+public interface ident$8
+{
+String ident$10();
+int ident$12();
+public ident$13[] ident$14();
+public ident$13 ident$14( int ident$15 );
+ident$13 ident$16(int ident$17);
+public ident$8 ident$18(int ident$19);
+public void ident$21(java.ident$5.ident$23 ident$24);
+public java.ident$5.ident$23 ident$25();
+public int ident$26(String ident$27);
+}

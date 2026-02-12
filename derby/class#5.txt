@@ -1,0 +1,119 @@
+package ident$1.ident$2.ident$3;
+import java.ident$6.ident$7;
+import java.ident$6.ident$8;
+import java.ident$6.ident$9;
+import java.ident$10.ident$11;
+import java.ident$10.ident$12;
+import java.ident$10.ident$13;
+class ident$15 {
+public static final long ident$20 = -1;
+public static final long ident$21 = -2;
+private static final String ident$24 =
+"literal$0";
+private static final String ident$25 = "literal$1";
+private static final int ident$27 = -1;
+private static final int ident$28 = 0;
+private static final int ident$29 = 1;
+private static final int ident$30 = 2;
+private static final int ident$31 = 3;
+private String ident$32;
+private String ident$33;
+private long ident$34 = ident$20;
+private ident$13 ident$35;
+public ident$15(String ident$32, String ident$33, ident$13 ident$35,
+long ident$34) {
+this.ident$32 = ident$32;
+this.ident$33 = ident$33;
+this.ident$35 = ident$35;
+this.ident$34 = ident$34;
+}
+public static ident$13 ident$37(String ident$38)
+throws ident$9 {
+ident$11<ident$15> ident$40 = new ident$11<ident$15>();
+ident$7 ident$42 = new ident$7(new ident$8(ident$38));
+String ident$43;
+System.ident$45.ident$46("literal$2");
+while ((ident$43 = ident$42.ident$48()) != null && ident$43.ident$50("literal$3")) {
+System.ident$45.ident$46(ident$43);
+}
+ident$11<String> ident$51 = new ident$11<String>();
+int ident$52 = ident$28;
+String ident$32 = null;
+String ident$53 = null;
+String[] ident$35 = null;
+long ident$54 = ident$20;
+do {
+if (ident$43.ident$50("literal$3")) {
+ident$51.ident$57(ident$43.ident$58());
+continue;
+}
+if (ident$43.ident$50("literal$4")) {
+continue;
+}
+if (ident$52 == ident$28) {
+ident$32 = ident$43.ident$58();
+if (!ident$32.ident$50("literal$5")) {
+throw new IllegalStateException(
+"literal$6" + ident$32);
+}
+ident$32 = ident$32.ident$62("literal$7")[1];
+Integer.ident$64(ident$32);
+} else if (ident$52 == ident$29) {
+ident$53 = ident$43.ident$58();
+} else if (ident$52 == ident$30) {
+ident$43 = ident$43.ident$58();
+ident$35 = ident$43.ident$62("literal$8");
+} else if (ident$52 == ident$31) {
+ident$43 = ident$43.ident$58();
+if (ident$43.ident$66("literal$9")) {
+ident$54 = ident$20;
+} else if (ident$43.ident$66("literal$10")) {
+ident$54 = ident$21;
+} else {
+ident$54 = Long.ident$68(ident$43);
+}
+ident$40.ident$57(new ident$15(ident$32, ident$53,
+ident$12.ident$69(ident$35), ident$54));
+ident$52 = ident$27;
+}
+ident$52++;
+} while ((ident$43 = ident$42.ident$48()) != null);
+if (ident$52 != ident$28) {
+throw new IllegalStateException("literal$11" +
+"literal$12" + ident$52 + "literal$13");
+}
+int ident$70 = ident$51.ident$70();
+if (ident$70 > 2) {
+System.ident$45.ident$46(ident$51.ident$71(ident$70 -3));
+System.ident$45.ident$46(ident$51.ident$71(ident$70 -2));
+System.ident$45.ident$46(ident$51.ident$71(ident$70 -1));
+}
+return ident$40;
+}
+public String ident$73() {
+return ident$32;
+}
+public String ident$74() {
+return ident$33;
+}
+public long ident$75() {
+return ident$34;
+}
+public boolean ident$77() {
+return (ident$34 != ident$20 &&
+ident$34 != ident$21);
+}
+public boolean ident$78() {
+return (ident$34 == ident$21);
+}
+public boolean ident$79(String ident$80) {
+return ident$35.ident$81(ident$80);
+}
+public String ident$82() {
+return "literal$14" + ident$32;
+}
+public String ident$83() {
+return ident$24 +
+ident$34 + "literal$15" + ident$25;
+}
+}

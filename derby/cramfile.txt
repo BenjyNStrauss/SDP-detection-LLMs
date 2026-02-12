@@ -1,0 +1,1736 @@
+/*
+
+   Derby - Class org.apache.derby.iapi.services.context.ErrorStringBuilder
+
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to you under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+ */
+
+package org.apache.derby.shared.common.error;
+
+import org.apache.derby.shared.common.stream.PrintWriterGetHeader;
+
+import java.io.StringWriter;
+import java.io.PrintWriter;
+
+/**
+ * Class used to form error messages.  Primary
+ * reason for existence is to allow a way to call
+ * printStackTrace() w/o automatically writting
+ * to a stream.
+ */
+public class ErrorStringBuilder 
+{
+	private StringWriter	stringWriter;
+	private PrintWriter		printWriter;
+	private PrintWriterGetHeader	headerGetter;
+
+	/**
+	** Construct an error string builder
+    *
+    * @param headerGetter A header getter
+	*/
+	public ErrorStringBuilder(PrintWriterGetHeader headerGetter)
+	{
+		this.headerGetter = headerGetter;
+		this.stringWriter = new StringWriter();
+		this.printWriter = new PrintWriter(stringWriter);
+	}
+
+	/**
+	** Append an error string 
+	**
+	** @param s 	the string to append
+	*/
+	public void append(String s)
+	{
+		if (headerGetter != null)
+			printWriter.print(headerGetter.getHeader());
+		printWriter.print(s);
+	}
+
+
+	/**
+	** Append an error string with a newline
+	**
+	** @param s 	the string to append
+	*/
+	public void appendln(String s)
+	{
+		if (headerGetter != null)
+			printWriter.print(headerGetter.getHeader());
+		printWriter.println(s);
+	}
+
+	/**
+	** Print a stacktrace from the throwable in the error
+	** buffer.
+	**
+	** @param t	the error
+	*/
+	public void stackTrace(Throwable t)
+	{
+		int level = 0;
+		while(t != null)
+		{
+			if (level > 0)	
+				printWriter.println("============= begin nested exception, level (" +
+									level + ") ===========");
+
+			t.printStackTrace(printWriter);
+
+			if (t instanceof java.sql.SQLException) {
+				Throwable next = ((java.sql.SQLException)t).getNextException();
+				t = (next == null) ? t.getCause() : next;
+			} else {
+				t = t.getCause();
+			}
+
+			if (level > 0)	
+				printWriter.println("============= end nested exception, level (" + 
+									level + ") ===========");
+
+			level++;
+
+		}
+
+	}
+
+	/**
+	** Reset the buffer -- truncate it down to nothing.
+	**
+	*/
+	public void reset()
+	{
+		// Is this the most effecient way to do this?
+		stringWriter.getBuffer().setLength(0);
+	}
+
+	/**
+	** Get the buffer
+    *
+    * @return an evolving string builder
+	*/
+	public StringBuffer get()
+	{
+		return stringWriter.getBuffer();
+	}	
+}	
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+   Derby - Class org.apache.derby.impl.drda.EXTDTAReaderInputStream
+
+   Licensed to the Apache Software Foundation (ASF) under one
+   or more contributor license agreements.  See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.  The ASF licenses this file
+   to you under the Apache License, Version 2.0 (the
+   "License"); you may not use this file except in compliance
+   with the License.  You may obtain a copy of the License at
+   
+   http://www.apache.org/licenses/LICENSE-2.0
+   
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.
+*/
+package org.apache.derby.impl.drda;
+
+import java.io.IOException;
+import java.io.InputStream;
+import org.apache.derby.shared.common.reference.DRDAConstants;
+import org.apache.derby.shared.common.reference.SQLState;
+import org.apache.derby.shared.common.i18n.MessageService;
+import org.apache.derby.iapi.services.io.DerbyIOException;
+import org.apache.derby.shared.common.reference.MessageId;
+
+/**
+ * Implementation of InputStream which get EXTDTA from the DDMReader.
+ * <p>
+ * This class can be used to stream LOBs from Network client to the
+ * Network server.
+ * <p>
+ * To be able to correctly stream data from the client without reading the
+ * while value up front, a trailing Derby-specific status byte was introduced
+ * (version 10.6). It is used by the client to tell the server if the data it
+ * received was valid, or if it detected an error while streaming the data.
+ * The DRDA protocol, or at least Derby's implementation of it, doesn't enable
+ * the client to inform the server about the error whilst streaming (there is a
+ * mechanism in DRDA to interrupt a running request, but it didn't seem like a
+ * feasible approach in this case).
+ */
+abstract class EXTDTAReaderInputStream
+        extends InputStream {
+
+    /** Whether or not the subclass is a layer B stream. */
+    protected final boolean isLayerBStream;
+    /** Whether or not to read the trailing Derby-specific status byte. */
+    protected final boolean readStatusByte;
+    /**
+     * Tells if the status byte has been set.
+     *
+     * @see #checkStatus(int)
+     */
+    private boolean statusSet;
+    /**
+     * The status Derby-specific status byte, if any.
+     * @see #isStatusSet()
+     */
+    private byte status;
+    /**
+     * Whether or not to suppress the exception when an error is indicated by
+     * the status byte.
+     */
+    private boolean suppressException;
+
+    /**
+     * Initializes the class.
+     *
+     * @param layerB whether or not DDM layer B streaming is being used
+     * @param readStatusByte whether or not to read the trailing Derby-specific
+     *      status byte
+     */
+    protected EXTDTAReaderInputStream(boolean layerB, boolean readStatusByte) {
+        this.isLayerBStream = layerB;
+        this.readStatusByte = readStatusByte;
+    }
+
+    /**
+     * Saves the status byte read off the wire.
+     *
+     * @param status the status
+     * @see DRDAConstants
+     */
+    // Private for now, as the method is currently used only by checkStatus.
+    private void setStatus(int status) {
+        this.status = (byte)(status & 0xFF);
+        this.statusSet = true;
+    }
+
+    /**
+     * Returns whether the status has been set or not.
+     *
+     * @return {@code true} if set, {@code false} if not.
+     */
+    public boolean isStatusSet() {
+        return statusSet;
+    }
+
+    /**
+     * Returns the status byte.
+     * <p>
+     * <em>NOTE:</em> Check if the status byte has been set by calling
+     * {@linkplain #isStatusSet()}.
+     *
+     * @return The status byte.
+     */
+    public byte getStatus() {
+        if (!statusSet) {
+            throw new IllegalStateException("status hasn't been set");
+        }
+        return status;
+    }
+
+    /**
+     * Sets whether or not to suppress the exception when setting the status.
+     *
+     * @param flag {@code true} to suppress, {@code false} to throw exception
+     *      if an error condition is indicated by the status flag
+     */
+    void setSuppressException(boolean flag) {
+        this.suppressException = flag;
+    }
+
+    public boolean isLayerBStream() {
+        return isLayerBStream;
+    }
+
+    /**
+     * Interprets the Derby-specific status byte, and throws an exception if an
+     * error condition has been detected on the client.
+     *
+     * @param clientStatus the status flag sent by the client
+     * @throws IOException if the status byte indicates an error condition
+     */
+    protected void checkStatus(int clientStatus)
+            throws IOException {
+        // Note that in some cases we don't want to throw an exception here
+        // even if the status byte tells us an exception happened on the client
+        // side when reading the data stream. This is because sometimes EXTDTAs
+        // are // fully read before they are passed to the statement. If we
+        // throw the exception here, we cause DRDA protocol errors (it would
+        // probably be possible to code around this, but it is far easier to
+        // just have the embedded statement execution fail).
+
+        setStatus(clientStatus);
+        if (!suppressException && status != DRDAConstants.STREAM_OK) {
+            // Ask the sub-class to clean up.
+            onClientSideStreamingError();
+            throwEXTDTATransferException(clientStatus);
+        }
+    }
+
+    /**
+     * Performs necessary clean up when an error is signalled by the client.
+     */
+    protected abstract void onClientSideStreamingError();
+
+    /**
+     * Throws an exception as mandated by the EXTDTA status byte.
+     *
+     * @param status the EXTDTA status byte received from the client, should
+     *      not be {@linkplain DRDAConstants#STREAM_OK}
+     * @throws IOException the exception generated based on the status byte
+     */
+    static void throwEXTDTATransferException(int status)
+            throws IOException {
+        switch (status) {
+            case DRDAConstants.STREAM_READ_ERROR:
+                throw new IOException(
+                        MessageService.getTextMessage(
+                            MessageId.STREAM_DRDA_CLIENTSIDE_EXTDTA_READ_ERROR)
+                         );
+            case DRDAConstants.STREAM_TOO_SHORT:
+            case DRDAConstants.STREAM_TOO_LONG:
+                throw new DerbyIOException(
+                        MessageService.getTextMessage(
+                            SQLState.SET_STREAM_INEXACT_LENGTH_DATA),
+                        SQLState.SET_STREAM_INEXACT_LENGTH_DATA);
+            case DRDAConstants.STREAM_OK:
+                // Safe-guard, this method should not be invoked when the
+                // transfer was successful.
+                throw new IllegalStateException(
+                        "throwEXTDTATransferException invoked with EXTDTA " +
+                        "status byte STREAM_OK");
+            default:
+                throw new IOException(
+                        "Invalid stream EXTDTA status code: " + status);
+        }
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+
+   Derby - Class org.apache.derbyBuild.JiraIssue
+
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to you under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+ */
+
+package org.apache.derbyBuild;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+/**
+ * An issue from JIRA.
+ */
+class JiraIssue {
+    public static final long NO_RELEASE_NOTE = -1;
+    public static final long MISSING_RELEASE_NOTE = -2;
+    private static final String ATTACHMENT_BASE =
+        "https://issues.apache.org/jira/secure/attachment/";
+    private static final String ATTACHMENT_NAME = "releaseNote.html";
+
+    // States for parsing source from the Derby JIRA SOAP client.
+    private static final int STATE_ADD_RESET = -1;
+    private static final int STATE_ADD_KEY = 0;
+    private static final int STATE_ADD_SUMMARY = 1;
+    private static final int STATE_ADD_FIXVERSIONS = 2;
+    private static final int STATE_ADD_RELEASENOTE = 3;
+
+    // JIRA issue information
+    private String key;
+    private String title;
+    private long releaseNoteAttachmentID = NO_RELEASE_NOTE;
+    private List fixVersions;
+
+    public JiraIssue(String key, String title, List fixVersions,
+                     long releaseNoteAttachmentID) {
+        this.key = key;
+        this.title = title;
+        this.fixVersions = fixVersions;
+        this.releaseNoteAttachmentID = releaseNoteAttachmentID;
+    }
+
+    /**
+     * Factory method which extracts a list of JiraIssue objects from a data
+     * file generated by the Derby JIRA SOAP client.
+     *
+     * @param source the source file (generated by the Derby JIRA SOAP client)
+     * @return A List of {@code JiraIssue} objects.
+     * @throws Exception if something goes wrong
+     */
+    public static List createJiraIssueList(String source)
+            throws IOException {
+        ArrayList<JiraIssue> jiraIssues = new ArrayList<JiraIssue>();
+
+        BufferedReader in = new BufferedReader(new FileReader(source));
+        String line;
+        System.out.println("--- Creating Jira issue list");
+        while ((line = in.readLine()) != null && line.startsWith("//")) {
+            System.out.println(line);
+        }
+
+        ArrayList<String> comments = new ArrayList<String>();
+        int state = STATE_ADD_KEY;
+        String key = null;
+        String summary = null;
+        String[] fixVersions = null;
+        long attachmentId = NO_RELEASE_NOTE;
+        do {
+            if (line.startsWith("//")) {
+                comments.add(line.trim());
+                continue;
+            }
+            if (line.startsWith("---")) {
+                continue;
+            }
+
+            if (state == STATE_ADD_KEY) {
+                key = line.trim();
+                if (!key.startsWith("DERBY-")) {
+                    throw new IllegalStateException(
+                            "invalid JIRA key for Derby: " + key);
+                }
+                key = key.split("-")[1];
+                // Sanity check
+                Integer.parseInt(key);
+            } else if (state == STATE_ADD_SUMMARY) {
+                summary = line.trim();
+            } else if (state == STATE_ADD_FIXVERSIONS) {
+                line = line.trim();
+                fixVersions = line.split(",");
+            } else if (state == STATE_ADD_RELEASENOTE) {
+                line = line.trim();
+                if (line.equals("null")) {
+                    attachmentId = NO_RELEASE_NOTE;
+                } else  if (line.equals("missing")) {
+                    attachmentId = MISSING_RELEASE_NOTE;
+                } else {
+                    attachmentId = Long.parseLong(line);
+                }
+                // We now have all the information we need.
+                jiraIssues.add(new JiraIssue(key, summary,
+                        Arrays.asList(fixVersions), attachmentId));
+                state = STATE_ADD_RESET;
+            }
+            state++;
+        } while ((line = in.readLine()) != null);
+        if (state != STATE_ADD_KEY) {
+            throw new IllegalStateException("illegal state, check source " +
+                    "file for correctness (state=" + state + ")");
+        }
+        // Print the last few comments for information (by convention).
+        int size = comments.size();
+        if (size > 2) {
+            System.out.println(comments.get(size -3));
+            System.out.println(comments.get(size -2));
+            System.out.println(comments.get(size -1));
+        }
+
+        return jiraIssues;
+    }
+
+    /**
+     * @return the issue's key (jira number, e.g., 1234)
+     */
+    public String getKey() {
+        return key;
+    }
+
+    /**
+     * @return the issue's title
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * @return the attachment id of the release note
+     */
+    public long getReleaseNoteAttachmentID() {
+        return releaseNoteAttachmentID;
+    }
+
+    /**
+     * @return true iff this issue has a release note attached
+     */
+    public boolean hasReleaseNote() {
+        return (releaseNoteAttachmentID != NO_RELEASE_NOTE &&
+                releaseNoteAttachmentID != MISSING_RELEASE_NOTE);
+    }
+
+    /**
+     * @return true iff this issue is missing a release note
+     */
+    public boolean hasMissingReleaseNote() {
+        return (releaseNoteAttachmentID == MISSING_RELEASE_NOTE);
+    }
+
+    /**
+     * Predicate for finding out if issue has a given fixVersion.
+     * @param version to test
+     * @return true iff issue has version as fixVersion
+     */
+    public boolean isFixedIn(String version) {
+        return fixVersions.contains(version);
+    }
+
+    /**
+     * @return URL for this Jira issue
+     */
+    public String getJiraAddress() {
+        return "https://issues.apache.org/jira/browse/DERBY-" + key;
+    }
+
+    /**
+     * @return Full URL to the latest release note
+     */
+    public String getReleaseNoteAddress() {
+        return ATTACHMENT_BASE +
+                releaseNoteAttachmentID + "/" + ATTACHMENT_NAME;
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+
+   Derby - Class org.apache.derby.iapi.sql.LanguageFactory
+
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to you under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+ */
+
+package org.apache.derby.iapi.sql;
+
+import org.apache.derby.shared.common.error.StandardException;
+import org.apache.derby.iapi.services.loader.ClassInspector;
+
+/**
+ * Factory interface for the Language.Interface protocol.
+ * This is used via the Database API by users, and is presented
+ * as a System Module (not a service module).  That could change,
+ * but for now this is valid for any database. 
+ *
+ */
+public interface LanguageFactory
+{
+	/**
+		Used to locate this factory by the Monitor basic service.
+		There needs to be a language factory per database.
+	 */
+	String MODULE = "org.apache.derby.iapi.sql.LanguageFactory";
+
+	/**
+	 * Get a ParameterValueSet
+	 *
+     * @param ci A class inspector
+	 * @param numParms	The number of parameters in the
+	 *			ParameterValueSet
+	 * @param hasReturnParam	true if this parameter set
+	 *			has a return parameter.  The return parameter
+	 *			is always the 1st parameter in the list.  It
+	 *			is due to a callableStatement like this: <i>
+	 *			? = CALL myMethod()</i>
+	 *
+	 * @return	A new ParameterValueSet with the given number of parms
+	 */
+	ParameterValueSet newParameterValueSet(ClassInspector ci, int numParms, boolean hasReturnParam);
+
+	/**
+	 * Get a new result description from the input result
+	 * description.  Picks only the columns in the column
+	 * array from the inputResultDescription.
+	 *
+ 	 * @param inputResultDescription the input rd
+	 * @param theCols non null array of ints
+	 *
+	 * @return ResultDescription the rd
+	 */
+	public ResultDescription getResultDescription
+	(
+		ResultDescription	inputResultDescription,
+		int[]				theCols
+	);
+
+	/**
+	 * Get a new result description
+	 *
+ 	 * @param cols an array of col descriptors
+	 * @param type the statement type
+	 *
+	 * @return ResultDescription the rd
+	 */
+	public ResultDescription getResultDescription
+	(
+		ResultColumnDescriptor[]	cols,
+		String						type
+	);
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+
+   Derby - Class org.apache.derby.shared.common.reference.Limits
+
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to you under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+ */
+
+package org.apache.derby.shared.common.reference;
+
+public interface Limits
+{
+	/**
+        * Various fixed Limits. DB2 related limits are prefixed with "DB2_".
+        */
+
+	public static final int DB2_MAX_TRIGGER_RECURSION = 16; /* Maximum nesting level for triggers */
+
+	/** Maximum number of indexes on a table */
+	public static final int DB2_MAX_INDEXES_ON_TABLE = 32767;
+	/* Maximum number of columns in a table */
+	public static final int DB2_MAX_COLUMNS_IN_TABLE = 1012;
+
+	/* Maximum number of columns in a view */
+	public static final int DB2_MAX_COLUMNS_IN_VIEW = 5000;
+
+	/* Maximum number of elements in a select list */
+	public static final int DB2_MAX_ELEMENTS_IN_SELECT_LIST = 1012;
+	/* Maximum number of columns in a group by list */
+	public static final int DB2_MAX_ELEMENTS_IN_GROUP_BY = 32677;
+	/* Maximum number of columns in an order by list */
+	public static final int DB2_MAX_ELEMENTS_IN_ORDER_BY = 1012;
+
+
+        /* Identifiers (Constraint, Cursor, Function/Procedure, Index,
+         * Trigger, Column, Schema, Savepoint, Table and View names)
+         * are limited to 128 */ 
+        public static final int MAX_IDENTIFIER_LENGTH = 128;
+
+	public static final int	DB2_CHAR_MAXWIDTH = 254;
+	public static final int	DB2_VARCHAR_MAXWIDTH = 32672;
+	public static final int DB2_LOB_MAXWIDTH = 2147483647;
+	public static final int	DB2_LONGVARCHAR_MAXWIDTH = 32700;
+    public static final int DB2_CONCAT_VARCHAR_LENGTH = 4000;
+	public static final int DB2_MAX_FLOATINGPOINT_LITERAL_LENGTH = 30; // note, this value 30 is also contained in err msg 42820
+	public static final int DB2_MAX_CHARACTER_LITERAL_LENGTH = 32672;
+	public static final int DB2_MAX_HEX_LITERAL_LENGTH = 16336;
+
+	public static final int DB2_MIN_COL_LENGTH_FOR_CURRENT_USER = 8;
+	public static final int DB2_MIN_COL_LENGTH_FOR_CURRENT_SCHEMA = 128;     
+
+    /**
+     * DB2 TABLESPACE page size limits
+     */
+    public static final int DB2_MIN_PAGE_SIZE = 4096;   //  4k
+    public static final int DB2_MAX_PAGE_SIZE = 32768;  // 32k
+
+    /**
+     * DECIMAL type limits
+     */
+
+	public static final int DB2_MAX_DECIMAL_PRECISION_SCALE = 31;
+	public static final int DB2_DEFAULT_DECIMAL_PRECISION   = 5;
+	public static final int DB2_DEFAULT_DECIMAL_SCALE       = 0;
+
+    /**
+     * REAL/DOUBLE range limits pre DERBY-3398. After that fix, they are
+     * only used in soft-upgrade scenarios with older databases.
+     */
+
+    static final float DB2_SMALLEST_REAL = -3.402E+38f;
+    static final float DB2_LARGEST_REAL  = +3.402E+38f;
+    static final float DB2_SMALLEST_POSITIVE_REAL = +1.175E-37f;
+    static final float DB2_LARGEST_NEGATIVE_REAL  = -1.175E-37f;
+
+    static final double DB2_SMALLEST_DOUBLE = -1.79769E+308d;
+    static final double DB2_LARGEST_DOUBLE  = +1.79769E+308d;
+    static final double DB2_SMALLEST_POSITIVE_DOUBLE = +2.225E-307d;
+    static final double DB2_LARGEST_NEGATIVE_DOUBLE  = -2.225E-307d;
+
+    // Limits on the length of the return values for the procedures in
+    // LOBStoredProcedure.
+
+    /**
+     * The maximum length of the data returned from the BLOB stored procedures.
+     * <p>
+     * This value is currently dictated by the maximum length of
+     * VARCHAR/VARBINARY, because these are the return types of the stored
+     * procedures.
+     */
+    int MAX_BLOB_RETURN_LEN = Limits.DB2_VARCHAR_MAXWIDTH;
+
+    /**
+     * The maximum length of the data returned from the CLOB stored procedures.
+     * <p>
+     * This value is currently dictated by the maximum length of
+     * VARCHAR/VARBINARY, because these are the return types of the stored
+     * procedures, and the modified UTF8 encoding used for CLOB data. This
+     * threshold value could be higher (equal to {@code MAX_BLOB_RETURN_LEN}),
+     * but then the procedure fetching data from the CLOB must be rewritten to
+     * have more logic.
+     * <p>
+     * For now we use the defensive assumption that all characters are
+     * represented by three bytes.
+     */
+    int MAX_CLOB_RETURN_LEN = MAX_BLOB_RETURN_LEN / 3;
+    
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+
+   Derby - Class org.apache.derbyBuild.MessageVetter
+
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+ */
+
+package org.apache.derbyBuild;
+
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Properties;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+/**
+ * Class that checks the message files for common problems.
+ */
+public class MessageVetter {
+
+    /**
+     * <p>
+     * Check all the message translations in the specified directories for
+     * common problems. Assume that all properties files in the directories
+     * are message translations.
+     * </p>
+     *
+     * <p>
+     * If a problem is found, an error will be raised.
+     * </p>
+     *
+     * @param args names of the directories to check
+     */
+    public static void main(String[] args) throws IOException {
+        FileFilter filter = new FileFilter() {
+            public boolean accept(File pathname) {
+                return pathname.getName().endsWith(".properties");
+            }
+        };
+        for (String directory : args) {
+            for (File file : new File(directory).listFiles(filter)) {
+                new MessageVetter(file).vet();
+            }
+        }
+    }
+
+    /**
+     * A regular expression that matches a single-quote character that is
+     * neither preceeded nor followed by another single-quote character. Used
+     * by {@link #checkSingleQuotes(java.lang.String, java.lang.String)} to
+     * verify that messages contain two single-quotes in order to produce a
+     * single apostrophe (dictated by {@code java.text.MessageFormat}).
+     */
+    private static final Pattern LONE_QUOTE_PATTERN =
+            Pattern.compile("^'[^']|[^']'[^']|[^']'$");
+
+    /**
+     * A regular expression that matches a single-quote character that have
+     * no adjacent single-quote or curly brace character. Used by
+     * {@link #checkSingleQuotes(java.lang.String, java.lang.String)} to
+     * verify that all single-quotes are either correctly formatted apostrophes
+     * or used for quoting curly braces, as required by
+     * {@code java.text.MessageFormat}.
+     */
+    private static final Pattern LONE_QUOTE_ALLOWED_PATTERN =
+            Pattern.compile("^'[^'{}]|[^'{}]'[^'{}]|[^'{}]'$");
+
+    /**
+     * A set of message identifiers in whose messages single-quotes may legally
+     * appear with no adjacent single-quote character. This will be messages
+     * where the single-quotes are needed to quote curly braces that should
+     * appear literally in the message text.
+     */
+    private static final Set<String> LONE_QUOTE_ALLOWED = new HashSet<String>();
+    static {
+        // The IJ help text contains curly braces that need quoting.
+        LONE_QUOTE_ALLOWED.add("IJ_HelpText");
+        // Some of the DRDA usage messages contain the text {on|off}, which
+        // needs quoting.
+        LONE_QUOTE_ALLOWED.add("DRDA_Usage8.I");
+        LONE_QUOTE_ALLOWED.add("DRDA_Usage11.I");
+        LONE_QUOTE_ALLOWED.add("PE_HelpText");
+    }
+
+    /** The message file to check. */
+    private final File file;
+
+    /** The properties found in the message file. */
+    private final Properties properties;
+
+    /**
+     * Create a new {@code MessageVetter} instance.
+     *
+     * @param file the file with the messages to check
+     * @throws IOException if the file cannot be loaded
+     */
+    private MessageVetter(File file) throws IOException {
+        this.file = file;
+        properties = new Properties();
+        FileInputStream in = new FileInputStream(file);
+        try {
+            properties.load(in);
+        } finally {
+            in.close();
+        }
+    }
+
+    /**
+     * Vet the messages in this file. An error will be raised if an
+     * ill-formatted message is found.
+     */
+    private void vet() {
+        Enumeration e = properties.propertyNames();
+        while (e.hasMoreElements()) {
+            String key = (String) e.nextElement();
+            String message = properties.getProperty(key);
+            vetMessage(key, message);
+        }
+    }
+
+    /**
+     * Vet a specific message. Raise an error if it is not well-formed.
+     *
+     * @param key the message identifier
+     * @param message the message format specifier
+     */
+    private void vetMessage(String key, String message) {
+        checkSingleQuotes(key, message);
+        checkValidMessageFormat(key, message);
+    }
+
+    /**
+     * Check that single-quote characters are doubled, as required by
+     * {@code java.text.MessageFormat}. Raise an error otherwise.
+     *
+     * @param key the message identifier
+     * @param message the message format specifier
+     */
+    private void checkSingleQuotes(String key, String message) {
+        Pattern p;
+
+        if (LONE_QUOTE_ALLOWED.contains(key)) {
+            // In some messages we allow lone single-quote characters, but
+            // only if they are used to quote curly braces. Use a regular
+            // expression that finds all single-quotes that aren't adjacent to
+            // another single-quote or a curly brace character.
+            p = LONE_QUOTE_ALLOWED_PATTERN;
+        } else {
+            // Otherwise, we don't allow lone single-quote characters at all.
+            p = LONE_QUOTE_PATTERN;
+        }
+
+        if (p.matcher(message).find()) {
+            throw new AssertionError("Lone single-quote in message " + key +
+                    " in " + file + ".\nThis is OK if it is used for quoting " +
+                    "special characters in the message. If this is what the " +
+                    "character is used for, add an exception in " +
+                    getClass().getName() + ".LONE_QUOTE_ALLOWED.");
+        }
+    }
+
+    /**
+     * Check that a message format specifier is valid. Raise an error if it
+     * is not.
+     *
+     * @param key the message identifier
+     * @param message the message format specifier
+     */
+    private void checkValidMessageFormat(String key, String message) {
+        try {
+            // See if a MessageFormat instance can be produced based on this
+            // message format specifier.
+            new MessageFormat(message);
+        } catch (Exception e) {
+            AssertionError ae = new AssertionError(
+                    "Message " + key + " in " + file + " isn't a valid " +
+                    "java.text.MessageFormat pattern.");
+            ae.initCause(e);
+            throw ae;
+        }
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+
+   Derby - Class org.apache.derbyBuild.ReleaseNoteReader
+
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+ */
+
+package org.apache.derbyBuild;
+
+import java.io.*;
+import javax.xml.parsers.*;
+import org.w3c.dom.*;
+
+/**
+ * <p>
+ * This tool reads a release note from a stream. When run standalone, this is
+ * a file stream. When run from the ReleaseNoteGenerator, the stream is opened
+ * on the URL of a release note stored in JIRA. The purpose of this class it to
+ * help people verify that their release notes can be digested by the ReleaseNoteGenerator.
+ * </p>
+ */
+public class ReleaseNoteReader
+{
+    /////////////////////////////////////////////////////////////////////////
+    //
+    //  CONSTANTS
+    //
+    /////////////////////////////////////////////////////////////////////////
+    
+    private static  final   String  USAGE =
+        "Usage:\n" +
+        "\n" +
+        "  java org.apache.derbyBuild.ReleaseNoteReader RELEASE_NOTE_FILE\n" +
+        "\n" +
+        "    where\n" +
+        "                  RELEASE_NOTE_FILE is the name of the file which holds the release note\n";
+
+
+    /////////////////////////////////////////////////////////////////////////
+    //
+    //  STATE
+    //
+    /////////////////////////////////////////////////////////////////////////
+
+    private DocumentBuilder _documentBuilder;
+
+    /////////////////////////////////////////////////////////////////////////
+    //
+    //  CONSTRUCTORS
+    //
+    /////////////////////////////////////////////////////////////////////////
+
+    public ReleaseNoteReader( DocumentBuilder documentBuilder )
+    {
+        _documentBuilder = documentBuilder;
+    }
+        
+    /////////////////////////////////////////////////////////////////////////
+    //
+    //  MAIN
+    //
+    /////////////////////////////////////////////////////////////////////////
+
+   /**
+    * The program entry point exercises all of the checks which
+    * would be performed by the ReleaseNoteGenerator on this
+    * particular release note. Takes one argument, the name of
+    * the file which holds the release note.
+    */
+    public  static void main( String[] args )
+        throws Exception
+    {
+        if ( (args == null) || (args.length != 1) )
+        {
+            println( USAGE );
+            System.exit(1);
+        }
+
+        String                                  fileName = args[ 0 ];
+        FileInputStream                 fis = new FileInputStream( fileName );
+        DocumentBuilderFactory  factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder              builder = factory.newDocumentBuilder();
+        ReleaseNoteReader           me = new ReleaseNoteReader( builder );
+
+        // here are the checks we perform
+        Document                        doc = me.getReleaseNote( fis );
+        Element                           summary = me.getReleaseNoteSummary( doc );
+        Element                         details = me.getReleaseNoteDetails( doc );
+
+        me.forbidBlockQuotes( doc );
+
+        // if you get this far, then everything worked
+
+        println( "\n" + fileName + " passes the currently known checks performed by the release note generator.\n" );
+    }
+    
+    /////////////////////////////////////////////////////////////////////////
+    //
+    //  BEHAVIOR CALLED BY ReleaseNoteGenerator
+    //
+    /////////////////////////////////////////////////////////////////////////
+
+    /**
+     * <p>
+     * Get the release note for an issue.
+     * </p>
+     */
+    public Document   getReleaseNote( InputStream is )
+        throws Exception
+    {
+        Document        doc = _documentBuilder.parse( is );
+
+        is.close();
+        
+        return doc;
+    }
+
+    /**
+     * <p>
+     * Get the summary paragraph for a release note
+     * </p>
+     */
+    public Element   getReleaseNoteSummary( Document releaseNote )
+        throws Exception
+    {
+        //
+        // The release note has the following structure:
+        //
+        // <h4>Summary of Change</h4>
+        // <p>
+        //  Summary text
+        // </p>
+        //
+        Element     root = releaseNote.getDocumentElement();
+        Element     summaryParagraph = GeneratorBase.getFirstChild( root, GeneratorBase.PARAGRAPH );
+
+        return summaryParagraph;
+    }
+ 
+    /**
+     * <p>
+     * Get the detail section for a release note
+     * </p>
+     */
+    public Element   getReleaseNoteDetails( Document releaseNote )
+        throws Exception
+    {
+        Element     root = releaseNote.getDocumentElement();
+        Element     details = GeneratorBase.getFirstChild( root, GeneratorBase.BODY );
+
+        return details;
+    }
+
+    /**
+     * <p>
+     * Forbid BLOCKQUOTEs for accessibility reasons. See http://www.w3.org/TR/WCAG10/#gl-structure-presentation
+     * </p>
+     */
+    private void    forbidBlockQuotes( Document releaseNote )   throws Exception
+    {
+        Element     root = releaseNote.getDocumentElement();
+        String          errorMessage = "For accessibility reasons, blockquotes are not allowed. Please remove the blockquote tags.";
+
+        forbid( root, "BLOCKQUOTE", errorMessage );
+        forbid( root, "blockquote", errorMessage );
+    }
+    private void    forbid( Element root, String tag, String errorMessage ) throws Exception
+    {
+        NodeList    tags = root.getElementsByTagName( tag );
+
+        if ( (tags != null) && (tags.getLength() > 0) )
+        {
+            throw new Exception( errorMessage );
+        }
+    }
+
+    ////////////////////////////////////////////////////////
+    //
+    // MISC MINIONS
+    //
+    ////////////////////////////////////////////////////////
+
+    private  static void    println( String text )
+    {
+        System.out.println( text );
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+
+   Derby - Class org.apache.derby.iapi.sql.ResultDescription
+
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to you under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+ */
+
+package org.apache.derby.iapi.sql;
+
+/**
+ * The ResultDescription interface provides methods to get metadata on the
+ * results returned by a statement.
+ *
+ */
+
+public interface ResultDescription
+{
+	/**
+	 * Returns an identifier that tells what type of statement has been
+	 * executed. This can be used to determine what other methods to call
+	 * to get the results back from a statement. For example, a SELECT
+	 * statement returns rows and columns, while other statements don't,
+	 * so you would only call getColumnCount() or getColumnType() for
+	 * SELECT statements.
+	 *
+	 * @return	A String identifier telling what type of statement this
+	 *		is.
+	 */
+	String	getStatementType();	
+
+	/**
+	 * Returns the number of columns in the result set.
+	 *
+	 * @return	The number of columns in the result set.
+	 */
+	int	getColumnCount();
+
+	/**
+		Return information about all the columns.
+
+        @return information about all the columns
+	*/
+	public ResultColumnDescriptor[] getColumnInfo();
+
+    /**
+     * Return the information about a single column (0-based indexing)
+     *
+     * @param idx The column index
+     * @return The column descriptor
+     */
+    public  ResultColumnDescriptor  getColumnInfo( int idx );
+
+	/**
+	 * Returns a ResultColumnDescriptor for the column, given the ordiinal
+	 * position of the column.
+	 * NOTE - position is 1-based.
+	 *
+	 * @param position	The oridinal position of a column in the
+	 *			ResultSet.
+	 *
+	 * @return		A ResultColumnDescriptor describing the
+	 *			column in the ResultSet.
+	 */
+	ResultColumnDescriptor	getColumnDescriptor(int position);
+
+	/**
+	 * Get a new result description that has been truncated
+	 * from input column number.   If the input column is
+	 * 5, then columns 5 to getColumnCount() are removed.
+	 * The new ResultDescription points to the same
+	 * ColumnDescriptors (this method performs a shallow
+	 * copy. The saved JDBC ResultSetMetaData will
+     * not be copied.
+	 *
+	 * @param truncateFrom the starting column to remove,
+	 * 1-based.
+	 *
+	 * @return a new ResultDescription
+	 */
+	public ResultDescription truncateColumns(int truncateFrom);
+    
+    /**
+     * Set the JDBC ResultSetMetaData for this ResultDescription.
+     * A ResultSetMetaData object can be saved in the statement
+     * plan using this method. This only works while
+     * the ResultSetMetaData api does not contain a getConnection()
+     * method or a close method.
+     * <BR>
+     * If this object already has a saved meta data object
+     * this call will do nothing.
+     * Due to synchronization the saved ResultSetMetaData
+     * object may not be the one passed in, ie. if two
+     * threads call this concurrently, only one will be saved.
+     * It is assumed the JDBC layer passes in a ResultSetMetaData
+     * object based upon this.
+     *
+     * @param rsmd The metadata to set
+     */
+    public void setMetaData(java.sql.ResultSetMetaData rsmd);
+    
+    /**
+     * Get the saved JDBC ResultSetMetaData. Will return
+     * null if setMetaData() has not been called on this
+     * object. The caller then should manufacture a
+     * ResultSetMetaData object and pass it into setMetaData.
+     *
+     * @return the metadata
+     */
+    public java.sql.ResultSetMetaData getMetaData();
+    
+    /**
+     * Return the position of the column matching the
+     * passed in names following the JDBC rules for
+     * ResultSet.getXXX and updateXXX.
+     * Rules are the matching is case insensitive
+     * and the insensitive name matches the first
+     * column found that matches (starting at postion 1).
+     * @param name The column name
+     * @return Position of the column (1-based), -1 if no match.
+     */
+    public int findColumnInsenstive(String name);
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+
+   Derby - Class org.apache.derby.iapi.security.Securable
+
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+ */
+
+package org.apache.derby.iapi.security;
+
+import org.apache.derby.catalog.AliasInfo;
+import org.apache.derby.iapi.sql.dictionary.SchemaDescriptor;
+
+/**
+ * Operations which can be secured. SQL authorization is one way to control
+ * who can access these operations.
+ */
+public enum Securable
+{
+        SET_DATABASE_PROPERTY
+            (
+             SchemaDescriptor.SYSCS_UTIL_SCHEMA_UUID,
+             "SYSCS_SET_DATABASE_PROPERTY",
+             AliasInfo.ALIAS_TYPE_PROCEDURE_AS_CHAR
+             ),
+            
+        GET_DATABASE_PROPERTY
+            (
+             SchemaDescriptor.SYSCS_UTIL_SCHEMA_UUID,
+             "SYSCS_GET_DATABASE_PROPERTY",
+             AliasInfo.ALIAS_TYPE_FUNCTION_AS_CHAR
+             ),
+            
+        FREEZE_DATABASE
+            (
+             SchemaDescriptor.SYSCS_UTIL_SCHEMA_UUID,
+             "SYSCS_FREEZE_DATABASE",
+             AliasInfo.ALIAS_TYPE_PROCEDURE_AS_CHAR
+             ),
+            
+        UNFREEZE_DATABASE
+            (
+             SchemaDescriptor.SYSCS_UTIL_SCHEMA_UUID,
+             "SYSCS_UNFREEZE_DATABASE",
+             AliasInfo.ALIAS_TYPE_PROCEDURE_AS_CHAR
+             ),
+            
+        CHECKPOINT_DATABASE
+            (
+             SchemaDescriptor.SYSCS_UTIL_SCHEMA_UUID,
+             "SYSCS_CHECKPOINT_DATABASE",
+             AliasInfo.ALIAS_TYPE_PROCEDURE_AS_CHAR
+             ),
+            
+        BACKUP_DATABASE
+            (
+             SchemaDescriptor.SYSCS_UTIL_SCHEMA_UUID,
+             "SYSCS_BACKUP_DATABASE",
+             AliasInfo.ALIAS_TYPE_PROCEDURE_AS_CHAR
+             ),
+            
+        BACKUP_DATABASE_NOWAIT
+            (
+             SchemaDescriptor.SYSCS_UTIL_SCHEMA_UUID,
+             "SYSCS_BACKUP_DATABASE_NOWAIT",
+             AliasInfo.ALIAS_TYPE_PROCEDURE_AS_CHAR
+             ),
+            
+        BACKUP_DATABASE_AND_ENABLE_LOG_ARCHIVE_MODE
+            (
+             SchemaDescriptor.SYSCS_UTIL_SCHEMA_UUID,
+             "SYSCS_BACKUP_DATABASE_AND_ENABLE_LOG_ARCHIVE_MODE",
+             AliasInfo.ALIAS_TYPE_PROCEDURE_AS_CHAR
+             ),
+            
+        BACKUP_DATABASE_AND_ENABLE_LOG_ARCHIVE_MODE_NOWAIT
+            (
+             SchemaDescriptor.SYSCS_UTIL_SCHEMA_UUID,
+             "SYSCS_BACKUP_DATABASE_AND_ENABLE_LOG_ARCHIVE_MODE_NOWAIT",
+             AliasInfo.ALIAS_TYPE_PROCEDURE_AS_CHAR
+             ),
+            
+        DISABLE_LOG_ARCHIVE_MODE
+            (
+             SchemaDescriptor.SYSCS_UTIL_SCHEMA_UUID,
+             "SYSCS_DISABLE_LOG_ARCHIVE_MODE",
+             AliasInfo.ALIAS_TYPE_PROCEDURE_AS_CHAR
+             ),
+            
+        CHECK_TABLE
+            (
+             SchemaDescriptor.SYSCS_UTIL_SCHEMA_UUID,
+             "SYSCS_CHECK_TABLE",
+             AliasInfo.ALIAS_TYPE_FUNCTION_AS_CHAR
+             ),
+            
+        INSTALL_JAR
+            (
+             SchemaDescriptor.SQLJ_SCHEMA_UUID,
+             "INSTALL_JAR",
+             AliasInfo.ALIAS_TYPE_PROCEDURE_AS_CHAR
+             ),
+            
+        REPLACE_JAR
+            (
+             SchemaDescriptor.SQLJ_SCHEMA_UUID,
+             "REPLACE_JAR",
+             AliasInfo.ALIAS_TYPE_PROCEDURE_AS_CHAR
+             ),
+            
+        REMOVE_JAR
+            (
+             SchemaDescriptor.SQLJ_SCHEMA_UUID,
+             "REMOVE_JAR",
+             AliasInfo.ALIAS_TYPE_PROCEDURE_AS_CHAR
+             ),
+            
+        EXPORT_TABLE
+            (
+             SchemaDescriptor.SYSCS_UTIL_SCHEMA_UUID,
+             "SYSCS_EXPORT_TABLE",
+             AliasInfo.ALIAS_TYPE_PROCEDURE_AS_CHAR
+             ),
+            
+        IMPORT_TABLE
+            (
+             SchemaDescriptor.SYSCS_UTIL_SCHEMA_UUID,
+             "SYSCS_IMPORT_TABLE",
+             AliasInfo.ALIAS_TYPE_PROCEDURE_AS_CHAR
+             ),
+            
+        IMPORT_TABLE_LOBS_FROM_EXTFILE
+            (
+             SchemaDescriptor.SYSCS_UTIL_SCHEMA_UUID,
+             "SYSCS_IMPORT_TABLE_LOBS_FROM_EXTFILE",
+             AliasInfo.ALIAS_TYPE_PROCEDURE_AS_CHAR
+             ),
+            
+        IMPORT_DATA
+            (
+             SchemaDescriptor.SYSCS_UTIL_SCHEMA_UUID,
+             "SYSCS_IMPORT_DATA",
+             AliasInfo.ALIAS_TYPE_PROCEDURE_AS_CHAR
+             ),
+            
+        IMPORT_DATA_LOBS_FROM_EXTFILE
+            (
+             SchemaDescriptor.SYSCS_UTIL_SCHEMA_UUID,
+             "SYSCS_IMPORT_DATA_LOBS_FROM_EXTFILE",
+             AliasInfo.ALIAS_TYPE_PROCEDURE_AS_CHAR
+             ),
+            
+        BULK_INSERT
+            (
+             SchemaDescriptor.SYSCS_UTIL_SCHEMA_UUID,
+             "SYSCS_BULK_INSERT",
+             AliasInfo.ALIAS_TYPE_PROCEDURE_AS_CHAR
+             ),
+            
+        RELOAD_SECURITY_POLICY
+            (
+             SchemaDescriptor.SYSCS_UTIL_SCHEMA_UUID,
+             "SYSCS_RELOAD_SECURITY_POLICY",
+             AliasInfo.ALIAS_TYPE_PROCEDURE_AS_CHAR
+             ),
+            
+        SET_USER_ACCESS
+            (
+             SchemaDescriptor.SYSCS_UTIL_SCHEMA_UUID,
+             "SYSCS_SET_USER_ACCESS",
+             AliasInfo.ALIAS_TYPE_PROCEDURE_AS_CHAR
+             ),
+            
+        GET_USER_ACCESS
+            (
+             SchemaDescriptor.SYSCS_UTIL_SCHEMA_UUID,
+             "SYSCS_GET_USER_ACCESS",
+             AliasInfo.ALIAS_TYPE_FUNCTION_AS_CHAR
+             ),
+            
+        INVALIDATE_STORED_STATEMENTS
+            (
+             SchemaDescriptor.SYSCS_UTIL_SCHEMA_UUID,
+             "SYSCS_INVALIDATE_STORED_STATEMENTS",
+             AliasInfo.ALIAS_TYPE_PROCEDURE_AS_CHAR
+             ),
+            
+        EMPTY_STATEMENT_CACHE
+            (
+             SchemaDescriptor.SYSCS_UTIL_SCHEMA_UUID,
+             "SYSCS_EMPTY_STATEMENT_CACHE",
+             AliasInfo.ALIAS_TYPE_PROCEDURE_AS_CHAR
+             ),
+            
+        SET_XPLAIN_MODE
+            (
+             SchemaDescriptor.SYSCS_UTIL_SCHEMA_UUID,
+             "SYSCS_SET_XPLAIN_MODE",
+             AliasInfo.ALIAS_TYPE_PROCEDURE_AS_CHAR
+             ),
+            
+        GET_XPLAIN_MODE
+            (
+             SchemaDescriptor.SYSCS_UTIL_SCHEMA_UUID,
+             "SYSCS_GET_XPLAIN_MODE",
+             AliasInfo.ALIAS_TYPE_FUNCTION_AS_CHAR
+             ),
+            
+        SET_XPLAIN_SCHEMA
+            (
+             SchemaDescriptor.SYSCS_UTIL_SCHEMA_UUID,
+             "SYSCS_SET_XPLAIN_SCHEMA",
+             AliasInfo.ALIAS_TYPE_PROCEDURE_AS_CHAR
+             ),
+            
+        GET_XPLAIN_SCHEMA
+            (
+             SchemaDescriptor.SYSCS_UTIL_SCHEMA_UUID,
+             "SYSCS_GET_XPLAIN_SCHEMA",
+             AliasInfo.ALIAS_TYPE_FUNCTION_AS_CHAR
+             ),
+            
+        CREATE_USER
+            (
+             SchemaDescriptor.SYSCS_UTIL_SCHEMA_UUID,
+             "SYSCS_CREATE_USER",
+             AliasInfo.ALIAS_TYPE_PROCEDURE_AS_CHAR
+             ),
+            
+        RESET_PASSWORD
+            (
+             SchemaDescriptor.SYSCS_UTIL_SCHEMA_UUID,
+             "SYSCS_RESET_PASSWORD",
+             AliasInfo.ALIAS_TYPE_PROCEDURE_AS_CHAR
+             ),
+            
+        DROP_USER
+            (
+             SchemaDescriptor.SYSCS_UTIL_SCHEMA_UUID,
+             "SYSCS_DROP_USER",
+             AliasInfo.ALIAS_TYPE_PROCEDURE_AS_CHAR
+             ),
+            
+            ;
+
+        /** UUID string of schema holding the system routine associated with the operation */
+        public  final   String  routineSchemaID;
+
+        /** Name of the associated system routine */
+        public  final   String  routineName;
+        
+        /** Type of routine (function or procedure) */
+        public  final   char    routineType;
+
+        /** Construct a Securable from its attributes */
+        private Securable
+            (
+             String routineSchemaID,
+             String routineName,
+             char   routineType
+             )
+        {
+            this.routineSchemaID = routineSchemaID;
+            this.routineName = routineName;
+            this.routineType = routineType;
+        }
+
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+
+   Derby - Class org.apache.derby.iapi.services.cache.SignedBinary
+
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+ */
+package org.apache.derby.impl.drda;
+
+/**
+ * Converters from signed binary bytes to Java <code>short</code>, <code>int</code>, or <code>long</code>.
+ */
+class SignedBinary
+{
+  // Hide the default constructor, this is a static class.
+  private SignedBinary () {}
+
+  /**
+   * AS/400, Unix, System/390 byte-order for signed binary representations.
+   */
+  public final static int BIG_ENDIAN = 1;
+
+  /**
+   * Intel 80/86 reversed byte-order for signed binary representations.
+   */
+  public final static int LITTLE_ENDIAN = 2;
+
+  /**
+   * Build a Java short from a 2-byte signed binary representation.
+   * <p>
+   * Depending on machine type, byte orders are
+   * {@link #BIG_ENDIAN BIG_ENDIAN} for signed binary integers, and
+   * {@link #LITTLE_ENDIAN LITTLE_ENDIAN} for pc8087 signed binary integers.
+   *
+   * @exception IllegalArgumentException if the specified byte order is not recognized.
+   */
+  public static short getShort (byte[] buffer, int offset, int byteOrder)
+  {
+    switch (byteOrder) {
+    case BIG_ENDIAN:
+      return bigEndianBytesToShort (buffer, offset);
+    case LITTLE_ENDIAN:
+      return littleEndianBytesToShort (buffer, offset);
+    default:
+      throw new java.lang.IllegalArgumentException();
+    }
+  }
+
+  /**
+   * Build a Java int from a 4-byte signed binary representation.
+   * <p>
+   * Depending on machine type, byte orders are
+   * {@link #BIG_ENDIAN BIG_ENDIAN} for signed binary integers, and
+   * {@link #LITTLE_ENDIAN LITTLE_ENDIAN} for pc8087 signed binary integers.
+   *
+   * @exception IllegalArgumentException if the specified byte order is not recognized.
+   */
+  public static int getInt (byte[] buffer, int offset, int byteOrder)
+  {
+    switch (byteOrder) {
+    case BIG_ENDIAN:
+      return bigEndianBytesToInt (buffer, offset);
+    case LITTLE_ENDIAN:
+      return littleEndianBytesToInt (buffer, offset);
+    default:
+      throw new java.lang.IllegalArgumentException();
+    }
+  }
+
+  /**
+   * Build a Java long from an 8-byte signed binary representation.
+   * <p>
+   * Depending on machine type, byte orders are
+   * {@link #BIG_ENDIAN BIG_ENDIAN} for signed binary integers, and
+   * {@link #LITTLE_ENDIAN LITTLE_ENDIAN} for pc8087 signed binary integers.
+   * <p>
+   *
+   * @exception IllegalArgumentException if the specified byte order is not recognized.
+   */
+  public static long getLong (byte[] buffer, int offset, int byteOrder)
+  {
+    switch (byteOrder) {
+    case BIG_ENDIAN:
+      return bigEndianBytesToLong (buffer, offset);
+    case LITTLE_ENDIAN:
+      return littleEndianBytesToLong (buffer, offset);
+    default:
+      throw new java.lang.IllegalArgumentException();
+    }
+  }
+
+  /**
+   * Build a Java short from a 2-byte big endian signed binary representation.
+   */
+  public static short bigEndianBytesToShort (byte[] buffer, int offset)
+  {
+    return (short) (((buffer[offset+0] & 0xff) << 8) +
+                    ((buffer[offset+1] & 0xff) << 0));
+  }
+
+  /**
+   * Build a Java short from a 2-byte little endian signed binary representation.
+   */
+  public static short littleEndianBytesToShort (byte[] buffer, int offset)
+  {
+    return (short) (((buffer[offset+0] & 0xff) << 0) +
+                    ((buffer[offset+1] & 0xff) << 8));
+  }
+
+  /**
+   * Build a Java int from a 4-byte big endian signed binary representation.
+   */
+  public static int bigEndianBytesToInt (byte[] buffer, int offset)
+  {
+    return (int) (((buffer[offset+0] & 0xff) << 24) +
+                  ((buffer[offset+1] & 0xff) << 16) +
+                  ((buffer[offset+2] & 0xff) << 8) +
+                  ((buffer[offset+3] & 0xff) << 0));
+  }
+
+  /**
+   * Build a Java int from a 4-byte little endian signed binary representation.
+   */
+  public static int littleEndianBytesToInt (byte[] buffer, int offset)
+  {
+    return (int) (((buffer[offset+0] & 0xff) << 0) +
+                  ((buffer[offset+1] & 0xff) << 8) +
+                  ((buffer[offset+2] & 0xff) << 16) +
+                  ((buffer[offset+3] & 0xff) << 24));
+  }
+
+  /**
+   * Build a Java long from an 8-byte big endian signed binary representation.
+   */
+  public static long bigEndianBytesToLong (byte[] buffer, int offset)
+  {
+    return (long) (((buffer[offset+0] & 0xffL) << 56) +
+                   ((buffer[offset+1] & 0xffL) << 48) +
+                   ((buffer[offset+2] & 0xffL) << 40) +
+                   ((buffer[offset+3] & 0xffL) << 32) +
+                   ((buffer[offset+4] & 0xffL) << 24) +
+                   ((buffer[offset+5] & 0xffL) << 16) +
+                   ((buffer[offset+6] & 0xffL) << 8) +
+                   ((buffer[offset+7] & 0xffL) << 0));
+  }
+
+  /**
+   * Build a Java long from an 8-byte little endian signed binary representation.
+   */
+  public static long littleEndianBytesToLong (byte[] buffer, int offset)
+  {
+    return (long) (((buffer[offset+0] & 0xffL) << 0) +
+                   ((buffer[offset+1] & 0xffL) << 8) +
+                   ((buffer[offset+2] & 0xffL) << 16) +
+                   ((buffer[offset+3] & 0xffL) << 24) +
+                   ((buffer[offset+4] & 0xffL) << 32) +
+                   ((buffer[offset+5] & 0xffL) << 40) +
+                   ((buffer[offset+6] & 0xffL) << 48) +
+                   ((buffer[offset+7] & 0xffL) << 56));
+  }
+}

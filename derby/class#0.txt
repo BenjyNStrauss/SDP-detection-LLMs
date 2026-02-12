@@ -1,0 +1,57 @@
+package ident$1.ident$2.ident$3.ident$4.ident$5.ident$6;
+import ident$1.ident$2.ident$3.ident$4.ident$5.ident$8.ident$9;
+import java.ident$11.ident$12;
+import java.ident$11.ident$13;
+public class ident$16
+{
+private ident$12 ident$18;
+private ident$13 ident$19;
+private ident$9 ident$20;
+public ident$16(ident$9 ident$20)
+{
+this.ident$20 = ident$20;
+this.ident$18 = new ident$12();
+this.ident$19 = new ident$13(ident$18);
+}
+public void ident$24(String ident$26)
+{
+if (ident$20 != null)
+ident$19.ident$29(ident$20.ident$30());
+ident$19.ident$29(ident$26);
+}
+public void ident$31(String ident$26)
+{
+if (ident$20 != null)
+ident$19.ident$29(ident$20.ident$30());
+ident$19.ident$32(ident$26);
+}
+public void ident$33(Throwable ident$35)
+{
+int ident$37 = 0;
+while(ident$35 != null)
+{
+if (ident$37 > 0)
+ident$19.ident$32("literal$0" +
+ident$37 + "literal$1");
+ident$35.ident$39(ident$19);
+if (ident$35 instanceof java.ident$41.ident$42) {
+Throwable ident$43 = ((java.ident$41.ident$42)ident$35).ident$44();
+ident$35 = (ident$43 == null) ? ident$35.ident$45() : ident$43;
+} else {
+ident$35 = ident$35.ident$45();
+}
+if (ident$37 > 0)
+ident$19.ident$32("literal$2" +
+ident$37 + "literal$1");
+ident$37++;
+}
+}
+public void ident$47()
+{
+ident$18.ident$48().ident$49(0);
+}
+public StringBuffer ident$51()
+{
+return ident$18.ident$48();
+}
+}
