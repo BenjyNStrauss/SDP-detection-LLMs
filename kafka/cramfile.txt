@@ -1,0 +1,1494 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.kafka.metadata;
+
+import org.apache.kafka.common.Uuid;
+import org.apache.kafka.common.message.AssignReplicasToDirsRequestData;
+import org.apache.kafka.common.message.AssignReplicasToDirsResponseData;
+import org.apache.kafka.common.protocol.Errors;
+import org.apache.kafka.server.common.TopicIdPartition;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+
+public class AssignmentsHelper {
+
+    /**
+     * Build a AssignReplicasToDirsRequestData from a map of TopicIdPartition to Uuid.
+     */
+    public static AssignReplicasToDirsRequestData buildRequestData(int brokerId, long brokerEpoch, Map<TopicIdPartition, Uuid> assignment) {
+        Map<Uuid, AssignReplicasToDirsRequestData.DirectoryData> directoryMap = new HashMap<>();
+        Map<Uuid, Map<Uuid, AssignReplicasToDirsRequestData.TopicData>> topicMap = new HashMap<>();
+        for (Map.Entry<TopicIdPartition, Uuid> entry : assignment.entrySet()) {
+            TopicIdPartition topicPartition = entry.getKey();
+            Uuid directoryId = entry.getValue();
+            AssignReplicasToDirsRequestData.DirectoryData directory = directoryMap.computeIfAbsent(directoryId, d -> new AssignReplicasToDirsRequestData.DirectoryData().setId(directoryId));
+            AssignReplicasToDirsRequestData.TopicData topic = topicMap.computeIfAbsent(directoryId, d -> new HashMap<>())
+                    .computeIfAbsent(topicPartition.topicId(), topicId -> {
+                        AssignReplicasToDirsRequestData.TopicData data = new AssignReplicasToDirsRequestData.TopicData().setTopicId(topicId);
+                        directory.topics().add(data);
+                        return data;
+                    });
+            AssignReplicasToDirsRequestData.PartitionData partition = new AssignReplicasToDirsRequestData.PartitionData().setPartitionIndex(topicPartition.partitionId());
+            topic.partitions().add(partition);
+        }
+        return new AssignReplicasToDirsRequestData()
+                .setBrokerId(brokerId)
+                .setBrokerEpoch(brokerEpoch)
+                .setDirectories(new ArrayList<>(directoryMap.values()));
+    }
+
+    /**
+     * Build a AssignReplicasToDirsRequestData from a map of TopicIdPartition to Uuid.
+     */
+    public static AssignReplicasToDirsResponseData buildResponseData(short errorCode, int throttleTimeMs, Map<Uuid, Map<TopicIdPartition, Errors>> errors) {
+        Map<Uuid, AssignReplicasToDirsResponseData.DirectoryData> directoryMap = new HashMap<>();
+        Map<Uuid, Map<Uuid, AssignReplicasToDirsResponseData.TopicData>> topicMap = new HashMap<>();
+        for (Map.Entry<Uuid, Map<TopicIdPartition, Errors>> dirEntry : errors.entrySet()) {
+            Uuid directoryId = dirEntry.getKey();
+            AssignReplicasToDirsResponseData.DirectoryData directory = directoryMap.computeIfAbsent(directoryId, d -> new AssignReplicasToDirsResponseData.DirectoryData().setId(directoryId));
+            for (Map.Entry<TopicIdPartition, Errors> partitionEntry : dirEntry.getValue().entrySet()) {
+                TopicIdPartition topicPartition = partitionEntry.getKey();
+                Errors error = partitionEntry.getValue();
+                AssignReplicasToDirsResponseData.TopicData topic = topicMap.computeIfAbsent(directoryId, d -> new HashMap<>())
+                        .computeIfAbsent(topicPartition.topicId(), topicId -> {
+                            AssignReplicasToDirsResponseData.TopicData data = new AssignReplicasToDirsResponseData.TopicData().setTopicId(topicId);
+                            directory.topics().add(data);
+                            return data;
+                        });
+                AssignReplicasToDirsResponseData.PartitionData partition = new AssignReplicasToDirsResponseData.PartitionData()
+                        .setPartitionIndex(topicPartition.partitionId()).setErrorCode(error.code());
+                topic.partitions().add(partition);
+            }
+        }
+        return new AssignReplicasToDirsResponseData()
+                .setErrorCode(errorCode)
+                .setThrottleTimeMs(throttleTimeMs)
+                .setDirectories(new ArrayList<>(directoryMap.values()));
+    }
+
+    /**
+     * Normalize the request data by sorting the directories, topics and partitions.
+     * This is useful for comparing two semantically equivalent requests.
+     */
+    public static AssignReplicasToDirsRequestData normalize(AssignReplicasToDirsRequestData request) {
+        request = request.duplicate();
+        request.directories().sort(Comparator.comparing(AssignReplicasToDirsRequestData.DirectoryData::id));
+        for (AssignReplicasToDirsRequestData.DirectoryData directory : request.directories()) {
+            directory.topics().sort(Comparator.comparing(AssignReplicasToDirsRequestData.TopicData::topicId));
+            for (AssignReplicasToDirsRequestData.TopicData topic : directory.topics()) {
+                topic.partitions().sort(Comparator.comparing(AssignReplicasToDirsRequestData.PartitionData::partitionIndex));
+            }
+        }
+        return request;
+    }
+
+    /**
+     * Normalize the response data by sorting the directories, topics and partitions.
+     * This is useful for comparing two semantically equivalent requests.
+     */
+    public static AssignReplicasToDirsResponseData normalize(AssignReplicasToDirsResponseData response) {
+        response = response.duplicate();
+        response.directories().sort(Comparator.comparing(AssignReplicasToDirsResponseData.DirectoryData::id));
+        for (AssignReplicasToDirsResponseData.DirectoryData directory : response.directories()) {
+            directory.topics().sort(Comparator.comparing(AssignReplicasToDirsResponseData.TopicData::topicId));
+            for (AssignReplicasToDirsResponseData.TopicData topic : directory.topics()) {
+                topic.partitions().sort(Comparator.comparing(AssignReplicasToDirsResponseData.PartitionData::partitionIndex));
+            }
+        }
+        return response;
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.kafka.server.mutable;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+
+/**
+ * A list which cannot grow beyond a certain length. If the maximum length would be exceeded by an
+ * operation, the operation throws a BoundedListTooLongException exception rather than completing.
+ * For simplicity, mutation through iterators or sublists is not allowed.
+ *
+ * @param <E> the element type
+ */
+public class BoundedList<E> implements List<E> {
+    private final int maxLength;
+    private final List<E> underlying;
+
+    public static <E> BoundedList<E> newArrayBacked(int maxLength) {
+        return new BoundedList<>(maxLength, new ArrayList<>());
+    }
+
+    public static <E> BoundedList<E> newArrayBacked(int maxLength, int initialCapacity) {
+        if (initialCapacity <= 0) {
+            throw new IllegalArgumentException("Invalid non-positive initialCapacity of " + initialCapacity);
+        }
+        return new BoundedList<>(maxLength, new ArrayList<>(initialCapacity));
+    }
+
+    private BoundedList(int maxLength, List<E> underlying) {
+        if (maxLength <= 0) {
+            throw new IllegalArgumentException("Invalid non-positive maxLength of " + maxLength);
+        }
+
+        if (underlying.size() > maxLength) {
+            throw new BoundedListTooLongException("Cannot wrap list, because it is longer than " +
+                "the maximum length " + maxLength);
+        }
+        this.maxLength = maxLength;
+        this.underlying = underlying;
+    }
+
+    @Override
+    public int size() {
+        return underlying.size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return underlying.isEmpty();
+    }
+
+    @Override
+    public boolean contains(Object o) {
+        return underlying.contains(o);
+    }
+
+    @Override
+    public Iterator<E> iterator() {
+        return Collections.unmodifiableList(underlying).iterator();
+    }
+
+    @Override
+    public Object[] toArray() {
+        return underlying.toArray();
+    }
+
+    @Override
+    public <T> T[] toArray(T[] a) {
+        return underlying.toArray(a);
+    }
+
+    @Override
+    public boolean add(E e) {
+        if (underlying.size() >= maxLength) {
+            throw new BoundedListTooLongException("Cannot add another element to the list " +
+                "because it would exceed the maximum length of " + maxLength);
+        }
+        return underlying.add(e);
+    }
+
+    @Override
+    public boolean remove(Object o) {
+        return underlying.remove(o);
+    }
+
+    @Override
+    public boolean containsAll(Collection<?> c) {
+        return underlying.containsAll(c);
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends E> c) {
+        int numToAdd = c.size();
+        if (underlying.size() > maxLength - numToAdd) {
+            throw new BoundedListTooLongException("Cannot add another " + numToAdd +
+                " element(s) to the list because it would exceed the maximum length of " +
+                maxLength);
+        }
+        return underlying.addAll(c);
+    }
+
+    @Override
+    public boolean addAll(int index, Collection<? extends E> c) {
+        int numToAdd = c.size();
+        if (underlying.size() > maxLength - numToAdd) {
+            throw new BoundedListTooLongException("Cannot add another " + numToAdd +
+                " element(s) to the list because it would exceed the maximum length of " +
+                maxLength);
+        }
+        return underlying.addAll(index, c);
+    }
+
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        return underlying.removeAll(c);
+    }
+
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        return underlying.retainAll(c);
+    }
+
+    @Override
+    public void clear() {
+        underlying.clear();
+    }
+
+    @Override
+    public E get(int index) {
+        return underlying.get(index);
+    }
+
+    @Override
+    public E set(int index, E element) {
+        return underlying.set(index, element);
+    }
+
+    @Override
+    public void add(int index, E element) {
+        if (underlying.size() >= maxLength) {
+            throw new BoundedListTooLongException("Cannot add another element to the list " +
+                    "because it would exceed the maximum length of " + maxLength);
+        }
+        underlying.add(index, element);
+    }
+
+    @Override
+    public E remove(int index) {
+        return underlying.remove(index);
+    }
+
+    @Override
+    public int indexOf(Object o) {
+        return underlying.indexOf(o);
+    }
+
+    @Override
+    public int lastIndexOf(Object o) {
+        return underlying.lastIndexOf(o);
+    }
+
+    @Override
+    public ListIterator<E> listIterator() {
+        return Collections.unmodifiableList(underlying).listIterator();
+    }
+
+    @Override
+    public ListIterator<E> listIterator(int index) {
+        return Collections.unmodifiableList(underlying).listIterator(index);
+    }
+
+    @Override
+    public List<E> subList(int fromIndex, int toIndex) {
+        return Collections.unmodifiableList(underlying).subList(fromIndex, toIndex);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return underlying.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return underlying.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return underlying.toString();
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package kafka.server.handlers;
+
+import kafka.network.RequestChannel;
+import kafka.server.AuthHelper;
+import kafka.server.KafkaConfig;
+
+import org.apache.kafka.common.Uuid;
+import org.apache.kafka.common.errors.InvalidRequestException;
+import org.apache.kafka.common.message.DescribeTopicPartitionsRequestData;
+import org.apache.kafka.common.message.DescribeTopicPartitionsResponseData;
+import org.apache.kafka.common.message.DescribeTopicPartitionsResponseData.DescribeTopicPartitionsResponsePartition;
+import org.apache.kafka.common.message.DescribeTopicPartitionsResponseData.DescribeTopicPartitionsResponseTopic;
+import org.apache.kafka.common.protocol.Errors;
+import org.apache.kafka.common.requests.DescribeTopicPartitionsRequest;
+import org.apache.kafka.common.resource.Resource;
+import org.apache.kafka.metadata.MetadataCache;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Stream;
+
+import static org.apache.kafka.common.acl.AclOperation.DESCRIBE;
+import static org.apache.kafka.common.resource.ResourceType.TOPIC;
+
+public class DescribeTopicPartitionsRequestHandler {
+    MetadataCache metadataCache;
+    AuthHelper authHelper;
+    KafkaConfig config;
+
+    public DescribeTopicPartitionsRequestHandler(
+        MetadataCache metadataCache,
+        AuthHelper authHelper,
+        KafkaConfig config
+    ) {
+        this.metadataCache = metadataCache;
+        this.authHelper = authHelper;
+        this.config = config;
+    }
+
+    public DescribeTopicPartitionsResponseData handleDescribeTopicPartitionsRequest(RequestChannel.Request abstractRequest) {
+        DescribeTopicPartitionsRequestData request = ((DescribeTopicPartitionsRequest) abstractRequest.loggableRequest()).data();
+        Set<String> topics = new HashSet<>();
+        boolean fetchAllTopics = request.topics().isEmpty();
+        DescribeTopicPartitionsRequestData.Cursor cursor = request.cursor();
+        String cursorTopicName = cursor != null ? cursor.topicName() : "";
+        if (fetchAllTopics) {
+            metadataCache.getAllTopics().forEach(topicName -> {
+                if (topicName.compareTo(cursorTopicName) >= 0) {
+                    topics.add(topicName);
+                }
+            });
+        } else {
+            request.topics().forEach(topic -> {
+                String topicName = topic.name();
+                if (topicName.compareTo(cursorTopicName) >= 0) {
+                    topics.add(topicName);
+                }
+            });
+
+            if (cursor != null && !topics.contains(cursor.topicName())) {
+                // The topic in cursor must be included in the topic list if provided.
+                throw new InvalidRequestException("DescribeTopicPartitionsRequest topic list should contain the cursor topic: " + cursor.topicName());
+            }
+        }
+
+        if (cursor != null && cursor.partitionIndex() < 0) {
+            // The partition id in cursor must be valid.
+            throw new InvalidRequestException("DescribeTopicPartitionsRequest cursor partition must be valid: " + cursor);
+        }
+
+        // Do not disclose the existence of topics unauthorized for Describe, so we've not even checked if they exist or not
+        Set<DescribeTopicPartitionsResponseTopic> unauthorizedForDescribeTopicMetadata = new HashSet<>();
+
+        Stream<String> authorizedTopicsStream = topics.stream().sorted().filter(topicName -> {
+            boolean isAuthorized = authHelper.authorize(
+                abstractRequest.context(), DESCRIBE, TOPIC, topicName, true, true, 1);
+            if (!fetchAllTopics && !isAuthorized) {
+                // We should not return topicId when on unauthorized error, so we return zero uuid.
+                unauthorizedForDescribeTopicMetadata.add(describeTopicPartitionsResponseTopic(
+                    Errors.TOPIC_AUTHORIZATION_FAILED, topicName, Uuid.ZERO_UUID, false, List.of())
+                );
+            }
+            return isAuthorized;
+        });
+
+        DescribeTopicPartitionsResponseData response = metadataCache.describeTopicResponse(
+            authorizedTopicsStream.iterator(),
+            abstractRequest.context().listenerName,
+            (String topicName) -> topicName.equals(cursorTopicName) ? cursor.partitionIndex() : 0,
+            Math.max(Math.min(config.maxRequestPartitionSizeLimit(), request.responsePartitionLimit()), 1),
+            fetchAllTopics
+        );
+
+        // get topic authorized operations
+        response.topics().forEach(topicData ->
+            topicData.setTopicAuthorizedOperations(authHelper.authorizedOperations(abstractRequest, new Resource(TOPIC, topicData.name()))));
+
+        response.topics().addAll(unauthorizedForDescribeTopicMetadata);
+        return response;
+    }
+
+    private DescribeTopicPartitionsResponseTopic describeTopicPartitionsResponseTopic(
+        Errors error,
+        String topic,
+        Uuid topicId,
+        Boolean isInternal,
+        List<DescribeTopicPartitionsResponsePartition> partitionData
+    ) {
+        return new DescribeTopicPartitionsResponseTopic()
+            .setErrorCode(error.code())
+            .setName(topic)
+            .setTopicId(topicId)
+            .setIsInternal(isInternal)
+            .setPartitions(partitionData);
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.kafka.server.purgatory;
+
+import org.apache.kafka.server.util.timer.TimerTask;
+
+import java.util.concurrent.locks.ReentrantLock;
+
+/**
+ * An operation whose processing needs to be delayed for at most the given delayMs. For example
+ * a delayed produce operation could be waiting for specified number of acks; or
+ * a delayed fetch operation could be waiting for a given number of bytes to accumulate.
+ * <br/>
+ * The logic upon completing a delayed operation is defined in onComplete() and will be called exactly once.
+ * Once an operation is completed, isCompleted() will return true. onComplete() is called from forceComplete(),
+ * which is triggered by either expiration, if the operation is not completed after delayMs; or tryComplete(),
+ * if the operation can be completed now.
+ * <br/>
+ * A subclass of DelayedOperation needs to provide an implementation of both onComplete() and tryComplete().
+ * <br/>
+ * Noted that if you add a future delayed operation that calls ReplicaManager.appendRecords() in onComplete()
+ * like DelayedJoin, you must be aware that this operation's onExpiration() needs to call actionQueue.tryCompleteAction().
+ */
+public abstract class DelayedOperation extends TimerTask {
+
+    private volatile boolean completed = false;
+
+    protected final ReentrantLock lock = new ReentrantLock();
+
+    public DelayedOperation(long delayMs) {
+        super(delayMs);
+    }
+
+    /*
+     * Force completing the delayed operation, if not already completed.
+     * This function can be triggered when
+     *
+     * 1. The operation has been verified to be completable inside tryComplete()
+     * 2. The operation has expired and hence needs to be completed right now
+     *
+     * Return true iff the operation is completed by the caller: note that
+     * concurrent threads can try to complete the same operation, but only
+     * the first thread will succeed in completing the operation and return
+     * true, others will still return false.
+     */
+    public boolean forceComplete() {
+        // Do not proceed if the operation is already completed.
+        if (completed) {
+            return false;
+        }
+        // Attain lock prior completing the request.
+        lock.lock();
+        try {
+            // Re-check, if the operation is already completed by some other thread.
+            if (!completed) {
+                completed = true;
+                // cancel the timeout timer
+                cancel();
+                onComplete();
+                return true;
+            } else {
+                return false;
+            }
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * Check if the delayed operation is already completed
+     */
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    /**
+     * Call-back to execute when a delayed operation gets expired and hence forced to complete.
+     */
+    public abstract void onExpiration();
+
+    /**
+     * Process for completing an operation; This function needs to be defined
+     * in subclasses and will be called exactly once in forceComplete()
+     */
+    public abstract void onComplete();
+
+    /**
+     * Try to complete the delayed operation by first checking if the operation
+     * can be completed by now. If yes execute the completion logic by calling
+     * forceComplete() and return true iff forceComplete returns true; otherwise return false
+     * <br/>
+     * This function needs to be defined in subclasses
+     */
+    public abstract boolean tryComplete();
+
+    /**
+     * Thread-safe variant of tryComplete() and call extra function if first tryComplete returns false
+     * @param action else function to be executed after first tryComplete returns false
+     * @return result of tryComplete
+     */
+    boolean safeTryCompleteOrElse(Action action) {
+        lock.lock();
+        try {
+            if (tryComplete()) return true;
+            else {
+                action.apply();
+                // last completion check
+                return tryComplete();
+            }
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * Thread-safe variant of tryComplete()
+     */
+    boolean safeTryComplete() {
+        lock.lock();
+        try {
+            if (isCompleted()) return false;
+            else return tryComplete();
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * run() method defines a task that is executed on timeout
+     */
+    @Override
+    public void run() {
+        if (forceComplete())
+            onExpiration();
+    }
+
+    @FunctionalInterface
+    public interface Action {
+        void apply();
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.kafka.queue;
+
+
+import java.util.OptionalLong;
+import java.util.function.UnaryOperator;
+
+
+public interface EventQueue extends AutoCloseable {
+    interface Event {
+        /**
+         * Run the event.
+         */
+        void run() throws Exception;
+
+        /**
+         * Handle an exception that was either generated by running the event, or by the
+         * event queue's inability to run the event.
+         *
+         * @param e     The exception.  This will be a TimeoutException if the event hit
+         *              its deadline before it could be scheduled.
+         *              It will be a RejectedExecutionException if the event could not be
+         *              scheduled because the event queue has already been closed.
+         *              Otherwise, it will be whatever exception was thrown by run().
+         */
+        default void handleException(Throwable e) {}
+    }
+
+    class NoDeadlineFunction implements UnaryOperator<OptionalLong> {
+        public static final NoDeadlineFunction INSTANCE = new NoDeadlineFunction();
+        
+        private NoDeadlineFunction() {
+            
+        }
+
+        @Override
+        public OptionalLong apply(OptionalLong ignored) {
+            return OptionalLong.empty();
+        }
+    }
+
+    class DeadlineFunction implements UnaryOperator<OptionalLong> {
+        private final long deadlineNs;
+
+        public DeadlineFunction(long deadlineNs) {
+            this.deadlineNs = deadlineNs;
+        }
+
+        @Override
+        public OptionalLong apply(OptionalLong ignored) {
+            return OptionalLong.of(deadlineNs);
+        }
+    }
+
+    class EarliestDeadlineFunction implements UnaryOperator<OptionalLong> {
+        private final long newDeadlineNs;
+
+        public EarliestDeadlineFunction(long newDeadlineNs) {
+            this.newDeadlineNs = newDeadlineNs;
+        }
+
+        @Override
+        public OptionalLong apply(OptionalLong prevDeadlineNs) {
+            if (prevDeadlineNs.isEmpty()) {
+                return OptionalLong.of(newDeadlineNs);
+            } else if (prevDeadlineNs.getAsLong() < newDeadlineNs) {
+                return prevDeadlineNs;
+            } else {
+                return OptionalLong.of(newDeadlineNs);
+            }
+        }
+    }
+
+    class VoidEvent implements Event {
+        public static final VoidEvent INSTANCE = new VoidEvent();
+        
+        private VoidEvent() {
+            
+        }
+        
+        @Override
+        public void run() throws Exception {
+        }
+    }
+
+    /**
+     * Add an element to the front of the queue.
+     *
+     * @param event             The mandatory event to prepend.
+     */
+    default void prepend(Event event) {
+        enqueue(EventInsertionType.PREPEND, null, NoDeadlineFunction.INSTANCE, event);
+    }
+
+    /**
+     * Add an element to the end of the queue.
+     *
+     * @param event             The event to append.
+     */
+    default void append(Event event) {
+        enqueue(EventInsertionType.APPEND, null, NoDeadlineFunction.INSTANCE, event);
+    }
+
+    /**
+     * Add an event to the end of the queue.
+     *
+     * @param deadlineNs        The deadline for starting the event, in monotonic
+     *                          nanoseconds.  If the event has not started by this
+     *                          deadline, handleException is called with a
+     *                          {@link org.apache.kafka.common.errors.TimeoutException},
+     *                          and the event is cancelled.
+     * @param event             The event to append.
+     */
+    default void appendWithDeadline(long deadlineNs, Event event) {
+        enqueue(EventInsertionType.APPEND, null, new DeadlineFunction(deadlineNs), event);
+    }
+
+    /**
+     * Schedule an event to be run at a specific time.
+     *
+     * @param tag                   If this is non-null, the unique tag to use for this
+     *                              event.  If an event with this tag already exists, it
+     *                              will be cancelled.
+     * @param deadlineNsCalculator  A function which takes as an argument the existing
+     *                              deadline for the event with this tag (or empty if the
+     *                              event has no tag, or if there is none such), and
+     *                              produces the deadline to use for this event.
+     *                              Once the deadline has arrived, the event will be
+     *                              run.  Events whose deadlines are only a few nanoseconds
+     *                              apart may be executed in any order.
+     * @param event                 The event to schedule.
+     */
+    default void scheduleDeferred(String tag,
+                                  UnaryOperator<OptionalLong> deadlineNsCalculator,
+                                  Event event) {
+        enqueue(EventInsertionType.DEFERRED, tag, deadlineNsCalculator, event);
+    }
+
+    /**
+     * Cancel a deferred event.
+     *
+     * @param tag                   The unique tag for the event to be cancelled.  Must be
+     *                              non-null.  If the event with the tag has not been
+     *                              scheduled, this call will be ignored.
+     */
+    void cancelDeferred(String tag);
+
+    enum EventInsertionType {
+        PREPEND,
+        APPEND,
+        DEFERRED
+    }
+
+    /**
+     * Add an event to the queue.
+     *
+     * @param insertionType         How to insert the event.
+     *                              PREPEND means insert the event as the first thing
+     *                              to run.  APPEND means insert the event as the last
+     *                              thing to run.  DEFERRED means insert the event to
+     *                              run after a delay.
+     * @param tag                   If this is non-null, the unique tag to use for
+     *                              this event.  If an event with this tag already
+     *                              exists, it will be cancelled.
+     * @param deadlineNsCalculator  If this is non-null, it is a function which takes
+     *                              as an argument the existing deadline for the
+     *                              event with this tag (or null if the event has no
+     *                              tag, or if there is none such), and produces the
+     *                              deadline to use for this event (or empty to use
+     *                              none.)  Events whose deadlines are only a few
+     *                              nanoseconds apart may be executed in any order.
+     * @param event                 The event to enqueue.
+     */
+    void enqueue(EventInsertionType insertionType,
+                 String tag,
+                 UnaryOperator<OptionalLong> deadlineNsCalculator,
+                 Event event);
+
+    /**
+     * Asynchronously shut down the event queue.
+     * <br>
+     * No new events will be accepted, and the queue thread will exit after running the existing events.
+     * Deferred events will receive TimeoutExceptions.
+     *
+     * @param source        The source of the shutdown.
+     */
+    void beginShutdown(String source);
+
+    /**
+     * @return The number of pending and running events. If this is 0, there is no running event and
+     * no events queued.
+     */
+    int size();
+
+    /**
+     * @return True if there are no pending or running events.
+     */
+    default boolean isEmpty() {
+        return size() == 0;
+    }
+
+    /**
+     * This method is used during unit tests where MockTime is in use.
+     * It is used to alert the queue that the mock time has changed.
+     */
+    default void wakeup() { }
+
+    /**
+     * Synchronously close the event queue and wait for any threads to be joined.
+     */
+    void close() throws InterruptedException;
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.kafka.server.fault;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
+/**
+ * A fault handler which logs an error message and executes a runnable.
+ */
+public class LoggingFaultHandler implements FaultHandler {
+    private static final Logger log = LoggerFactory.getLogger(LoggingFaultHandler.class);
+    private final String type;
+    private final Runnable action;
+
+    public LoggingFaultHandler(
+        String type,
+        Runnable action
+    ) {
+        this.type = type;
+        this.action = action;
+    }
+
+    @Override
+    public RuntimeException handleFault(String failureMessage, Throwable cause) {
+        if (cause == null) {
+            log.error("Encountered {} fault: {}", type, failureMessage);
+        } else {
+            log.error("Encountered {} fault: {}", type, failureMessage, cause);
+        }
+        try {
+            action.run();
+        } catch (Throwable e) {
+            log.error("Failed to run LoggingFaultHandler action.", e);
+        }
+        return new FaultHandlerException(failureMessage, cause);
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package kafka.server.builders;
+
+import kafka.log.LogManager;
+
+import org.apache.kafka.common.utils.Time;
+import org.apache.kafka.metadata.ConfigRepository;
+import org.apache.kafka.server.config.ServerLogConfigs;
+import org.apache.kafka.server.util.Scheduler;
+import org.apache.kafka.storage.internals.log.CleanerConfig;
+import org.apache.kafka.storage.internals.log.LogConfig;
+import org.apache.kafka.storage.internals.log.LogDirFailureChannel;
+import org.apache.kafka.storage.internals.log.ProducerStateManagerConfig;
+import org.apache.kafka.storage.log.metrics.BrokerTopicStats;
+
+import java.io.File;
+import java.util.List;
+
+import scala.jdk.javaapi.CollectionConverters;
+
+
+public class LogManagerBuilder {
+    private static final int PRODUCER_ID_EXPIRATION_CHECK_INTERVAL_MS = 600000;
+    private List<File> logDirs = null;
+    private List<File> initialOfflineDirs = List.of();
+    private ConfigRepository configRepository = null;
+    private LogConfig initialDefaultConfig = null;
+    private CleanerConfig cleanerConfig = null;
+    private int recoveryThreadsPerDataDir = 1;
+    private long flushCheckMs = 1000L;
+    private long flushRecoveryOffsetCheckpointMs = 10000L;
+    private long flushStartOffsetCheckpointMs = 10000L;
+    private long retentionCheckMs = 1000L;
+    private int maxTransactionTimeoutMs = 15 * 60 * 1000;
+    private ProducerStateManagerConfig producerStateManagerConfig = new ProducerStateManagerConfig(60000, false);
+    private Scheduler scheduler = null;
+    private BrokerTopicStats brokerTopicStats = null;
+    private LogDirFailureChannel logDirFailureChannel = null;
+    private Time time = Time.SYSTEM;
+    private boolean remoteStorageSystemEnable = false;
+    private long initialTaskDelayMs = ServerLogConfigs.LOG_INITIAL_TASK_DELAY_MS_DEFAULT;
+
+    public LogManagerBuilder setLogDirs(List<File> logDirs) {
+        this.logDirs = logDirs;
+        return this;
+    }
+
+    public LogManagerBuilder setInitialOfflineDirs(List<File> initialOfflineDirs) {
+        this.initialOfflineDirs = initialOfflineDirs;
+        return this;
+    }
+
+    public LogManagerBuilder setConfigRepository(ConfigRepository configRepository) {
+        this.configRepository = configRepository;
+        return this;
+    }
+
+    public LogManagerBuilder setInitialDefaultConfig(LogConfig initialDefaultConfig) {
+        this.initialDefaultConfig = initialDefaultConfig;
+        return this;
+    }
+
+    public LogManagerBuilder setCleanerConfig(CleanerConfig cleanerConfig) {
+        this.cleanerConfig = cleanerConfig;
+        return this;
+    }
+
+    public LogManagerBuilder setRecoveryThreadsPerDataDir(int recoveryThreadsPerDataDir) {
+        this.recoveryThreadsPerDataDir = recoveryThreadsPerDataDir;
+        return this;
+    }
+
+    public LogManagerBuilder setFlushCheckMs(long flushCheckMs) {
+        this.flushCheckMs = flushCheckMs;
+        return this;
+    }
+
+    public LogManagerBuilder setFlushRecoveryOffsetCheckpointMs(long flushRecoveryOffsetCheckpointMs) {
+        this.flushRecoveryOffsetCheckpointMs = flushRecoveryOffsetCheckpointMs;
+        return this;
+    }
+
+    public LogManagerBuilder setFlushStartOffsetCheckpointMs(long flushStartOffsetCheckpointMs) {
+        this.flushStartOffsetCheckpointMs = flushStartOffsetCheckpointMs;
+        return this;
+    }
+
+    public LogManagerBuilder setRetentionCheckMs(long retentionCheckMs) {
+        this.retentionCheckMs = retentionCheckMs;
+        return this;
+    }
+
+    public LogManagerBuilder setMaxTransactionTimeoutMs(int maxTransactionTimeoutMs) {
+        this.maxTransactionTimeoutMs = maxTransactionTimeoutMs;
+        return this;
+    }
+
+    public LogManagerBuilder setProducerStateManagerConfig(int maxProducerIdExpirationMs, boolean transactionVerificationEnabled) {
+        this.producerStateManagerConfig = new ProducerStateManagerConfig(maxProducerIdExpirationMs, transactionVerificationEnabled);
+        return this;
+    }
+
+    public LogManagerBuilder setScheduler(Scheduler scheduler) {
+        this.scheduler = scheduler;
+        return this;
+    }
+
+    public LogManagerBuilder setBrokerTopicStats(BrokerTopicStats brokerTopicStats) {
+        this.brokerTopicStats = brokerTopicStats;
+        return this;
+    }
+
+    public LogManagerBuilder setLogDirFailureChannel(LogDirFailureChannel logDirFailureChannel) {
+        this.logDirFailureChannel = logDirFailureChannel;
+        return this;
+    }
+
+    public LogManagerBuilder setTime(Time time) {
+        this.time = time;
+        return this;
+    }
+
+    public LogManagerBuilder setRemoteStorageSystemEnable(boolean remoteStorageSystemEnable) {
+        this.remoteStorageSystemEnable = remoteStorageSystemEnable;
+        return this;
+    }
+
+    public LogManagerBuilder setInitialTaskDelayMs(long initialTaskDelayMs) {
+        this.initialTaskDelayMs = initialTaskDelayMs;
+        return this;
+    }
+
+    public LogManager build() {
+        if (logDirs == null) throw new RuntimeException("you must set logDirs");
+        if (configRepository == null) throw new RuntimeException("you must set configRepository");
+        if (initialDefaultConfig == null) throw new RuntimeException("you must set initialDefaultConfig");
+        if (cleanerConfig == null) throw new RuntimeException("you must set cleanerConfig");
+        if (scheduler == null) throw new RuntimeException("you must set scheduler");
+        if (brokerTopicStats == null) throw new RuntimeException("you must set brokerTopicStats");
+        if (logDirFailureChannel == null) throw new RuntimeException("you must set logDirFailureChannel");
+        return new LogManager(CollectionConverters.asScala(logDirs).toSeq(),
+                              CollectionConverters.asScala(initialOfflineDirs).toSeq(),
+                              configRepository,
+                              initialDefaultConfig,
+                              cleanerConfig,
+                              recoveryThreadsPerDataDir,
+                              flushCheckMs,
+                              flushRecoveryOffsetCheckpointMs,
+                              flushStartOffsetCheckpointMs,
+                              retentionCheckMs,
+                              maxTransactionTimeoutMs,
+                              producerStateManagerConfig,
+                              PRODUCER_ID_EXPIRATION_CHECK_INTERVAL_MS,
+                              scheduler,
+                              brokerTopicStats,
+                              logDirFailureChannel,
+                              time,
+                              remoteStorageSystemEnable,
+                              initialTaskDelayMs);
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package kafka.server.share;
+
+import org.apache.kafka.common.TopicIdPartition;
+import org.apache.kafka.server.LogReadResult;
+import org.apache.kafka.storage.internals.log.LogOffsetMetadata;
+import org.apache.kafka.storage.internals.log.RemoteLogReadResult;
+import org.apache.kafka.storage.internals.log.RemoteStorageFetchInfo;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
+import java.util.function.BiConsumer;
+
+/**
+ * This class is used to store the remote storage fetch information for topic partitions in a share fetch request.
+ */
+public class PendingRemoteFetches {
+    private final List<RemoteFetch> remoteFetches;
+    private final LinkedHashMap<TopicIdPartition, LogOffsetMetadata> fetchOffsetMetadataMap;
+
+    PendingRemoteFetches(List<RemoteFetch> remoteFetches, LinkedHashMap<TopicIdPartition, LogOffsetMetadata> fetchOffsetMetadataMap) {
+        this.remoteFetches = remoteFetches;
+        this.fetchOffsetMetadataMap = fetchOffsetMetadataMap;
+    }
+
+    public boolean isDone() {
+        for (RemoteFetch remoteFetch : remoteFetches) {
+            if (!remoteFetch.remoteFetchResult.isDone())
+                return false;
+        }
+        return true;
+    }
+
+    public void invokeCallbackOnCompletion(BiConsumer<Void, Throwable> callback) {
+        List<CompletableFuture<RemoteLogReadResult>> remoteFetchResult = new ArrayList<>();
+        remoteFetches.forEach(remoteFetch -> remoteFetchResult.add(remoteFetch.remoteFetchResult()));
+        CompletableFuture.allOf(remoteFetchResult.toArray(new CompletableFuture<?>[0])).whenComplete(callback);
+    }
+
+    public List<RemoteFetch> remoteFetches() {
+        return remoteFetches;
+    }
+
+    public LinkedHashMap<TopicIdPartition, LogOffsetMetadata> fetchOffsetMetadataMap() {
+        return fetchOffsetMetadataMap;
+    }
+
+    @Override
+    public String toString() {
+        return "PendingRemoteFetches(" +
+            "remoteFetches=" + remoteFetches +
+            ", fetchOffsetMetadataMap=" + fetchOffsetMetadataMap +
+            ")";
+    }
+
+    public record RemoteFetch(
+        TopicIdPartition topicIdPartition,
+        LogReadResult logReadResult,
+        Future<Void> remoteFetchTask,
+        CompletableFuture<RemoteLogReadResult> remoteFetchResult,
+        RemoteStorageFetchInfo remoteFetchInfo
+    ) {
+        @Override
+        public String toString() {
+            return "RemoteFetch(" +
+                "topicIdPartition=" + topicIdPartition +
+                ", logReadResult=" + logReadResult +
+                ", remoteFetchTask=" + remoteFetchTask +
+                ", remoteFetchResult=" + remoteFetchResult +
+                ", remoteFetchInfo=" + remoteFetchInfo +
+                ")";
+        }
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package kafka.server;
+
+import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.internals.Plugin;
+import org.apache.kafka.common.metrics.Metrics;
+import org.apache.kafka.common.utils.Time;
+import org.apache.kafka.common.utils.Utils;
+import org.apache.kafka.server.config.ClientQuotaManagerConfig;
+import org.apache.kafka.server.config.QuotaConfig;
+import org.apache.kafka.server.config.ReplicationQuotaManagerConfig;
+import org.apache.kafka.server.quota.ClientQuotaCallback;
+import org.apache.kafka.server.quota.QuotaType;
+
+import java.util.Optional;
+
+import scala.Option;
+import scala.jdk.javaapi.OptionConverters;
+
+public class QuotaFactory {
+
+    public static final ReplicaQuota UNBOUNDED_QUOTA = new ReplicaQuota() {
+        @Override
+        public boolean isThrottled(TopicPartition topicPartition) {
+            return false;
+        }
+
+        @Override
+        public boolean isQuotaExceeded() {
+            return false;
+        }
+
+        @Override
+        public void record(long value) {
+            // No-op
+        }
+    };
+
+    public static class QuotaManagers {
+        private final ClientQuotaManager fetch;
+        private final ClientQuotaManager produce;
+        private final ClientRequestQuotaManager request;
+        private final ControllerMutationQuotaManager controllerMutation;
+        private final ReplicationQuotaManager leader;
+        private final ReplicationQuotaManager follower;
+        private final ReplicationQuotaManager alterLogDirs;
+        private final Optional<Plugin<ClientQuotaCallback>> clientQuotaCallbackPlugin;
+
+        public QuotaManagers(ClientQuotaManager fetch, ClientQuotaManager produce, ClientRequestQuotaManager request,
+                             ControllerMutationQuotaManager controllerMutation, ReplicationQuotaManager leader,
+                             ReplicationQuotaManager follower, ReplicationQuotaManager alterLogDirs,
+                             Optional<Plugin<ClientQuotaCallback>> clientQuotaCallbackPlugin) {
+            this.fetch = fetch;
+            this.produce = produce;
+            this.request = request;
+            this.controllerMutation = controllerMutation;
+            this.leader = leader;
+            this.follower = follower;
+            this.alterLogDirs = alterLogDirs;
+            this.clientQuotaCallbackPlugin = clientQuotaCallbackPlugin;
+        }
+
+        public ClientQuotaManager fetch() {
+            return fetch;
+        }
+
+        public ClientQuotaManager produce() {
+            return produce;
+        }
+
+        public ClientRequestQuotaManager request() {
+            return request;
+        }
+
+        public ControllerMutationQuotaManager controllerMutation() {
+            return controllerMutation;
+        }
+
+        public ReplicationQuotaManager leader() {
+            return leader;
+        }
+
+        public ReplicationQuotaManager follower() {
+            return follower;
+        }
+
+        public ReplicationQuotaManager alterLogDirs() {
+            return alterLogDirs;
+        }
+
+        public Optional<Plugin<ClientQuotaCallback>> clientQuotaCallbackPlugin() {
+            return clientQuotaCallbackPlugin;
+        }
+
+        public void shutdown() {
+            fetch.shutdown();
+            produce.shutdown();
+            request.shutdown();
+            controllerMutation.shutdown();
+            clientQuotaCallbackPlugin.ifPresent(plugin -> Utils.closeQuietly(plugin, "client quota callback plugin"));
+        }
+    }
+
+    public static QuotaManagers instantiate(
+        KafkaConfig cfg,
+        Metrics metrics,
+        Time time,
+        String threadNamePrefix,
+        String role
+    ) {
+        Optional<Plugin<ClientQuotaCallback>> clientQuotaCallbackPlugin = createClientQuotaCallback(cfg, metrics, role);
+        Option<Plugin<ClientQuotaCallback>> clientQuotaCallbackPluginOption = OptionConverters.toScala(clientQuotaCallbackPlugin);
+
+        return new QuotaManagers(
+            new ClientQuotaManager(clientConfig(cfg), metrics, QuotaType.FETCH, time, threadNamePrefix, clientQuotaCallbackPluginOption),
+            new ClientQuotaManager(clientConfig(cfg), metrics, QuotaType.PRODUCE, time, threadNamePrefix, clientQuotaCallbackPluginOption),
+            new ClientRequestQuotaManager(clientConfig(cfg), metrics, time, threadNamePrefix, clientQuotaCallbackPlugin),
+            new ControllerMutationQuotaManager(clientControllerMutationConfig(cfg), metrics, time, threadNamePrefix, clientQuotaCallbackPluginOption),
+            new ReplicationQuotaManager(replicationConfig(cfg), metrics, QuotaType.LEADER_REPLICATION, time),
+            new ReplicationQuotaManager(replicationConfig(cfg), metrics, QuotaType.FOLLOWER_REPLICATION, time),
+            new ReplicationQuotaManager(alterLogDirsReplicationConfig(cfg), metrics, QuotaType.ALTER_LOG_DIRS_REPLICATION, time),
+            clientQuotaCallbackPlugin
+        );
+    }
+
+    private static Optional<Plugin<ClientQuotaCallback>> createClientQuotaCallback(
+        KafkaConfig cfg, 
+        Metrics metrics, 
+        String role
+    ) {
+        ClientQuotaCallback clientQuotaCallback = cfg.getConfiguredInstance(
+            QuotaConfig.CLIENT_QUOTA_CALLBACK_CLASS_CONFIG, ClientQuotaCallback.class);
+        return clientQuotaCallback == null ? Optional.empty() : Optional.of(Plugin.wrapInstance(
+            clientQuotaCallback,
+            metrics,
+            QuotaConfig.CLIENT_QUOTA_CALLBACK_CLASS_CONFIG,
+            "role", role
+        ));
+    }
+
+    private static ClientQuotaManagerConfig clientConfig(KafkaConfig cfg) {
+        return new ClientQuotaManagerConfig(
+            cfg.quotaConfig().numQuotaSamples(),
+            cfg.quotaConfig().quotaWindowSizeSeconds()
+        );
+    }
+
+    private static ClientQuotaManagerConfig clientControllerMutationConfig(KafkaConfig cfg) {
+        return new ClientQuotaManagerConfig(
+            cfg.quotaConfig().numControllerQuotaSamples(),
+            cfg.quotaConfig().controllerQuotaWindowSizeSeconds()
+        );
+    }
+
+    private static ReplicationQuotaManagerConfig replicationConfig(KafkaConfig cfg) {
+        return new ReplicationQuotaManagerConfig(
+            cfg.quotaConfig().numReplicationQuotaSamples(),
+            cfg.quotaConfig().replicationQuotaWindowSizeSeconds()
+        );
+    }
+
+    private static ReplicationQuotaManagerConfig alterLogDirsReplicationConfig(KafkaConfig cfg) {
+        return new ReplicationQuotaManagerConfig(
+            cfg.quotaConfig().numAlterLogDirsReplicationQuotaSamples(),
+            cfg.quotaConfig().alterLogDirsReplicationQuotaWindowSizeSeconds()
+        );
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package kafka.server.share;
+
+import org.apache.kafka.common.TopicIdPartition;
+import org.apache.kafka.server.share.SharePartitionKey;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+
+/**
+ * The SharePartitionCache is used to cache the SharePartition objects. The cache is thread-safe.
+ */
+public class SharePartitionCache {
+
+    /**
+     * The map to store the share group id and the set of topic-partitions for that group.
+     */
+    private final Map<String, Set<TopicIdPartition>> groups;
+
+    /**
+     * The map is used to store the SharePartition objects for each share group topic-partition.
+     */
+    private final Map<SharePartitionKey, SharePartition> partitions;
+
+    SharePartitionCache() {
+        this.groups = new HashMap<>();
+        this.partitions = new ConcurrentHashMap<>();
+    }
+
+    /**
+     * Returns the share partition for the given key.
+     *
+     * @param partitionKey The key to get the share partition for.
+     * @return The share partition for the key or null if not found.
+     */
+    public SharePartition get(SharePartitionKey partitionKey) {
+        return partitions.get(partitionKey);
+    }
+
+    /**
+     * Returns the set of topic-partitions for the given group id.
+     *
+     * @param groupId The group id to get the topic-partitions for.
+     * @return The set of topic-partitions for the group id.
+     */
+    public synchronized Set<TopicIdPartition> topicIdPartitionsForGroup(String groupId) {
+        return groups.containsKey(groupId) ? Set.copyOf(groups.get(groupId)) : Set.of();
+    }
+
+    /**
+     * Removes the share partition from the cache. The method also removes the topic-partition from
+     * the group map.
+     *
+     * @param partitionKey The key to remove.
+     * @return The removed value or null if not found.
+     */
+    public synchronized SharePartition remove(SharePartitionKey partitionKey) {
+        groups.computeIfPresent(partitionKey.groupId(), (k, v) -> {
+            v.remove(partitionKey.topicIdPartition());
+            return v.isEmpty() ? null : v;
+        });
+        return partitions.remove(partitionKey);
+    }
+
+    /**
+     * Computes the value for the given key if it is not already present in the cache. Method also
+     * updates the group map with the topic-partition for the group id.
+     *
+     * @param partitionKey The key to compute the value for.
+     * @param mappingFunction The function to compute the value.
+     * @return The computed or existing value.
+     */
+    public synchronized SharePartition computeIfAbsent(SharePartitionKey partitionKey, Function<SharePartitionKey, SharePartition> mappingFunction) {
+        groups.computeIfAbsent(partitionKey.groupId(), k -> new HashSet<>()).add(partitionKey.topicIdPartition());
+        return partitions.computeIfAbsent(partitionKey, mappingFunction);
+    }
+
+    /**
+     * Returns the set of all share partition keys in the cache. As the cache can't be cleaned without
+     * marking the share partitions fenced and detaching the partition listener in the replica manager,
+     * hence rather providing a method to clean the cache directly, this method is provided to fetch
+     * all the keys in the cache.
+     *
+     * @return The set of all share partition keys.
+     */
+    public Set<SharePartitionKey> cachedSharePartitionKeys() {
+        return partitions.keySet();
+    }
+
+    // Visible for testing. Should not be used outside the test classes.
+    void put(SharePartitionKey partitionKey, SharePartition sharePartition) {
+        partitions.put(partitionKey, sharePartition);
+    }
+
+    // Visible for testing.
+    int size() {
+        return partitions.size();
+    }
+
+    // Visible for testing.
+    boolean containsKey(SharePartitionKey partitionKey) {
+        return partitions.containsKey(partitionKey);
+    }
+
+    // Visible for testing.
+    boolean isEmpty() {
+        return partitions.isEmpty();
+    }
+
+    // Visible for testing.
+    synchronized Map<String, Set<TopicIdPartition>> groups() {
+        return Map.copyOf(groups);
+    }
+}

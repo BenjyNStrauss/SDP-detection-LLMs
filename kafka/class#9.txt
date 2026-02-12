@@ -1,0 +1,80 @@
+package ident$1.ident$2.ident$3.ident$4;
+import ident$1.ident$2.ident$3.ident$6.ident$7;
+import ident$1.ident$2.ident$3.ident$6.ident$8.ident$9;
+import ident$1.ident$2.ident$3.ident$6.ident$8.ident$10;
+import ident$1.ident$2.ident$3.ident$6.ident$11.ident$12;
+import ident$1.ident$2.ident$3.ident$13.ident$6.ident$14;
+import java.ident$16.ident$17;
+import java.ident$16.ident$18;
+import java.ident$16.ident$19;
+import java.ident$16.ident$20;
+public class ident$23 {
+public static ident$9 ident$25(int ident$27, long ident$29, ident$20<ident$14, ident$7> ident$30) {
+ident$20<ident$7, ident$9.ident$31> ident$32 = new ident$19<>();
+ident$20<ident$7, ident$20<ident$7, ident$9.ident$34>> ident$35 = new ident$19<>();
+for (ident$20.ident$37<ident$14, ident$7> ident$38 : ident$30.ident$39()) {
+ident$14 ident$40 = ident$38.ident$41();
+ident$7 ident$42 = ident$38.ident$43();
+ident$9.ident$31 ident$44 = ident$32.ident$45(ident$42, ident$46 -> new ident$9.ident$31().ident$47(ident$42));
+ident$9.ident$34 ident$48 = ident$35.ident$45(ident$42, ident$46 -> new ident$19<>())
+.ident$45(ident$40.ident$49(), ident$49 -> {
+ident$9.ident$34 ident$50 = new ident$9.ident$34().ident$51(ident$49);
+ident$44.ident$52().ident$53(ident$50);
+return ident$50;
+});
+ident$9.ident$55 ident$56 = new ident$9.ident$55().ident$57(ident$40.ident$58());
+ident$48.ident$59().ident$53(ident$56);
+}
+return new ident$9()
+.ident$60(ident$27)
+.ident$61(ident$29)
+.ident$62(new ident$17<>(ident$32.ident$63()));
+}
+public static ident$10 ident$64(short ident$66, int ident$67, ident$20<ident$7, ident$20<ident$14, ident$12>> ident$68) {
+ident$20<ident$7, ident$10.ident$31> ident$32 = new ident$19<>();
+ident$20<ident$7, ident$20<ident$7, ident$10.ident$34>> ident$35 = new ident$19<>();
+for (ident$20.ident$37<ident$7, ident$20<ident$14, ident$12>> ident$69 : ident$68.ident$39()) {
+ident$7 ident$42 = ident$69.ident$41();
+ident$10.ident$31 ident$44 = ident$32.ident$45(ident$42, ident$46 -> new ident$10.ident$31().ident$47(ident$42));
+for (ident$20.ident$37<ident$14, ident$12> ident$70 : ident$69.ident$43().ident$39()) {
+ident$14 ident$40 = ident$70.ident$41();
+ident$12 ident$71 = ident$70.ident$43();
+ident$10.ident$34 ident$48 = ident$35.ident$45(ident$42, ident$46 -> new ident$19<>())
+.ident$45(ident$40.ident$49(), ident$49 -> {
+ident$10.ident$34 ident$50 = new ident$10.ident$34().ident$51(ident$49);
+ident$44.ident$52().ident$53(ident$50);
+return ident$50;
+});
+ident$10.ident$55 ident$56 = new ident$10.ident$55()
+.ident$57(ident$40.ident$58()).ident$72(ident$71.ident$73());
+ident$48.ident$59().ident$53(ident$56);
+}
+}
+return new ident$10()
+.ident$72(ident$66)
+.ident$74(ident$67)
+.ident$62(new ident$17<>(ident$32.ident$63()));
+}
+public static ident$9 ident$75(ident$9 ident$76) {
+ident$76 = ident$76.ident$77();
+ident$76.ident$78().ident$79(ident$18.ident$80(ident$9.ident$31::ident$81));
+for (ident$9.ident$31 ident$44 : ident$76.ident$78()) {
+ident$44.ident$52().ident$79(ident$18.ident$80(ident$9.ident$34::ident$49));
+for (ident$9.ident$34 ident$48 : ident$44.ident$52()) {
+ident$48.ident$59().ident$79(ident$18.ident$80(ident$9.ident$55::ident$82));
+}
+}
+return ident$76;
+}
+public static ident$10 ident$75(ident$10 ident$83) {
+ident$83 = ident$83.ident$77();
+ident$83.ident$78().ident$79(ident$18.ident$80(ident$10.ident$31::ident$81));
+for (ident$10.ident$31 ident$44 : ident$83.ident$78()) {
+ident$44.ident$52().ident$79(ident$18.ident$80(ident$10.ident$34::ident$49));
+for (ident$10.ident$34 ident$48 : ident$44.ident$52()) {
+ident$48.ident$59().ident$79(ident$18.ident$80(ident$10.ident$55::ident$82));
+}
+}
+return ident$83;
+}
+}

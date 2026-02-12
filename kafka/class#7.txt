@@ -1,0 +1,64 @@
+package ident$1.ident$2.ident$3.ident$4.ident$5;
+import ident$1.ident$2.ident$3.ident$4.ident$7.ident$8.ident$9;
+import java.ident$7.ident$11.ident$12.ident$13;
+public abstract class ident$17 extends ident$9 {
+private volatile boolean ident$22 = ident$23;
+protected final ident$13 ident$26 = new ident$13();
+public ident$17(long ident$29) {
+super(ident$29);
+}
+public boolean ident$31() {
+if (ident$22) {
+return ident$23;
+}
+ident$26.ident$26();
+try {
+if (!ident$22) {
+ident$22 = ident$35;
+ident$36();
+ident$37();
+return ident$35;
+} else {
+return ident$23;
+}
+} finally {
+ident$26.ident$40();
+}
+}
+public boolean ident$41() {
+return ident$22;
+}
+public abstract void ident$43();
+public abstract void ident$37();
+public abstract boolean ident$44();
+boolean ident$45(ident$46 ident$47) {
+ident$26.ident$26();
+try {
+if (ident$44()) return ident$35;
+else {
+ident$47.ident$48();
+return ident$44();
+}
+} finally {
+ident$26.ident$40();
+}
+}
+boolean ident$49() {
+ident$26.ident$26();
+try {
+if (ident$41()) return ident$23;
+else return ident$44();
+} finally {
+ident$26.ident$40();
+}
+}
+@Override
+public void ident$51() {
+if (ident$31())
+ident$43();
+}
+@FunctionalInterface
+public interface ident$46 {
+void ident$48();
+}
+}

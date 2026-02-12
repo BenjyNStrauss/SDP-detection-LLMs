@@ -1,0 +1,52 @@
+package ident$1.ident$2.ident$3;
+import ident$5.ident$6.ident$1.ident$7.ident$8;
+import ident$5.ident$6.ident$1.ident$2.ident$3.ident$9;
+import java.ident$11.ident$12;
+import java.ident$11.ident$13;
+import java.ident$11.ident$14;
+import java.ident$11.ident$15;
+import java.ident$11.ident$16.ident$17;
+import java.ident$11.ident$18.ident$19;
+public class ident$22 {
+private final ident$14<String, ident$15<ident$8>> ident$26;
+private final ident$14<ident$9, ident$27> ident$28;
+ident$22() {
+this.ident$26 = new ident$12<>();
+this.ident$28 = new ident$17<>();
+}
+public ident$27 ident$31(ident$9 ident$32) {
+return ident$28.ident$31(ident$32);
+}
+public synchronized ident$15<ident$8> ident$35(String ident$36) {
+return ident$26.ident$37(ident$36) ? ident$15.ident$38(ident$26.ident$31(ident$36)) : ident$15.ident$39();
+}
+public synchronized ident$27 ident$40(ident$9 ident$32) {
+ident$26.ident$41(ident$32.ident$36(), (ident$42, ident$43) -> {
+ident$43.ident$40(ident$32.ident$44());
+return ident$43.ident$45() ? null : ident$43;
+});
+return ident$28.ident$40(ident$32);
+}
+public synchronized ident$27 ident$47(ident$9 ident$32, ident$19<ident$9, ident$27> ident$48) {
+ident$26.ident$47(ident$32.ident$36(), ident$42 -> new ident$13<>()).ident$49(ident$32.ident$44());
+return ident$28.ident$47(ident$32, ident$48);
+}
+public ident$15<ident$9> ident$50() {
+return ident$28.ident$51();
+}
+void ident$53(ident$9 ident$32, ident$27 ident$54) {
+ident$28.ident$53(ident$32, ident$54);
+}
+int ident$56() {
+return ident$28.ident$56();
+}
+boolean ident$37(ident$9 ident$32) {
+return ident$28.ident$37(ident$32);
+}
+boolean ident$45() {
+return ident$28.ident$45();
+}
+synchronized ident$14<String, ident$15<ident$8>> ident$26() {
+return ident$14.ident$38(ident$26);
+}
+}

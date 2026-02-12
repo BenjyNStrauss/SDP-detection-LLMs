@@ -1,0 +1,63 @@
+package ident$1.ident$2.ident$3;
+import ident$5.ident$6.ident$1.ident$7.ident$8;
+import ident$5.ident$6.ident$1.ident$2.ident$9;
+import ident$5.ident$6.ident$1.ident$10.ident$11.ident$12.ident$13;
+import ident$5.ident$6.ident$1.ident$10.ident$11.ident$12.ident$14;
+import ident$5.ident$6.ident$1.ident$10.ident$11.ident$12.ident$15;
+import java.ident$17.ident$18;
+import java.ident$17.ident$19;
+import java.ident$17.ident$20;
+import java.ident$17.ident$21.ident$22;
+import java.ident$17.ident$21.ident$23;
+import java.ident$17.ident$24.ident$25;
+public class ident$28 {
+private final ident$20<ident$31> ident$32;
+private final ident$19<ident$8, ident$13> ident$33;
+ident$28(ident$20<ident$31> ident$32, ident$19<ident$8, ident$13> ident$33) {
+this.ident$32 = ident$32;
+this.ident$33 = ident$33;
+}
+public boolean ident$36() {
+for (ident$31 ident$38 : ident$32) {
+if (!ident$38.ident$40.ident$36())
+return ident$42;
+}
+return ident$43;
+}
+public void ident$45(ident$25<Void, Throwable> ident$48) {
+ident$20<ident$22<ident$14>> ident$40 = new ident$18<>();
+ident$32.ident$50(ident$38 -> ident$40.ident$51(ident$38.ident$40()));
+ident$22.ident$52(ident$40.ident$53(new ident$22<?>[0])).ident$54(ident$48);
+}
+public ident$20<ident$31> ident$32() {
+return ident$32;
+}
+public ident$19<ident$8, ident$13> ident$33() {
+return ident$33;
+}
+@Override
+public String ident$57() {
+return "literal$0" +
+"literal$1" + ident$32 +
+"literal$2" + ident$33 +
+"literal$3";
+}
+public record ident$31(
+ident$8 ident$59,
+ident$9 ident$60,
+ident$23<Void> ident$61,
+ident$22<ident$14> ident$40,
+ident$15 ident$62
+) {
+@Override
+public String ident$57() {
+return "literal$4" +
+"literal$5" + ident$59 +
+"literal$6" + ident$60 +
+"literal$7" + ident$61 +
+"literal$8" + ident$40 +
+"literal$9" + ident$62 +
+"literal$3";
+}
+}
+}

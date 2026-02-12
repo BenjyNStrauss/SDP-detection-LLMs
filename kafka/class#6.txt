@@ -1,0 +1,29 @@
+package ident$1.ident$2.ident$3.ident$4.ident$5;
+import ident$1.ident$7.ident$8;
+import ident$1.ident$7.ident$9;
+public class ident$12 implements ident$14 {
+private static final ident$8 ident$18 = ident$9.ident$19(ident$12.class);
+private final String ident$21;
+private final Runnable ident$23;
+public ident$12(
+String ident$21,
+Runnable ident$23
+) {
+this.ident$21 = ident$21;
+this.ident$23 = ident$23;
+}
+@Override
+public RuntimeException ident$27(String ident$28, Throwable ident$30) {
+if (ident$30 == null) {
+ident$18.ident$33("literal$0", ident$21, ident$28);
+} else {
+ident$18.ident$33("literal$0", ident$21, ident$28, ident$30);
+}
+try {
+ident$23.ident$36();
+} catch (Throwable ident$38) {
+ident$18.ident$33("literal$1", ident$38);
+}
+return new ident$41(ident$28, ident$30);
+}
+}

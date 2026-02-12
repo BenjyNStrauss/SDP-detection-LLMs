@@ -1,0 +1,83 @@
+package ident$1.ident$2.ident$3.ident$4;
+import java.ident$7.ident$8;
+import java.ident$7.ident$9.ident$10;
+public interface ident$13 extends AutoCloseable {
+interface ident$16 {
+void ident$18() throws Exception;
+default void ident$22(Throwable ident$24) {}
+}
+class ident$26 implements ident$10<ident$8> {
+public static final ident$26 ident$30 = new ident$26();
+private ident$26() {
+}
+@Override
+public ident$8 ident$34(ident$8 ident$35) {
+return ident$8.ident$37();
+}
+}
+class ident$38 implements ident$10<ident$8> {
+private final long ident$40;
+public ident$38(long ident$40) {
+this.ident$40 = ident$40;
+}
+@Override
+public ident$8 ident$34(ident$8 ident$35) {
+return ident$8.ident$42(ident$40);
+}
+}
+class ident$43 implements ident$10<ident$8> {
+private final long ident$44;
+public ident$43(long ident$44) {
+this.ident$44 = ident$44;
+}
+@Override
+public ident$8 ident$34(ident$8 ident$45) {
+if (ident$45.ident$47()) {
+return ident$8.ident$42(ident$44);
+} else if (ident$45.ident$49() < ident$44) {
+return ident$45;
+} else {
+return ident$8.ident$42(ident$44);
+}
+}
+}
+class ident$50 implements ident$16 {
+public static final ident$50 ident$30 = new ident$50();
+private ident$50() {
+}
+@Override
+public void ident$18() throws Exception {
+}
+}
+default void ident$51(ident$16 ident$52) {
+ident$53(ident$54.ident$55, null, ident$26.ident$30, ident$52);
+}
+default void ident$57(ident$16 ident$52) {
+ident$53(ident$54.ident$58, null, ident$26.ident$30, ident$52);
+}
+default void ident$59(long ident$40, ident$16 ident$52) {
+ident$53(ident$54.ident$58, null, new ident$38(ident$40), ident$52);
+}
+default void ident$60(String ident$62,
+ident$10<ident$8> ident$63,
+ident$16 ident$52) {
+ident$53(ident$54.ident$64, ident$62, ident$63, ident$52);
+}
+void ident$65(String ident$62);
+enum ident$54 {
+ident$55,
+ident$58,
+ident$64
+}
+void ident$53(ident$54 ident$67,
+String ident$62,
+ident$10<ident$8> ident$63,
+ident$16 ident$52);
+void ident$68(String ident$69);
+int ident$71();
+default boolean ident$47() {
+return ident$71() == 0;
+}
+default void ident$73() { }
+void ident$74() throws InterruptedException;
+}

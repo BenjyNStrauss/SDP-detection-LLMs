@@ -1,0 +1,97 @@
+package ident$1.ident$2.ident$3;
+import ident$1.ident$5.ident$6;
+import ident$1.ident$2.ident$7;
+import ident$1.ident$2.ident$8;
+import ident$9.ident$10.ident$1.ident$11.ident$12;
+import ident$9.ident$10.ident$1.ident$11.ident$13.ident$14;
+import ident$9.ident$10.ident$1.ident$11.ident$15.ident$16;
+import ident$9.ident$10.ident$1.ident$11.ident$15.ident$17;
+import ident$9.ident$10.ident$1.ident$11.ident$15.ident$17.ident$18;
+import ident$9.ident$10.ident$1.ident$11.ident$15.ident$17.ident$19;
+import ident$9.ident$10.ident$1.ident$11.ident$20.ident$21;
+import ident$9.ident$10.ident$1.ident$11.ident$22.ident$23;
+import ident$9.ident$10.ident$1.ident$11.ident$24.ident$25;
+import ident$9.ident$10.ident$1.ident$26.ident$27;
+import java.ident$29.ident$30;
+import java.ident$29.ident$31;
+import java.ident$29.ident$32;
+import java.ident$29.ident$33.ident$34;
+import static ident$9.ident$10.ident$1.ident$11.ident$36.ident$37.ident$38;
+import static ident$9.ident$10.ident$1.ident$11.ident$24.ident$39.ident$40;
+public class ident$43 {
+ident$27 ident$44;
+ident$7 ident$45;
+ident$8 ident$46;
+public ident$43(
+ident$27 ident$44,
+ident$7 ident$45,
+ident$8 ident$46
+) {
+this.ident$44 = ident$44;
+this.ident$45 = ident$45;
+this.ident$46 = ident$46;
+}
+public ident$17 ident$48(ident$6.ident$49 ident$50) {
+ident$16 ident$51 = ((ident$23) ident$50.ident$52()).ident$53();
+ident$32<String> ident$55 = new ident$30<>();
+boolean ident$58 = ident$51.ident$55().ident$59();
+ident$16.ident$60 ident$61 = ident$51.ident$61();
+String ident$62 = ident$61 != null ? ident$61.ident$64() : "literal$0";
+if (ident$58) {
+ident$44.ident$66().ident$67(ident$64 -> {
+if (ident$64.ident$68(ident$62) >= 0) {
+ident$55.ident$69(ident$64);
+}
+});
+} else {
+ident$51.ident$55().ident$67(ident$71 -> {
+String ident$64 = ident$71.ident$72();
+if (ident$64.ident$68(ident$62) >= 0) {
+ident$55.ident$69(ident$64);
+}
+});
+if (ident$61 != null && !ident$55.ident$73(ident$61.ident$64())) {
+throw new ident$14("literal$1" + ident$61.ident$64());
+}
+}
+if (ident$61 != null && ident$61.ident$75() < 0) {
+throw new ident$14("literal$2" + ident$61);
+}
+ident$32<ident$19> ident$76 = new ident$30<>();
+ident$34<String> ident$77 = ident$55.ident$33().ident$78().ident$79(ident$64 -> {
+boolean ident$80 = ident$45.ident$81(
+ident$50.ident$82(), ident$38, ident$40, ident$64, ident$83, ident$83, 1);
+if (!ident$58 && !ident$80) {
+ident$76.ident$69(ident$84(
+ident$21.ident$85, ident$64, ident$12.ident$86, ident$87, ident$31.ident$88())
+);
+}
+return ident$80;
+});
+ident$17 ident$90 = ident$44.ident$91(
+ident$77.ident$92(),
+ident$50.ident$82().ident$93,
+(String ident$64) -> ident$64.ident$94(ident$62) ? ident$61.ident$75() : 0,
+Math.ident$96(Math.ident$97(ident$46.ident$98(), ident$51.ident$99()), 1),
+ident$58
+);
+ident$90.ident$55().ident$67(ident$100 ->
+ident$100.ident$101(ident$45.ident$102(ident$50, new ident$25(ident$40, ident$100.ident$72()))));
+ident$90.ident$55().ident$103(ident$76);
+return ident$90;
+}
+private ident$19 ident$84(
+ident$21 ident$105,
+String ident$71,
+ident$12 ident$106,
+Boolean ident$108,
+ident$31<ident$18> ident$109
+) {
+return new ident$19()
+.ident$110(ident$105.ident$111())
+.ident$112(ident$71)
+.ident$113(ident$106)
+.ident$114(ident$108)
+.ident$115(ident$109);
+}
+}

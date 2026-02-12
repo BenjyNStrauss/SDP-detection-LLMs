@@ -1,0 +1,155 @@
+package ident$1.ident$2.ident$3.ident$4.ident$5;
+import java.ident$8.ident$9;
+import java.ident$8.ident$10;
+import java.ident$8.ident$11;
+import java.ident$8.ident$12;
+import java.ident$8.ident$13;
+import java.ident$8.ident$14;
+public class ident$17<ident$18> implements ident$13<ident$18> {
+private final int ident$23;
+private final ident$13<ident$18> ident$24;
+public static <ident$18> ident$17<ident$18> ident$26(int ident$23) {
+return new ident$17<>(ident$23, new ident$9<>());
+}
+public static <ident$18> ident$17<ident$18> ident$26(int ident$23, int ident$29) {
+if (ident$29 <= 0) {
+throw new IllegalArgumentException("literal$0" + ident$29);
+}
+return new ident$17<>(ident$23, new ident$9<>(ident$29));
+}
+private ident$17(int ident$23, ident$13<ident$18> ident$24) {
+if (ident$23 <= 0) {
+throw new IllegalArgumentException("literal$1" + ident$23);
+}
+if (ident$24.ident$33() > ident$23) {
+throw new ident$34("literal$2" +
+"literal$3" + ident$23);
+}
+this.ident$23 = ident$23;
+this.ident$24 = ident$24;
+}
+@Override
+public int ident$33() {
+return ident$24.ident$33();
+}
+@Override
+public boolean ident$38() {
+return ident$24.ident$38();
+}
+@Override
+public boolean ident$39(Object ident$41) {
+return ident$24.ident$39(ident$41);
+}
+@Override
+public ident$12<ident$18> ident$42() {
+return ident$11.ident$43(ident$24).ident$42();
+}
+@Override
+public Object[] ident$44() {
+return ident$24.ident$44();
+}
+@Override
+public <ident$45> ident$45[] ident$44(ident$45[] ident$46) {
+return ident$24.ident$44(ident$46);
+}
+@Override
+public boolean ident$47(ident$18 ident$48) {
+if (ident$24.ident$33() >= ident$23) {
+throw new ident$34("literal$4" +
+"literal$5" + ident$23);
+}
+return ident$24.ident$47(ident$48);
+}
+@Override
+public boolean ident$49(Object ident$41) {
+return ident$24.ident$49(ident$41);
+}
+@Override
+public boolean ident$50(ident$10<?> ident$51) {
+return ident$24.ident$50(ident$51);
+}
+@Override
+public boolean ident$52(ident$10<? extends ident$18> ident$51) {
+int ident$54 = ident$51.ident$33();
+if (ident$24.ident$33() > ident$23 - ident$54) {
+throw new ident$34("literal$6" + ident$54 +
+"literal$7" +
+ident$23);
+}
+return ident$24.ident$52(ident$51);
+}
+@Override
+public boolean ident$52(int ident$55, ident$10<? extends ident$18> ident$51) {
+int ident$54 = ident$51.ident$33();
+if (ident$24.ident$33() > ident$23 - ident$54) {
+throw new ident$34("literal$6" + ident$54 +
+"literal$7" +
+ident$23);
+}
+return ident$24.ident$52(ident$55, ident$51);
+}
+@Override
+public boolean ident$56(ident$10<?> ident$51) {
+return ident$24.ident$56(ident$51);
+}
+@Override
+public boolean ident$57(ident$10<?> ident$51) {
+return ident$24.ident$57(ident$51);
+}
+@Override
+public void ident$59() {
+ident$24.ident$59();
+}
+@Override
+public ident$18 ident$60(int ident$55) {
+return ident$24.ident$60(ident$55);
+}
+@Override
+public ident$18 ident$61(int ident$55, ident$18 ident$62) {
+return ident$24.ident$61(ident$55, ident$62);
+}
+@Override
+public void ident$47(int ident$55, ident$18 ident$62) {
+if (ident$24.ident$33() >= ident$23) {
+throw new ident$34("literal$4" +
+"literal$5" + ident$23);
+}
+ident$24.ident$47(ident$55, ident$62);
+}
+@Override
+public ident$18 ident$49(int ident$55) {
+return ident$24.ident$49(ident$55);
+}
+@Override
+public int ident$63(Object ident$41) {
+return ident$24.ident$63(ident$41);
+}
+@Override
+public int ident$64(Object ident$41) {
+return ident$24.ident$64(ident$41);
+}
+@Override
+public ident$14<ident$18> ident$65() {
+return ident$11.ident$43(ident$24).ident$65();
+}
+@Override
+public ident$14<ident$18> ident$65(int ident$55) {
+return ident$11.ident$43(ident$24).ident$65(ident$55);
+}
+@Override
+public ident$13<ident$18> ident$66(int ident$67, int ident$68) {
+return ident$11.ident$43(ident$24).ident$66(ident$67, ident$68);
+}
+@Override
+public boolean ident$69(Object ident$41) {
+return ident$24.ident$69(ident$41);
+}
+@Override
+public int ident$70() {
+return ident$24.ident$70();
+}
+@Override
+public String ident$72() {
+return ident$24.ident$72();
+}
+}
