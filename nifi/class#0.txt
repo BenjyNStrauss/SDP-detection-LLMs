@@ -1,0 +1,72 @@
+package ident$1.ident$2.ident$3.ident$4;
+import java.ident$7.ident$8.ident$9.ident$10;
+public class ident$13 {
+private static final ident$10 ident$17 = new ident$10(0);
+public static ident$19 ident$20(final String ident$22, final String ident$23, final String ident$24, final String ident$25, final String ident$26, final String ident$27) {
+final ident$19 ident$28 = new ident$29(ident$17.ident$30());
+ident$28.ident$31(ident$22);
+ident$28.ident$32(ident$23);
+ident$28.ident$33(ident$24);
+ident$28.ident$34(ident$25);
+ident$28.ident$35(ident$26);
+ident$28.ident$36(ident$27);
+return ident$28;
+}
+public static ident$19 ident$20(final String ident$22, final String ident$38, final String ident$23, final String ident$24,
+final String ident$25, final String ident$26, final String ident$27) {
+final ident$19 ident$28 = new ident$29(ident$17.ident$30());
+ident$28.ident$31(ident$22);
+ident$28.ident$39(ident$38);
+ident$28.ident$32(ident$23);
+ident$28.ident$33(ident$24);
+ident$28.ident$34(ident$25);
+ident$28.ident$35(ident$26);
+ident$28.ident$36(ident$27);
+return ident$28;
+}
+public static ident$19 ident$20(final String ident$25, final String ident$26, final String ident$27) {
+final ident$19 ident$28 = new ident$29(ident$17.ident$30());
+ident$28.ident$34(ident$25);
+ident$28.ident$35(ident$26);
+ident$28.ident$36(ident$27);
+return ident$28;
+}
+public static ident$19 ident$20(final String ident$25, final String ident$26, final String ident$27, final String ident$40) {
+final ident$19 ident$28 = new ident$29(ident$17.ident$30());
+ident$28.ident$34(ident$25);
+ident$28.ident$35(ident$26);
+ident$28.ident$36(ident$27);
+ident$28.ident$41(ident$40);
+return ident$28;
+}
+public static ident$19 ident$20(final String ident$22, final String ident$38, final String ident$23, final ident$42 ident$43,
+final String ident$24, final String ident$25, final String ident$26, final String ident$27, final String ident$44) {
+final ident$19 ident$28 = new ident$29(ident$17.ident$30());
+ident$28.ident$31(ident$22);
+ident$28.ident$39(ident$38);
+ident$28.ident$45(ident$44);
+ident$28.ident$32(ident$23);
+ident$28.ident$46(ident$43);
+ident$28.ident$33(ident$24);
+ident$28.ident$34(ident$25);
+ident$28.ident$35(ident$26);
+ident$28.ident$36(ident$27);
+return ident$28;
+}
+public static ident$19 ident$20(final String ident$22, final String ident$38, final String ident$23, final ident$42 ident$43,
+final String ident$24, final String ident$25, final String ident$26, final String ident$27,
+final String ident$44, final String ident$40) {
+final ident$19 ident$28 = new ident$29(ident$17.ident$30());
+ident$28.ident$31(ident$22);
+ident$28.ident$39(ident$38);
+ident$28.ident$45(ident$44);
+ident$28.ident$32(ident$23);
+ident$28.ident$46(ident$43);
+ident$28.ident$33(ident$24);
+ident$28.ident$34(ident$25);
+ident$28.ident$35(ident$26);
+ident$28.ident$36(ident$27);
+ident$28.ident$41(ident$40);
+return ident$28;
+}
+}

@@ -1,0 +1,199 @@
+package ident$1.ident$2.ident$3.ident$4;
+import ident$1.ident$2.ident$3.ident$6.ident$7;
+import ident$1.ident$8.ident$9;
+import ident$1.ident$8.ident$10;
+import java.ident$4.ident$12;
+public class ident$15 implements ident$7 {
+private final ident$19 ident$20;
+private final Object ident$22;
+public ident$15(final String ident$24, final Object ident$22) {
+this.ident$20 = new ident$19(ident$10.ident$27(ident$22.ident$28()));
+this.ident$22 = ident$22;
+}
+public ident$12<ident$29> ident$30() {
+return ident$20.ident$30();
+}
+public ident$12<ident$29> ident$32() {
+return ident$20.ident$32();
+}
+public ident$12<ident$29> ident$33() {
+return ident$20.ident$33();
+}
+public ident$12<ident$29> ident$34() {
+return ident$20.ident$34();
+}
+public ident$12<ident$29> ident$35() {
+return ident$20.ident$35();
+}
+private Object[] ident$36(final Object[] ident$37) {
+return ident$38(ident$37, ident$22);
+}
+private Object[] ident$39(final Object[] ident$37) {
+if (ident$37 != null && ident$37.ident$42 > 0 && (ident$37[ident$37.ident$42 - 1] instanceof Throwable)) {
+final Object[] ident$45 = new Object[ident$37.ident$42 + 2];
+ident$45[0] = ident$22.ident$46();
+System.ident$48(ident$37, 0, ident$45, 1, ident$37.ident$42 - 1);
+ident$45[ident$45.ident$42 - 2] = ident$37[ident$37.ident$42 - 1].ident$46();
+ident$45[ident$45.ident$42 - 1] = ident$37[ident$37.ident$42 - 1];
+return ident$45;
+} else {
+return ident$36(ident$37);
+}
+}
+private Object[] ident$38(final Object[] ident$37, final Object... ident$50) {
+final Object[] ident$51 = new Object[ident$37.ident$42 + ident$50.ident$42];
+System.ident$48(ident$50, 0, ident$51, 0, ident$50.ident$42);
+System.ident$48(ident$37, 0, ident$51, ident$50.ident$42, ident$37.ident$42);
+return ident$51;
+}
+private boolean ident$53(final Object[] ident$54) {
+return (ident$54 != null && ident$54.ident$42 > 0 && (ident$54[ident$54.ident$42 - 1] instanceof Throwable));
+}
+@Override
+public void ident$57(final String ident$58, final Throwable ident$59) {
+ident$57("literal$0" + ident$58, ident$22, ident$59);
+}
+@Override
+public void ident$57(String ident$58, Object... ident$54) {
+if (ident$53(ident$54)) {
+ident$54 = ident$39(ident$54);
+ident$58 = "literal$0" + ident$58 + "literal$1";
+ident$20.ident$57(ident$58, ident$54);
+} else {
+ident$54 = ident$36(ident$54);
+ident$58 = "literal$0" + ident$58;
+ident$20.ident$57(ident$58, ident$54);
+}
+}
+@Override
+public void ident$57(String ident$58) {
+ident$58 = "literal$0" + ident$58;
+ident$20.ident$57(ident$58, ident$22);
+}
+@Override
+public void ident$60(String ident$58, Throwable ident$59) {
+ident$58 = "literal$0" + ident$58;
+final Object[] ident$54 = {ident$22};
+ident$20.ident$60(ident$58, ident$54, ident$59);
+}
+@Override
+public void ident$60(String ident$58, Object... ident$54) {
+if (ident$53(ident$54)) {
+ident$54 = ident$39(ident$54);
+ident$58 = "literal$0" + ident$58 + "literal$1";
+ident$20.ident$60(ident$58, ident$54);
+} else {
+ident$54 = ident$36(ident$54);
+ident$58 = "literal$0" + ident$58;
+ident$20.ident$60(ident$58, ident$54);
+}
+}
+@Override
+public void ident$60(String ident$58) {
+ident$58 = "literal$0" + ident$58;
+final Object[] ident$54 = {ident$22};
+ident$20.ident$60(ident$58, ident$54);
+}
+@Override
+public boolean ident$61() {
+return ident$20.ident$61();
+}
+@Override
+public boolean ident$62() {
+return ident$20.ident$62();
+}
+@Override
+public boolean ident$63() {
+return ident$20.ident$63();
+}
+@Override
+public boolean ident$64() {
+return ident$20.ident$64();
+}
+@Override
+public boolean ident$65() {
+return ident$20.ident$65();
+}
+@Override
+public void ident$66(String ident$58, Throwable ident$59) {
+ident$58 = "literal$0" + ident$58;
+final Object[] ident$54 = {ident$22};
+ident$20.ident$66(ident$58, ident$54);
+if (ident$20.ident$65()) {
+ident$20.ident$66("literal$2", ident$59);
+}
+}
+@Override
+public void ident$66(String ident$58, Object... ident$54) {
+if (ident$53(ident$54)) {
+ident$54 = ident$39(ident$54);
+ident$58 = "literal$0" + ident$58 + "literal$1";
+ident$20.ident$66(ident$58, ident$54);
+} else {
+ident$54 = ident$36(ident$54);
+ident$58 = "literal$0" + ident$58;
+ident$20.ident$66(ident$58, ident$54);
+}
+}
+@Override
+public void ident$66(String ident$58) {
+ident$58 = "literal$0" + ident$58;
+final Object[] ident$54 = {ident$22};
+ident$20.ident$66(ident$58, ident$54);
+}
+@Override
+public String ident$67() {
+return ident$20.ident$67();
+}
+@Override
+public void ident$68(String ident$58, Throwable ident$59) {
+ident$58 = "literal$0" + ident$58;
+final Object[] ident$54 = {ident$22};
+ident$20.ident$68(ident$58, ident$54, ident$59);
+if (ident$20.ident$65()) {
+ident$20.ident$68("literal$2", ident$59);
+}
+}
+@Override
+public void ident$68(String ident$58, Object... ident$54) {
+if (ident$53(ident$54)) {
+ident$54 = ident$39(ident$54);
+ident$58 = "literal$0" + ident$58 + "literal$1";
+ident$20.ident$68(ident$58, ident$54);
+} else {
+ident$54 = ident$36(ident$54);
+ident$58 = "literal$0" + ident$58;
+ident$20.ident$68(ident$58, ident$54);
+}
+}
+@Override
+public void ident$68(String ident$58) {
+ident$58 = "literal$0" + ident$58;
+final Object[] ident$54 = {ident$22};
+ident$20.ident$68(ident$58, ident$54);
+}
+@Override
+public void ident$69(String ident$58, Throwable ident$59) {
+ident$58 = "literal$0" + ident$58;
+final Object[] ident$54 = {ident$22};
+ident$20.ident$69(ident$58, ident$54, ident$59);
+}
+@Override
+public void ident$69(String ident$58, Object... ident$54) {
+if (ident$53(ident$54)) {
+ident$54 = ident$39(ident$54);
+ident$58 = "literal$0" + ident$58 + "literal$1";
+ident$20.ident$69(ident$58, ident$54);
+} else {
+ident$54 = ident$36(ident$54);
+ident$58 = "literal$0" + ident$58;
+ident$20.ident$69(ident$58, ident$54);
+}
+}
+@Override
+public void ident$69(String ident$58) {
+ident$58 = "literal$0" + ident$58;
+final Object[] ident$54 = {ident$22};
+ident$20.ident$69(ident$58, ident$54);
+}
+}

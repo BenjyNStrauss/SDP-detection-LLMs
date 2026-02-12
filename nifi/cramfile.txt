@@ -1,0 +1,1022 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.nifi.stateless.parameter;
+
+import org.apache.nifi.components.PropertyDescriptor;
+import org.apache.nifi.components.ValidationResult;
+import org.apache.nifi.components.Validator;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * A base class for secret-based <code>ParameterValueProvider</code>s, which map a ParameterContext to a named "Secret" with key/value pairs.  This
+ * class allows a default Secret name to be configured for parameters not found in specific ParameterContext Secrets, and uses dynamic user-added
+ * properties to map ParameterContext names to different Secret names.  Subclasses must provide the implementation for retrieving the actual
+ * secret values.
+ */
+public abstract class AbstractSecretBasedParameterValueProvider extends AbstractParameterValueProvider implements ParameterValueProvider {
+    private static final Validator NON_EMPTY_VALIDATOR = (subject, value, context) ->
+            new ValidationResult.Builder().subject(subject).input(value).valid(value != null && !value.isEmpty()).explanation(subject + " cannot be empty").build();
+
+    public static final PropertyDescriptor DEFAULT_SECRET_NAME = new PropertyDescriptor.Builder()
+            .displayName("Default Secret Name")
+            .name("default-secret-name")
+            .description("The default secret name to use.  This secret represents a default Parameter Context if there is not a matching key within the mapped Parameter Context secret")
+            .addValidator(NON_EMPTY_VALIDATOR)
+            .build();
+
+    private List<PropertyDescriptor> descriptors;
+
+    private String defaultSecretName = null;
+
+    private Map<String, String> contextToSecretMapping;
+
+    /**
+     * Define any additional properties.
+     * @return Any additional property descriptors
+     */
+    protected abstract List<PropertyDescriptor> getAdditionalSupportedPropertyDescriptors();
+
+    /**
+     * Perform any additional initialization based on the context.
+     * @param context The initialization context
+     */
+    protected abstract void additionalInit(final ParameterValueProviderInitializationContext context);
+
+    /**
+     * Extract the value for the given key from the secret with the given name.
+     * @param secretName The name of a secret
+     * @param keyName The key within the secret
+     * @return The secret value, or null if either the secret or the key is not found
+     */
+    protected abstract String getSecretValue(final String secretName, final String keyName);
+
+    @Override
+    protected PropertyDescriptor getSupportedDynamicPropertyDescriptor(final String propertyDescriptorName) {
+        return new PropertyDescriptor.Builder()
+                .displayName(propertyDescriptorName)
+                .name(propertyDescriptorName)
+                .dynamic(true)
+                .addValidator(NON_EMPTY_VALIDATOR)
+                .build();
+    }
+
+    @Override
+    protected List<PropertyDescriptor> getSupportedPropertyDescriptors() {
+        return descriptors;
+    }
+
+    @Override
+    protected final void init(final ParameterValueProviderInitializationContext context) {
+        super.init(context);
+
+        final List<PropertyDescriptor> propertyDescriptors = new ArrayList<>(getAdditionalSupportedPropertyDescriptors());
+        propertyDescriptors.add(DEFAULT_SECRET_NAME);
+        this.descriptors = Collections.unmodifiableList(propertyDescriptors);
+
+        defaultSecretName = context.getProperty(DEFAULT_SECRET_NAME).getValue();
+        contextToSecretMapping = new HashMap<>();
+        for (final Map.Entry<String, String> entry : context.getAllProperties().entrySet()) {
+            if (getPropertyDescriptor(entry.getKey()).isDynamic()) {
+                contextToSecretMapping.put(entry.getKey(), entry.getValue());
+            }
+        }
+        this.additionalInit(context);
+    }
+
+    @Override
+    public boolean isParameterDefined(final String contextName, final String parameterName) {
+        return getParameterValue(contextName, parameterName) != null;
+    }
+
+    @Override
+    public String getParameterValue(final String contextName, final String parameterName) {
+        final String contextBasedValue = getSecretValue(getSecretName(contextName), parameterName);
+        return contextBasedValue != null || defaultSecretName == null ? contextBasedValue : getSecretValue(defaultSecretName, parameterName);
+    }
+
+    private String getSecretName(final String contextName) {
+        return contextToSecretMapping.getOrDefault(contextName, contextName);
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.nifi.reporting;
+
+import java.util.concurrent.atomic.AtomicLong;
+
+public class BulletinFactory {
+
+    private static final AtomicLong currentId = new AtomicLong(0);
+
+    public static Bulletin createBulletin(final String groupId, final String sourceId, final String sourceName, final String category, final String severity, final String message) {
+        final Bulletin bulletin = new MockBulletin(currentId.getAndIncrement());
+        bulletin.setGroupId(groupId);
+        bulletin.setSourceId(sourceId);
+        bulletin.setSourceName(sourceName);
+        bulletin.setCategory(category);
+        bulletin.setLevel(severity);
+        bulletin.setMessage(message);
+        return bulletin;
+    }
+
+    public static Bulletin createBulletin(final String groupId, final String groupName, final String sourceId, final String sourceName,
+            final String category, final String severity, final String message) {
+        final Bulletin bulletin = new MockBulletin(currentId.getAndIncrement());
+        bulletin.setGroupId(groupId);
+        bulletin.setGroupName(groupName);
+        bulletin.setSourceId(sourceId);
+        bulletin.setSourceName(sourceName);
+        bulletin.setCategory(category);
+        bulletin.setLevel(severity);
+        bulletin.setMessage(message);
+        return bulletin;
+    }
+
+    public static Bulletin createBulletin(final String category, final String severity, final String message) {
+        final Bulletin bulletin = new MockBulletin(currentId.getAndIncrement());
+        bulletin.setCategory(category);
+        bulletin.setLevel(severity);
+        bulletin.setMessage(message);
+        return bulletin;
+    }
+
+    public static Bulletin createBulletin(final String category, final String severity, final String message, final String flowFileUUID) {
+        final Bulletin bulletin = new MockBulletin(currentId.getAndIncrement());
+        bulletin.setCategory(category);
+        bulletin.setLevel(severity);
+        bulletin.setMessage(message);
+        bulletin.setFlowFileUuid(flowFileUUID);
+        return bulletin;
+    }
+
+    public static Bulletin createBulletin(final String groupId, final String groupName, final String sourceId, final ComponentType sourceType,
+            final String sourceName, final String category, final String severity, final String message, final String groupPath) {
+        final Bulletin bulletin = new MockBulletin(currentId.getAndIncrement());
+        bulletin.setGroupId(groupId);
+        bulletin.setGroupName(groupName);
+        bulletin.setGroupPath(groupPath);
+        bulletin.setSourceId(sourceId);
+        bulletin.setSourceType(sourceType);
+        bulletin.setSourceName(sourceName);
+        bulletin.setCategory(category);
+        bulletin.setLevel(severity);
+        bulletin.setMessage(message);
+        return bulletin;
+    }
+
+    public static Bulletin createBulletin(final String groupId, final String groupName, final String sourceId, final ComponentType sourceType,
+                                          final String sourceName, final String category, final String severity, final String message,
+                                          final String groupPath, final String flowFileUUID) {
+        final Bulletin bulletin = new MockBulletin(currentId.getAndIncrement());
+        bulletin.setGroupId(groupId);
+        bulletin.setGroupName(groupName);
+        bulletin.setGroupPath(groupPath);
+        bulletin.setSourceId(sourceId);
+        bulletin.setSourceType(sourceType);
+        bulletin.setSourceName(sourceName);
+        bulletin.setCategory(category);
+        bulletin.setLevel(severity);
+        bulletin.setMessage(message);
+        bulletin.setFlowFileUuid(flowFileUUID);
+        return bulletin;
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.nifi.stateless.flow;
+
+import org.apache.nifi.flowfile.FlowFile;
+
+import java.util.Optional;
+
+public interface FlowFileSupplier {
+
+    Optional<FlowFile> getFlowFile(String portName);
+
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.nifi.util;
+
+import org.apache.nifi.logging.ComponentLog;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
+
+public class MockComponentLog implements ComponentLog {
+
+    private final CapturingLogger logger;
+    private final Object component;
+
+    public MockComponentLog(final String componentId, final Object component) {
+        this.logger = new CapturingLogger(LoggerFactory.getLogger(component.getClass()));
+        this.component = component;
+    }
+
+    /**
+     * @return a {@link List} of all TRACE level messages recorded by this {@link Logger}.
+     */
+    public List<LogMessage> getTraceMessages() {
+        return logger.getTraceMessages();
+    }
+
+    /**
+     * @return a {@link List} of all DEBUG level messages recorded by this {@link Logger}.
+     */
+    public List<LogMessage> getDebugMessages() {
+        return logger.getDebugMessages();
+    }
+
+    /**
+     * @return a {@link List} of all INFO level messages recorded by this {@link Logger}.
+     */
+    public List<LogMessage> getInfoMessages() {
+        return logger.getInfoMessages();
+    }
+
+    /**
+     * @return a {@link List} of all WARN level messages recorded by this {@link Logger}.
+     */
+    public List<LogMessage> getWarnMessages() {
+        return logger.getWarnMessages();
+    }
+
+    /**
+     * @return a {@link List} of all ERROR level messages recorded by this {@link Logger}.
+     */
+    public List<LogMessage> getErrorMessages() {
+        return logger.getErrorMessages();
+    }
+
+    private Object[] addProcessor(final Object[] originalArgs) {
+        return prependToArgs(originalArgs, component);
+    }
+
+    private Object[] addProcessorAndFormattedThrowable(final Object[] originalArgs) {
+        if (originalArgs != null && originalArgs.length > 0 && (originalArgs[originalArgs.length - 1] instanceof Throwable)) {
+            final Object[] modifiedArgs = new Object[originalArgs.length + 2];
+
+            modifiedArgs[0] = component.toString();
+            System.arraycopy(originalArgs, 0, modifiedArgs, 1, originalArgs.length - 1);
+            modifiedArgs[modifiedArgs.length - 2] = originalArgs[originalArgs.length - 1].toString();
+            modifiedArgs[modifiedArgs.length - 1] = originalArgs[originalArgs.length - 1];
+
+            return modifiedArgs;
+        } else {
+            return addProcessor(originalArgs);
+        }
+    }
+
+    private Object[] prependToArgs(final Object[] originalArgs, final Object... toAdd) {
+        final Object[] newArgs = new Object[originalArgs.length + toAdd.length];
+        System.arraycopy(toAdd, 0, newArgs, 0, toAdd.length);
+        System.arraycopy(originalArgs, 0, newArgs, toAdd.length, originalArgs.length);
+        return newArgs;
+    }
+
+    private boolean lastArgIsException(final Object[] os) {
+        return (os != null && os.length > 0 && (os[os.length - 1] instanceof Throwable));
+    }
+
+    @Override
+    public void warn(final String msg, final Throwable t) {
+        warn("{} " + msg, component, t);
+    }
+
+    @Override
+    public void warn(String msg, Object... os) {
+        if (lastArgIsException(os)) {
+            os = addProcessorAndFormattedThrowable(os);
+            msg = "{} " + msg + ": {}";
+
+            logger.warn(msg, os);
+        } else {
+            os = addProcessor(os);
+            msg = "{} " + msg;
+            logger.warn(msg, os);
+        }
+    }
+
+    @Override
+    public void warn(String msg) {
+        msg = "{} " + msg;
+        logger.warn(msg, component);
+    }
+
+    @Override
+    public void trace(String msg, Throwable t) {
+        msg = "{} " + msg;
+        final Object[] os = {component};
+        logger.trace(msg, os, t);
+    }
+
+    @Override
+    public void trace(String msg, Object... os) {
+        if (lastArgIsException(os)) {
+            os = addProcessorAndFormattedThrowable(os);
+            msg = "{} " + msg + ": {}";
+
+            logger.trace(msg, os);
+        } else {
+            os = addProcessor(os);
+            msg = "{} " + msg;
+            logger.trace(msg, os);
+        }
+    }
+
+    @Override
+    public void trace(String msg) {
+        msg = "{} " + msg;
+        final Object[] os = {component};
+        logger.trace(msg, os);
+    }
+
+    @Override
+    public boolean isWarnEnabled() {
+        return logger.isWarnEnabled();
+    }
+
+    @Override
+    public boolean isTraceEnabled() {
+        return logger.isTraceEnabled();
+    }
+
+    @Override
+    public boolean isInfoEnabled() {
+        return logger.isInfoEnabled();
+    }
+
+    @Override
+    public boolean isErrorEnabled() {
+        return logger.isErrorEnabled();
+    }
+
+    @Override
+    public boolean isDebugEnabled() {
+        return logger.isDebugEnabled();
+    }
+
+    @Override
+    public void info(String msg, Throwable t) {
+        msg = "{} " + msg;
+        final Object[] os = {component};
+
+        logger.info(msg, os);
+        if (logger.isDebugEnabled()) {
+            logger.info("", t);
+        }
+    }
+
+    @Override
+    public void info(String msg, Object... os) {
+        if (lastArgIsException(os)) {
+            os = addProcessorAndFormattedThrowable(os);
+            msg = "{} " + msg + ": {}";
+
+            logger.info(msg, os);
+        } else {
+            os = addProcessor(os);
+            msg = "{} " + msg;
+            logger.info(msg, os);
+        }
+    }
+
+    @Override
+    public void info(String msg) {
+        msg = "{} " + msg;
+        final Object[] os = {component};
+
+        logger.info(msg, os);
+    }
+
+    @Override
+    public String getName() {
+        return logger.getName();
+    }
+
+    @Override
+    public void error(String msg, Throwable t) {
+        msg = "{} " + msg;
+        final Object[] os = {component};
+
+        logger.error(msg, os, t);
+        if (logger.isDebugEnabled()) {
+            logger.error("", t);
+        }
+    }
+
+    @Override
+    public void error(String msg, Object... os) {
+        if (lastArgIsException(os)) {
+            os = addProcessorAndFormattedThrowable(os);
+            msg = "{} " + msg + ": {}";
+
+            logger.error(msg, os);
+        } else {
+            os = addProcessor(os);
+            msg = "{} " + msg;
+            logger.error(msg, os);
+        }
+    }
+
+    @Override
+    public void error(String msg) {
+        msg = "{} " + msg;
+        final Object[] os = {component};
+
+        logger.error(msg, os);
+    }
+
+    @Override
+    public void debug(String msg, Throwable t) {
+        msg = "{} " + msg;
+        final Object[] os = {component};
+
+        logger.debug(msg, os, t);
+    }
+
+    @Override
+    public void debug(String msg, Object... os) {
+        if (lastArgIsException(os)) {
+            os = addProcessorAndFormattedThrowable(os);
+            msg = "{} " + msg + ": {}";
+
+            logger.debug(msg, os);
+        } else {
+            os = addProcessor(os);
+            msg = "{} " + msg;
+            logger.debug(msg, os);
+        }
+    }
+
+    @Override
+    public void debug(String msg) {
+        msg = "{} " + msg;
+        final Object[] os = {component};
+
+        logger.debug(msg, os);
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.nifi.state;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import org.apache.nifi.components.state.StateMap;
+
+public class MockStateMap implements StateMap {
+    private final Map<String, String> stateValues;
+    private final String version;
+
+    public MockStateMap(final Map<String, String> stateValues, final long version) {
+        this.stateValues = stateValues == null ? Collections.emptyMap() : new HashMap<>(stateValues);
+        this.version = Long.toString(version);
+    }
+
+    @Override
+    public Optional<String> getStateVersion() {
+        return version.equals("-1") ? Optional.empty() : Optional.of(version);
+    }
+
+    @Override
+    public String get(final String key) {
+        return stateValues.get(key);
+    }
+
+    @Override
+    public Map<String, String> toMap() {
+        return Collections.unmodifiableMap(stateValues);
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.nifi.stateless.engine;
+
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * If multiple Stateless dataflows are loaded concurrently within the same JVM, we need to ensure that the dataflows
+ * do not stomp on one another when unpacking NAR's. To do that, we need a mechanism by which a single lock can be shared
+ * across multiple classes, as the Extension Repository as well as the bootstrap logic may attempt to unpack NARs.
+ * Because these classes exist across multiple modules, and because statically defined locks at that level may not be enough
+ * (due to multiple classloders being used for the 'stateless nar'), we define a singleton Lock within the nifi-stateless-api module.
+ * This lock should always be obtained before attempting to unpack nars.
+ */
+public class NarUnpackLock {
+    private static final Logger logger = LoggerFactory.getLogger(NarUnpackLock.class);
+
+    private static final Lock lock = new ReentrantLock();
+
+    public static void lock() {
+        lock.lock();
+        logger.debug("Lock obtained by thread {}", Thread.currentThread());
+    }
+
+    public static void unlock() {
+        lock.unlock();
+        logger.debug("Lock unlocked by thread {}", Thread.currentThread());
+    }
+
+    public static boolean tryLock() {
+        final boolean obtained = lock.tryLock();
+
+        if (obtained) {
+            logger.debug("Lock obtained by thread {}", Thread.currentThread());
+        }
+
+        return obtained;
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.nifi.stateless.config;
+
+public class ParameterOverride {
+    private final String contextName;
+    private final String parameterName;
+    private final String parameterValue;
+
+    public ParameterOverride(final String parameterName, final String parameterValue) {
+        this(null, parameterName, parameterValue);
+    }
+
+    public ParameterOverride(final String contextName, final String parameterName, final String parameterValue) {
+        this.contextName = contextName;
+        this.parameterName = parameterName;
+        this.parameterValue = parameterValue;
+    }
+
+    public String getContextName() {
+        return contextName;
+    }
+
+    public String getParameterName() {
+        return parameterName;
+    }
+
+    public String getParameterValue() {
+        return parameterValue;
+    }
+
+    @Override
+    public String toString() {
+        // Do not include parameter value because it may contain sensitive information
+        return "ParameterOverride[context=" + contextName + ", parameter=" + parameterName + "]";
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.nifi.util;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class ReflectionUtils {
+
+    private final static Logger LOG = LoggerFactory.getLogger(ReflectionUtils.class);
+
+    /**
+     * Invokes all methods on the given instance that have been annotated with
+     * the given Annotation. If the signature of the method that is defined in
+     * <code>instance</code> uses 1 or more parameters, those parameters must be
+     * specified by the <code>args</code> parameter. However, if more arguments
+     * are supplied by the <code>args</code> parameter than needed, the extra
+     * arguments will be ignored.
+     *
+     * @param annotation the annotation to look for
+     * @param instance to invoke a method of
+     * @param args to supply in a method call
+     * @throws InvocationTargetException ite
+     * @throws IllegalArgumentException iae
+     * @throws IllegalAccessException if not allowed to invoke that method
+     */
+    public static void invokeMethodsWithAnnotation(final Class<? extends Annotation> annotation, final Object instance, final Object... args)
+            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        for (final Method method : instance.getClass().getMethods()) {
+            if (method.isAnnotationPresent(annotation)) {
+                method.setAccessible(true);
+
+                final Class<?>[] argumentTypes = method.getParameterTypes();
+                if (argumentTypes.length > args.length) {
+                    throw new IllegalArgumentException(String.format("Unable to invoke method %1$s on %2$s because method expects %3$s parameters but only %4$s were given",
+                        method.getName(), instance, argumentTypes.length, args.length));
+                }
+
+                for (int i = 0; i < argumentTypes.length; i++) {
+                    final Class<?> argType = argumentTypes[i];
+                    if (!argType.isAssignableFrom(args[i].getClass())) {
+                        throw new IllegalArgumentException(String.format(
+                            "Unable to invoke method %1$s on %2$s because method parameter %3$s is expected to be of type %4$s but argument passed was of type %5$s",
+                            method.getName(), instance, i, argType, args[i].getClass()));
+                    }
+                }
+
+                if (argumentTypes.length == args.length) {
+                    method.invoke(instance, args);
+                } else {
+                    final Object[] argsToPass = new Object[argumentTypes.length];
+                    System.arraycopy(args, 0, argsToPass, 0, argsToPass.length);
+
+                    method.invoke(instance, argsToPass);
+                }
+            }
+        }
+    }
+
+    /**
+     * Invokes all methods on the given instance that have been annotated with
+     * the given Annotation. If the signature of the method that is defined in
+     * <code>instance</code> uses 1 or more parameters, those parameters must be
+     * specified by the <code>args</code> parameter. However, if more arguments
+     * are supplied by the <code>args</code> parameter than needed, the extra
+     * arguments will be ignored.
+     *
+     * @param annotation the annotation to look for
+     * @param instance to invoke a method of
+     * @param args to supply in a method call
+     * @return <code>true</code> if all appropriate methods were invoked and
+     * returned without throwing an Exception, <code>false</code> if one of the
+     * methods threw an Exception or could not be invoked; if <code>false</code>
+     * is returned, an error will have been logged.
+     */
+    public static boolean quietlyInvokeMethodsWithAnnotation(final Class<? extends Annotation> annotation, final Object instance, final Object... args) {
+        for (final Method method : instance.getClass().getMethods()) {
+            if (method.isAnnotationPresent(annotation)) {
+                method.setAccessible(true);
+
+                final Class<?>[] argumentTypes = method.getParameterTypes();
+                if (argumentTypes.length > args.length) {
+                    LOG.error("Unable to invoke method {} on {} because method expects {} parameters but only {} were given",
+                        method.getName(), instance, argumentTypes.length, args.length);
+                    return false;
+                }
+
+                for (int i = 0; i < argumentTypes.length; i++) {
+                    final Class<?> argType = argumentTypes[i];
+                    if (!argType.isAssignableFrom(args[i].getClass())) {
+                        LOG.error("Unable to invoke method {} on {} because method parameter {} is expected to be of type {} but argument passed was of type {}",
+                            method.getName(), instance, i, argType, args[i].getClass());
+                        return false;
+                    }
+                }
+
+                try {
+                    if (argumentTypes.length == args.length) {
+                        method.invoke(instance, args);
+                    } else {
+                        final Object[] argsToPass = new Object[argumentTypes.length];
+                        System.arraycopy(args, 0, argsToPass, 0, argsToPass.length);
+
+                        method.invoke(instance, argsToPass);
+                    }
+                } catch (final IllegalAccessException | IllegalArgumentException | InvocationTargetException t) {
+                    LOG.error("Unable to invoke method {} on {}", method.getName(), instance, t);
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.nifi.util;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicLong;
+import org.apache.nifi.processor.Processor;
+import org.apache.nifi.provenance.ProvenanceEventRecord;
+import org.apache.nifi.provenance.ProvenanceReporter;
+
+public class SharedSessionState {
+
+    private final MockFlowFileQueue flowFileQueue;
+    private final ProvenanceReporter provenanceReporter;
+    @SuppressWarnings("unused")
+    private final Processor processor;
+    private final AtomicLong flowFileIdGenerator;
+    private final ConcurrentMap<String, AtomicLong> counterMap = new ConcurrentHashMap<>();
+    // list of provenance events as they were in the provenance repository (events emitted with force=true or committed with the session)
+    private final List<ProvenanceEventRecord> events = new ArrayList<>();
+
+    public SharedSessionState(final Processor processor, final AtomicLong flowFileIdGenerator) {
+        flowFileQueue = new MockFlowFileQueue();
+        provenanceReporter = new MockProvenanceReporter(null, this, UUID.randomUUID().toString(), "N/A");
+        this.flowFileIdGenerator = flowFileIdGenerator;
+        this.processor = processor;
+    }
+
+    void addProvenanceEvents(final Collection<ProvenanceEventRecord> events) {
+        this.events.addAll(events);
+    }
+
+    void clearProvenanceEvents() {
+        this.events.clear();
+    }
+
+    public List<ProvenanceEventRecord> getProvenanceEvents() {
+        return new ArrayList<>(this.events);
+    }
+
+    public MockFlowFileQueue getFlowFileQueue() {
+        return flowFileQueue;
+    }
+
+    public ProvenanceReporter getProvenanceReporter() {
+        return provenanceReporter;
+    }
+
+    public long nextFlowFileId() {
+        return flowFileIdGenerator.getAndIncrement();
+    }
+
+    public void adjustCounter(final String name, final long delta) {
+        AtomicLong counter = counterMap.get(name);
+        if (counter == null) {
+            counter = new AtomicLong(0L);
+            final AtomicLong existingCounter = counterMap.putIfAbsent(name, counter);
+            if (existingCounter != null) {
+                counter = existingCounter;
+            }
+        }
+
+        counter.addAndGet(delta);
+    }
+
+    public Long getCounterValue(final String name) {
+        final AtomicLong counterValue = counterMap.get(name);
+        return counterValue == null ? null : counterValue.get();
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.nifi.stateless.flow;
+
+import org.apache.nifi.components.state.Scope;
+import org.apache.nifi.controller.queue.QueueSize;
+import org.apache.nifi.reporting.BulletinRepository;
+
+import java.io.InputStream;
+import java.time.Duration;
+import java.util.Map;
+import java.util.Set;
+
+public interface StatelessDataflow {
+    /**
+     * Triggers the dataflow to run, returning a DataflowTrigger that can be used to wait for the result. Uses the {@link DataflowTriggerContext#IMPLICIT_CONTEXT}.
+     * @return a DataflowTrigger that can be used to wait for the result
+     *
+     * @throws IllegalStateException if called before {@link #initialize(StatelessDataflowInitializationContext)} is called.
+     */
+    default DataflowTrigger trigger() {
+        return trigger(DataflowTriggerContext.IMPLICIT_CONTEXT);
+    }
+
+    /**
+     * Triggers the dataflow to run, returning a DataflowTrigger that can be used to wait for the result
+     *
+     * @param triggerContext the trigger context to use
+     * @return a DataflowTrigger that can be used to wait for the result
+     *
+     * @throws IllegalStateException if called before {@link #initialize(StatelessDataflowInitializationContext)} is called.
+     */
+    DataflowTrigger trigger(DataflowTriggerContext triggerContext);
+
+
+
+    /**
+     * <p>
+     * Performs initialization necessary for triggering dataflows. These activities include, but are not limited to:
+     * </p>
+     *
+     * <ul>
+     *     <li>Component validation</li>
+     *     <li>Enabling Controller Services</li>
+     *     <li>Initializing processors (i.e., invoking @OnScheduled methods, etc.), but not triggering any Processors</li>
+     *     <li>Initializing Remote Process Groups so that they can be triggered</li>
+     *     <li>Scheduling Reporting Tasks to run</li>
+     * </ul>
+     *
+     * <p>
+     *     This method MUST be called prior to calling {@link #trigger()}.
+     * </p>
+     */
+    void initialize(StatelessDataflowInitializationContext initializationContext);
+
+    default void shutdown() {
+        shutdown(true, false, Duration.ofMillis(0));
+    }
+
+    /**
+     * Shuts down the dataflow, stopping all components and releasing all resources.
+     * @param triggerComponentShutdown whether or not to trigger the shutdown of components (e.g., invoking @OnShutdown methods)
+     * @param interruptProcessors whether or not to interrupt any processors and tasks that are running
+     * @param gracefulShutdownPeriod if interruptProcessors is true, this specifies the amount of time to wait for processors to finish before interrupting them.
+     */
+    void shutdown(boolean triggerComponentShutdown, boolean interruptProcessors, Duration gracefulShutdownPeriod);
+
+    StatelessDataflowValidation performValidation();
+
+    Set<String> getInputPortNames();
+
+    Set<String> getOutputPortNames();
+
+    QueueSize enqueue(byte[] flowFileContents, Map<String, String> attributes, String portName);
+
+    QueueSize enqueue(InputStream flowFileContents, Map<String, String> attributes, String portName);
+
+    boolean isFlowFileQueued();
+
+    /**
+     *
+     * @return True if there are any processors in the dataflow with the {@link org.apache.nifi.annotation.behavior.Stateful} annotation
+     */
+    boolean isStateful();
+
+    void purge();
+
+    Map<String, String> getComponentStates(Scope scope);
+
+    void setComponentStates(Map<String, String> componentStates, Scope scope);
+
+    boolean isSourcePrimaryNodeOnly();
+
+    long getSourceYieldExpiration();
+
+    BulletinRepository getBulletinRepository();
+
+}

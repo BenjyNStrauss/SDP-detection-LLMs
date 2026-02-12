@@ -1,0 +1,24 @@
+package ident$1.ident$2.ident$3.ident$4.ident$5;
+import java.ident$8.ident$9.ident$10.ident$11;
+import java.ident$8.ident$9.ident$10.ident$12;
+import ident$1.ident$13.ident$14;
+import ident$1.ident$13.ident$15;
+public class ident$18 {
+private static final ident$14 ident$22 = ident$15.ident$23(ident$18.class);
+private static final ident$11 ident$24 = new ident$12();
+public static void ident$24() {
+ident$24.ident$24();
+ident$22.ident$27("literal$0", Thread.ident$29());
+}
+public static void ident$30() {
+ident$24.ident$30();
+ident$22.ident$27("literal$1", Thread.ident$29());
+}
+public static boolean ident$32() {
+final boolean ident$33 = ident$24.ident$32();
+if (ident$33) {
+ident$22.ident$27("literal$0", Thread.ident$29());
+}
+return ident$33;
+}
+}

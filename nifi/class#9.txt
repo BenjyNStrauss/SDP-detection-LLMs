@@ -1,0 +1,6 @@
+package ident$1.ident$2.ident$3.ident$4.ident$5;
+import ident$1.ident$2.ident$3.ident$7.ident$8;
+import java.ident$10.ident$11;
+public interface ident$14 {
+ident$11<ident$8> ident$15(String ident$17);
+}

@@ -1,0 +1,32 @@
+package ident$1.ident$2.ident$3.ident$4.ident$5;
+import ident$1.ident$2.ident$3.ident$7.ident$8.ident$9;
+import ident$1.ident$2.ident$3.ident$10.ident$11.ident$12;
+import ident$1.ident$2.ident$3.ident$13.ident$14;
+import java.ident$16.ident$17;
+import java.ident$18.ident$19;
+import java.ident$20.ident$21;
+import java.ident$20.ident$22;
+public interface ident$25 {
+default ident$27 ident$28() {
+return ident$28(ident$30.ident$31);
+}
+ident$27 ident$28(ident$30 ident$32);
+void ident$34(ident$35 ident$36);
+default void ident$37() {
+ident$37(ident$38, ident$39, ident$19.ident$40(0));
+}
+void ident$37(boolean ident$42, boolean ident$43, ident$19 ident$44);
+ident$45 ident$46();
+ident$22<String> ident$48();
+ident$22<String> ident$49();
+ident$12 ident$50(byte[] ident$52, ident$21<String, String> ident$53, String ident$54);
+ident$12 ident$50(ident$17 ident$52, ident$21<String, String> ident$53, String ident$54);
+boolean ident$55();
+boolean ident$56();
+void ident$57();
+ident$21<String, String> ident$58(ident$9 ident$59);
+void ident$60(ident$21<String, String> ident$61, ident$9 ident$59);
+boolean ident$62();
+long ident$64();
+ident$14 ident$65();
+}

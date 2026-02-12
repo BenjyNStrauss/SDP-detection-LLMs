@@ -1,0 +1,59 @@
+package ident$1.ident$2.ident$3.ident$4;
+import java.ident$4.ident$7;
+import java.ident$4.ident$8;
+import java.ident$4.ident$9;
+import java.ident$4.ident$10;
+import java.ident$4.ident$11.ident$12;
+import java.ident$4.ident$11.ident$13;
+import java.ident$4.ident$11.ident$14.ident$15;
+import ident$1.ident$2.ident$3.ident$16.ident$17;
+import ident$1.ident$2.ident$3.ident$18.ident$19;
+import ident$1.ident$2.ident$3.ident$18.ident$20;
+public class ident$23 {
+private final ident$26 ident$27;
+private final ident$20 ident$28;
+@SuppressWarnings("literal$0")
+private final ident$17 ident$16;
+private final ident$15 ident$30;
+private final ident$13<String, ident$15> ident$32 = new ident$12<>();
+private final ident$9<ident$19> ident$34 = new ident$7<>();
+public ident$23(final ident$17 ident$16, final ident$15 ident$30) {
+ident$27 = new ident$26();
+ident$28 = new ident$35(null, this, ident$10.ident$38().ident$39(), "literal$1");
+this.ident$30 = ident$30;
+this.ident$16 = ident$16;
+}
+void ident$41(final ident$8<ident$19> ident$34) {
+this.ident$34.ident$42(ident$34);
+}
+void ident$43() {
+this.ident$34.ident$44();
+}
+public ident$9<ident$19> ident$45() {
+return new ident$7<>(this.ident$34);
+}
+public ident$26 ident$47() {
+return ident$27;
+}
+public ident$20 ident$48() {
+return ident$28;
+}
+public long ident$50() {
+return ident$30.ident$51();
+}
+public void ident$52(final String ident$53, final long ident$54) {
+ident$15 ident$55 = ident$32.ident$56(ident$53);
+if (ident$55 == null) {
+ident$55 = new ident$15(0ident$58);
+final ident$15 ident$59 = ident$32.ident$60(ident$53, ident$55);
+if (ident$59 != null) {
+ident$55 = ident$59;
+}
+}
+ident$55.ident$61(ident$54);
+}
+public Long ident$63(final String ident$53) {
+final ident$15 ident$64 = ident$32.ident$56(ident$53);
+return ident$64 == null ? null : ident$64.ident$56();
+}
+}

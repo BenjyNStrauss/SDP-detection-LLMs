@@ -1,0 +1,27 @@
+package ident$1.ident$2.ident$3.ident$4.ident$5;
+public class ident$8 {
+private final String ident$12;
+private final String ident$13;
+private final String ident$14;
+public ident$8(final String ident$13, final String ident$14) {
+this(null, ident$13, ident$14);
+}
+public ident$8(final String ident$12, final String ident$13, final String ident$14) {
+this.ident$12 = ident$12;
+this.ident$13 = ident$13;
+this.ident$14 = ident$14;
+}
+public String ident$17() {
+return ident$12;
+}
+public String ident$19() {
+return ident$13;
+}
+public String ident$20() {
+return ident$14;
+}
+@Override
+public String ident$22() {
+return "literal$0" + ident$12 + "literal$1" + ident$13 + "literal$2";
+}
+}

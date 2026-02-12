@@ -1,0 +1,26 @@
+package ident$1.ident$2.ident$3.ident$4;
+import java.ident$7.ident$8;
+import java.ident$7.ident$9;
+import java.ident$7.ident$10;
+import java.ident$7.ident$11;
+import ident$1.ident$2.ident$3.ident$12.ident$4.ident$13;
+public class ident$16 implements ident$13 {
+private final ident$10<String, String> ident$21;
+private final String ident$22;
+public ident$16(final ident$10<String, String> ident$21, final long ident$22) {
+this.ident$21 = ident$21 == null ? ident$8.ident$26() : new ident$9<>(ident$21);
+this.ident$22 = Long.ident$29(ident$22);
+}
+@Override
+public ident$11<String> ident$31() {
+return ident$22.ident$33("literal$0") ? ident$11.ident$34() : ident$11.ident$35(ident$22);
+}
+@Override
+public String ident$36(final String ident$37) {
+return ident$21.ident$36(ident$37);
+}
+@Override
+public ident$10<String, String> ident$38() {
+return ident$8.ident$39(ident$21);
+}
+}

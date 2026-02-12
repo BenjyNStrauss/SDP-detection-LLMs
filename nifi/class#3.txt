@@ -1,0 +1,71 @@
+package ident$1.ident$2.ident$3.ident$4;
+import java.lang.ident$8.ident$9;
+import java.lang.ident$10.ident$11;
+import java.lang.ident$10.ident$12;
+import ident$1.ident$13.ident$14;
+import ident$1.ident$13.ident$15;
+public class ident$18 {
+private final static ident$14 ident$22 = ident$15.ident$23(ident$18.class);
+public static void ident$25(final Class<? extends ident$9> ident$8, final Object ident$29, final Object... ident$30)
+throws IllegalAccessException, IllegalArgumentException, ident$11 {
+for (final ident$12 ident$35 : ident$29.ident$36().ident$37()) {
+if (ident$35.ident$39(ident$8)) {
+ident$35.ident$40(ident$41);
+final Class<?>[] ident$42 = ident$35.ident$43();
+if (ident$42.ident$44 > ident$30.ident$44) {
+throw new IllegalArgumentException(String.ident$48("literal$0",
+ident$35.ident$49(), ident$29, ident$42.ident$44, ident$30.ident$44));
+}
+for (int ident$51 = 0; ident$51 < ident$42.ident$44; ident$51++) {
+final Class<?> ident$52 = ident$42[ident$51];
+if (!ident$52.ident$53(ident$30[ident$51].ident$36())) {
+throw new IllegalArgumentException(String.ident$48(
+"literal$1",
+ident$35.ident$49(), ident$29, ident$51, ident$52, ident$30[ident$51].ident$36()));
+}
+}
+if (ident$42.ident$44 == ident$30.ident$44) {
+ident$35.ident$54(ident$29, ident$30);
+} else {
+final Object[] ident$56 = new Object[ident$42.ident$44];
+System.ident$58(ident$30, 0, ident$56, 0, ident$56.ident$44);
+ident$35.ident$54(ident$29, ident$56);
+}
+}
+}
+}
+public static boolean ident$60(final Class<? extends ident$9> ident$8, final Object ident$29, final Object... ident$30) {
+for (final ident$12 ident$35 : ident$29.ident$36().ident$37()) {
+if (ident$35.ident$39(ident$8)) {
+ident$35.ident$40(ident$41);
+final Class<?>[] ident$42 = ident$35.ident$43();
+if (ident$42.ident$44 > ident$30.ident$44) {
+ident$22.ident$61("literal$2",
+ident$35.ident$49(), ident$29, ident$42.ident$44, ident$30.ident$44);
+return ident$63;
+}
+for (int ident$51 = 0; ident$51 < ident$42.ident$44; ident$51++) {
+final Class<?> ident$52 = ident$42[ident$51];
+if (!ident$52.ident$53(ident$30[ident$51].ident$36())) {
+ident$22.ident$61("literal$3",
+ident$35.ident$49(), ident$29, ident$51, ident$52, ident$30[ident$51].ident$36());
+return ident$63;
+}
+}
+try {
+if (ident$42.ident$44 == ident$30.ident$44) {
+ident$35.ident$54(ident$29, ident$30);
+} else {
+final Object[] ident$56 = new Object[ident$42.ident$44];
+System.ident$58(ident$30, 0, ident$56, 0, ident$56.ident$44);
+ident$35.ident$54(ident$29, ident$56);
+}
+} catch (final IllegalAccessException | IllegalArgumentException | ident$11 ident$66) {
+ident$22.ident$61("literal$4", ident$35.ident$49(), ident$29, ident$66);
+return ident$63;
+}
+}
+}
+return ident$41;
+}
+}
