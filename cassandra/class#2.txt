@@ -1,36 +1,169 @@
-package ident$1.ident$2.ident$3.ident$4;
-import java.ident$4.ident$7;
-public class ident$10<ident$11, ident$12> {
-private final ident$11 ident$15;
-private final ident$12 ident$16;
-public ident$10(ident$11 ident$15, ident$12 ident$16) {
-this.ident$15 = ident$15;
-this.ident$16 = ident$16;
+package ident$1.ident$2.ident$3.ident$4.ident$5;
+import java.ident$4.ident$8;
+import java.ident$4.ident$9;
+import ident$1.ident$2.ident$3.ident$10.ident$11;
+import ident$1.ident$2.ident$3.ident$12.ident$13;
+public class ident$16 implements ident$18
+{
+private final ident$18 ident$21;
+private final ident$22 ident$23;
+private final long ident$25;
+private boolean ident$27;
+public ident$16(ident$18 ident$21, ident$22 ident$23)
+{
+this(ident$21, ident$23, 0);
 }
-public ident$11 ident$18() {
-return ident$15;
+public ident$16(ident$18 ident$21, ident$22 ident$23, long ident$25)
+{
+assert ident$21 != null && ident$23 != null;
+this.ident$21 = ident$21;
+this.ident$23 = ident$23;
+this.ident$25 = ident$25;
+this.ident$27 = ident$31;
 }
-public ident$12 ident$20() {
-return ident$16;
+private void ident$33(int ident$35, ident$13.ident$36<ident$9> ident$37) throws ident$9
+{
+if (ident$25 <= 0 || (!ident$27 && (ident$23.ident$40() + ident$35) < ident$25))
+ident$37.ident$41();
+else
+ident$27 = ident$43;
 }
 @Override
-public boolean ident$23(Object ident$25) {
-if (this == ident$25) {
+public void ident$45(byte[] ident$47) throws ident$9
+{
+ident$21.ident$45(ident$47);
+ident$33(ident$47.ident$35, () -> ident$23.ident$48(ident$47));
+}
+@Override
+public void ident$45(byte[] ident$47, int ident$49, int ident$35) throws ident$9
+{
+ident$21.ident$45(ident$47, ident$49, ident$35);
+ident$33(ident$35, () -> ident$23.ident$48(ident$47, ident$49, ident$35));
+}
+@Override
+public int ident$50(int ident$51) throws ident$9
+{
+for (int ident$53 = 0; ident$53 < ident$51; ident$53++)
+{
+try
+{
+byte ident$55 = ident$21.ident$56();
+ident$33(ident$11.ident$57, () -> ident$23.ident$58(ident$55));
+}
+catch (ident$8 ident$60)
+{
+return ident$53;
+}
+}
+return ident$51;
+}
+@Override
+public boolean ident$62() throws ident$9
+{
+boolean ident$55 = ident$21.ident$62();
+ident$33(ident$11.ident$63, () -> ident$23.ident$64(ident$55));
+return ident$55;
+}
+@Override
+public byte ident$56() throws ident$9
+{
+byte ident$55 = ident$21.ident$56();
+ident$33(ident$11.ident$57, () -> ident$23.ident$58(ident$55));
+return ident$55;
+}
+@Override
+public int ident$65() throws ident$9
+{
+int ident$55 = ident$21.ident$65();
+ident$33(ident$11.ident$57, () -> ident$23.ident$58(ident$55));
+return ident$55;
+}
+@Override
+public short ident$67() throws ident$9
+{
+short ident$55 = ident$21.ident$67();
+ident$33(ident$11.ident$68, () -> ident$23.ident$69(ident$55));
+return ident$55;
+}
+@Override
+public int ident$70() throws ident$9
+{
+int ident$55 = ident$21.ident$70();
+ident$33(ident$11.ident$68, () -> ident$23.ident$69(ident$55));
+return ident$55;
+}
+@Override
+public char ident$72() throws ident$9
+{
+char ident$55 = ident$21.ident$72();
+ident$33(ident$11.ident$57, () -> ident$23.ident$73(ident$55));
+return ident$55;
+}
+@Override
+public int ident$74() throws ident$9
+{
+int ident$55 = ident$21.ident$74();
+ident$33(ident$11.ident$75, () -> ident$23.ident$76(ident$55));
+return ident$55;
+}
+@Override
+public long ident$77() throws ident$9
+{
+long ident$55 = ident$21.ident$77();
+ident$33(ident$11.ident$78, () -> ident$23.ident$79(ident$55));
+return ident$55;
+}
+@Override
+public float ident$81() throws ident$9
+{
+float ident$55 = ident$21.ident$81();
+ident$33(ident$11.ident$82, () -> ident$23.ident$83(ident$55));
+return ident$55;
+}
+@Override
+public double ident$85() throws ident$9
+{
+double ident$55 = ident$21.ident$85();
+ident$33(ident$11.ident$86, () -> ident$23.ident$87(ident$55));
+return ident$55;
+}
+@Override
+public String ident$89() throws ident$9
+{
+throw new UnsupportedOperationException();
+}
+@Override
+public String ident$93() throws ident$9
+{
+String ident$55 = ident$21.ident$93();
+ident$33(ident$11.ident$94(ident$55), () -> ident$23.ident$95(ident$55));
+return ident$55;
+}
+@Override
+public long ident$96() throws ident$9
+{
+long ident$55 = ident$21.ident$96();
+ident$33(ident$11.ident$97(ident$55), () -> ident$23.ident$98(ident$55));
+return ident$55;
+}
+@Override
+public long ident$99() throws ident$9
+{
+long ident$55 = ident$21.ident$99();
+ident$33(ident$11.ident$100(ident$55), () -> ident$23.ident$101(ident$55));
+return ident$55;
+}
+@Override
+public void ident$102(int ident$51) throws ident$9
+{
+ident$21.ident$102(ident$51);
+ident$33(ident$51, () -> {
+for (int ident$53 = 0; ident$53 < ident$51; ident$53++)
+ident$23.ident$58(0);
+});
+}
+public boolean ident$103()
+{
 return ident$27;
-}
-if (ident$25 == null || ident$29() != ident$25.ident$29()) {
-return ident$30;
-}
-ident$10<?, ?> ident$31 = (ident$10<?, ?>) ident$25;
-return ident$7.ident$23(ident$15, ident$31.ident$15)
-&& ident$7.ident$23(ident$16, ident$31.ident$16);
-}
-@Override
-public int ident$33() {
-return ident$7.ident$34(ident$15, ident$16);
-}
-@Override
-public String ident$36() {
-return ident$15 + "literal$0" + ident$16;
 }
 }

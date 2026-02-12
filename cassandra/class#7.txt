@@ -1,26 +1,141 @@
-package ident$1.ident$2.ident$3;
-import ident$1.ident$5.ident$6;
-public interface ident$9 {
-ident$10 ident$11(ident$10 ident$12, ident$10 ident$13);
-default ident$10 ident$11(ident$10 ident$12, ident$10 ident$13, ident$10 ident$15) {
-return ident$11(ident$12, ident$13);
+package ident$1.ident$2.ident$3.ident$4.ident$5.ident$6;
+import java.ident$9.ident$10;
+import java.ident$11.*;
+import ident$1.ident$2.ident$3.ident$12.ident$13;
+import ident$1.ident$2.ident$3.ident$12.ident$14;
+import ident$15.ident$16.ident$17.ident$18;
+import ident$15.ident$16.ident$17.ident$19;
+import ident$15.ident$16.ident$17.ident$20.ident$21;
+public class ident$24 extends ident$26
+{
+private final ident$29<Long, ident$19> ident$31 = new ident$33<>();
+public ident$24()
+{}
+public ident$24(ident$34 ident$35)
+{
+ident$36(ident$35);
 }
-default boolean ident$18() {
-return ident$19;
+public ident$24(ident$29<Long, ident$19> ident$35)
+{
+ident$36(ident$35);
 }
-default boolean ident$20(ident$10 ident$12, ident$10 ident$13) {
-return ident$19;
+public void ident$36(Long ident$38, long ident$40)
+{
+ident$19 ident$41 = ident$31.ident$42(ident$38);
+if (ident$41 == null)
+ident$31.ident$45(ident$38, (ident$41 = new ident$18(2)));
+ident$41.ident$36(ident$40);
 }
-default void ident$22(ident$10 ident$23) {
+public void ident$36(ident$46<ident$14<Long, ident$19>> ident$35)
+{
+while (ident$35.ident$48())
+{
+ident$14<Long, ident$19> ident$49 = ident$35.ident$50();
+for (ident$21 ident$52 : ident$49.ident$53)
+ident$36(ident$49.ident$54, ident$52.ident$55);
 }
-default void ident$22(ident$10 ident$23, ident$10 ident$15) {
-ident$22(ident$23);
 }
-default void ident$24(ident$10 ident$23, int ident$26, int ident$27, long ident$24) {
+public void ident$36(ident$29<Long, ident$19> ident$35)
+{
+for (ident$56.ident$57<Long, ident$19> ident$58 : ident$35.ident$59())
+{
+ident$19 ident$41 = ident$31.ident$42(ident$58.ident$60());
+if (ident$41 == null)
+ident$31.ident$45(ident$58.ident$60(), (ident$41 = new ident$18(4)));
+for (ident$21 ident$61 : ident$58.ident$62())
+ident$41.ident$36(ident$61.ident$55);
 }
-default void ident$29(ident$10 ident$12, ident$10 ident$13) {
-ident$6.ident$30(ident$31()).ident$32(
-"literal$0", this, ident$12,
-ident$13);
+}
+public ident$46<ident$14<Long, ident$19>> ident$63()
+{
+final ident$46<ident$56.ident$57<Long, ident$19>> ident$63 = ident$31.ident$59().ident$63();
+return new ident$13<ident$14<Long, ident$19>>()
+{
+protected ident$14<Long, ident$19> ident$66()
+{
+if (!ident$63.ident$48())
+return ident$67();
+ident$56.ident$57<Long, ident$19> ident$49 = ident$63.ident$50();
+return ident$14.ident$68(ident$49.ident$60(), ident$49.ident$62());
+}
+};
+}
+public boolean ident$70()
+{
+return ident$31.ident$71() == 0;
+}
+protected void ident$72()
+{
+ident$73 = ident$31.ident$71();
+ident$74 = ident$31.ident$75();
+ident$76 = ident$31.ident$77();
+ident$78 = 1;
+if (ident$73 <= ident$79)
+{
+ident$80 = new ident$81(ident$31);
+ident$82 = ident$80;
+ident$83 = ident$80;
+}
+else
+{
+ident$83 = new ident$85();
+ident$86 = (ident$85) ident$83;
+int ident$88 = 0;
+ident$89 ident$90 = null;
+Long ident$91 = ident$31.ident$75();
+Long ident$92 = ident$31.ident$77();
+Long ident$93;
+for (Long ident$38 : ident$31.ident$94())
+{
+if (ident$88 == 0 || (ident$88 % ident$79 != 0 && ident$88 != (ident$73 - 1)))
+{
+ident$88++;
+continue;
+}
+ident$93 = ident$38;
+ident$89 ident$96 = (ident$88 != (ident$73 - 1) || ident$38.ident$97(ident$92)) ?
+new ident$81(ident$31.ident$98(ident$91, ident$93)) : new ident$81(ident$31.ident$99(ident$91));
+if (ident$88 == ident$79)
+ident$80 = ident$96;
+else
+ident$90.ident$50 = ident$96;
+ident$86.ident$36(ident$96);
+ident$90 = ident$96;
+ident$82 = ident$96;
+ident$91 = ident$93;
+ident$88++;
+ident$78++;
+if (ident$38.ident$97(ident$92))
+{
+ident$89 ident$100 = new ident$81(ident$31.ident$99(ident$38));
+ident$90.ident$50 = ident$100;
+ident$86.ident$36(ident$100);
+ident$82 = ident$100;
+ident$78++;
+}
+}
+}
+}
+private class ident$81 extends ident$89
+{
+private final ident$29<Long, ident$19> ident$31;
+ident$81(ident$29<Long, ident$19> ident$35)
+{
+super(ident$35.ident$75(), ident$35.ident$77());
+ident$31 = ident$35;
+}
+public int ident$73()
+{
+return ident$31.ident$71();
+}
+public boolean ident$102()
+{
+return ident$103;
+}
+protected void ident$104(ident$10 ident$105)
+{
+for (ident$56.ident$57<Long, ident$19> ident$49 : ident$31.ident$59())
+ident$106(ident$49.ident$60(), ident$49.ident$62()).ident$107(ident$105);
+}
 }
 }

@@ -1,72 +1,119 @@
-package ident$1.ident$2.ident$3.ident$4.ident$5;
-import static ident$1.ident$2.ident$3.ident$4.ident$5.ident$8.ident$9;
-public final class ident$13 {
-private static final String ident$16 = "literal$0";
-private ident$13() {
+package ident$1.ident$2.ident$3.ident$4;
+import java.ident$7.ident$8;
+import java.lang.ident$10.ident$11;
+import java.ident$4.ident$12;
+import java.ident$4.ident$13;
+import java.ident$4.ident$14;
+import java.ident$4.ident$15;
+import java.ident$4.ident$16;
+import java.ident$17.ident$18;
+import java.ident$17.ident$19.ident$20;
+import javax.ident$22.ident$23;
+import javax.ident$22.ident$24;
+import javax.ident$22.ident$25.ident$26;
+import ident$27.ident$28.ident$29.ident$30.ident$31;
+import ident$27.ident$32.ident$33.ident$34.ident$35.ident$36;
+import ident$27.ident$32.ident$33.ident$34.ident$35.ident$37;
+import ident$1.ident$38.ident$39;
+import ident$1.ident$38.ident$40;
+import ident$7.ident$41.ident$17.ident$19.ident$42;
+import ident$1.ident$2.ident$3.ident$19.ident$43;
+import ident$1.ident$2.ident$3.ident$44.ident$45;
+public class ident$48
+{
+private final ident$39 ident$51 = ident$40.ident$52(ident$48.class);
+private static final ident$42<ident$54> ident$55 = new ident$42<>();
+private final ident$16 ident$57;
+private final ident$37<String, ident$14> ident$35;
+private final int ident$60;
+private final ident$61 ident$62;
+public ident$48(ident$45 ident$63)
+{
+ident$51.ident$64("literal$0");
+ident$60 = ident$63.ident$65;
+try
+{
+ident$57 = ident$16.ident$67("literal$1");
+Class<ident$61> ident$69 = (Class<ident$61>)Class.ident$70(ident$63.ident$71.ident$72);
+ident$11 ident$73 = ident$69.ident$74(ident$45.class);
+ident$62 = (ident$61)ident$73.ident$75(ident$63);
 }
-public static String ident$17(String ident$18, boolean ident$20) {
-if (ident$9(ident$18)) {
-return null;
+catch (Exception ident$78)
+{
+throw new RuntimeException("literal$2", ident$78);
 }
-StringBuilder ident$25 = new StringBuilder(ident$18.ident$27());
-String[] ident$28 = ident$18.ident$29("literal$1");
-boolean ident$30 = ident$31;
-for (String ident$33 : ident$28) {
-ident$33 = ident$33.ident$34();
-if (ident$33.ident$35("literal$2")) {
-continue;
+ident$35 = ident$36.ident$81()
+.ident$82(64)
+.ident$83(ident$43.ident$84)
+.ident$85((ident$86, ident$87, ident$88) ->
+{
+ident$51.ident$64("literal$3", ident$86);
+})
+.ident$89(ident$90 ->
+{
+ident$51.ident$64("literal$4", ident$90);
+return ident$62.ident$92(ident$90);
+});
 }
-if (ident$33.ident$35("literal$3")) {
-ident$33 = ident$33.ident$37(1);
-ident$33 = ident$33.ident$34();
+public ident$23 ident$93(String ident$94, String ident$95) throws ident$8
+{
+byte[] ident$98 = new byte[ident$60];
+ident$57.ident$99(ident$98);
+return ident$100(ident$94, ident$95, ident$98, ident$23.ident$101);
 }
-if (ident$33.ident$35("literal$4") || ident$33.ident$35("literal$5") || ident$33.ident$35("literal$6")) {
-break;
+public ident$23 ident$102(String ident$94, String ident$95, byte[] ident$98) throws ident$8
+{
+assert ident$98 != null && ident$98.ident$105 > 0 : "literal$5";
+return ident$100(ident$94, ident$95, ident$98, ident$23.ident$106);
 }
-if (ident$33.ident$35("literal$7")) {
-continue;
+@ident$31
+ident$23 ident$100(String ident$94, String ident$95, byte[] ident$98, int ident$107) throws ident$8
+{
+try
+{
+ident$54 ident$108 = ident$55.ident$109();
+if (ident$108 != null)
+{
+ident$23 ident$111 = ident$108.ident$111;
+if (ident$108.ident$112 == ident$107 && ident$111.ident$113().ident$114(ident$94)
+&& ident$108.ident$95.ident$114(ident$95) && ident$18.ident$114(ident$111.ident$115(), ident$98))
+return ident$111;
 }
-if (!ident$30) {
-ident$25.ident$39('char-literal$8');
+ident$14 ident$86 = ident$116(ident$95);
+ident$23 ident$111 = ident$23.ident$67(ident$94);
+ident$111.ident$117(ident$107, ident$86, new ident$26(ident$98));
+ident$55.ident$118(new ident$54(ident$107, ident$95, ident$111));
+return ident$111;
 }
-String ident$40 = ident$33.ident$34();
-ident$25.ident$39(ident$40);
-boolean ident$41 = ident$9(ident$40);
-boolean ident$42 = ident$40.ident$43("literal$9");
-boolean ident$44 = !ident$25.ident$45();
-if (ident$44 && ident$20 && (ident$41 || ident$42)) {
-break;
-}
-ident$30 = ident$46;
-}
-String ident$40 = ident$25.ident$47();
-ident$40 = ident$40.ident$48("literal$10", "literal$11");
-ident$40 = ident$40.ident$48("literal$12", "literal$13");
-ident$40 = ident$40.ident$48("literal$14", "literal$13");
-ident$40 = ident$40.ident$48("literal$15", "literal$13");
-ident$40 = ident$40.ident$48("literal$16", "literal$13");
-ident$40 = ident$40.ident$48("literal$17", "literal$13");
-StringBuilder ident$49 = new StringBuilder(ident$40.ident$27() + 16);
-for (char ident$51 : ident$40.ident$52()) {
-if (Character.ident$54(ident$51) || ident$16.ident$55(ident$51) != -1) {
-ident$49.ident$39(ident$51);
-} else if (Character.ident$57(ident$51)) {
-ident$49.ident$39('char-literal$8');
+catch (ident$15 | ident$24 | ident$12 | ident$13 ident$78)
+{
+ident$51.ident$119("literal$6", ident$78);
+throw new ident$8("literal$7", ident$78);
 }
 }
-ident$40 = ident$49.ident$47();
-ident$40 = ident$40.ident$48("literal$18", "literal$19");
-ident$40 = ident$40.ident$48("literal$20", "literal$13");
-return ident$40.ident$34();
+private ident$14 ident$116(String ident$95) throws ident$8
+{
+try
+{
+return ident$35.ident$109(ident$95);
 }
-public static String ident$58(String ident$59) {
-if (ident$59 == null) {
-return "literal$11";
+catch (ident$20 ident$78)
+{
+if (ident$78.ident$120() instanceof ident$8)
+throw (ident$8)ident$78.ident$120();
+throw new ident$8("literal$8" + ident$95, ident$78);
 }
-ident$59 = ident$59.ident$60("literal$21", "literal$22");
-ident$59 = ident$59.ident$60("literal$23", "literal$24");
-ident$59 = ident$59.ident$60("literal$25", "literal$26");
-ident$59 = ident$59.ident$60("literal$27", "literal$28");
-return ident$59;
+}
+private static class ident$54
+{
+public final int ident$112;
+public final String ident$95;
+public final ident$23 ident$111;
+private ident$54(int ident$112, String ident$95, ident$23 ident$111)
+{
+this.ident$112 = ident$112;
+this.ident$95 = ident$95;
+this.ident$111 = ident$111;
+}
 }
 }

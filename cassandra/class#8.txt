@@ -1,19 +1,120 @@
 package ident$1.ident$2.ident$3.ident$4.ident$5;
-import java.ident$8.ident$9.ident$10;
-import ident$1.ident$2.ident$3.ident$11;
-import ident$1.ident$2.ident$3.ident$12;
-import ident$1.ident$2.ident$3.ident$13;
-import ident$1.ident$2.ident$3.ident$14.ident$15;
-public class ident$18 extends ident$15 {
-@SuppressWarnings("literal$0")
+import java.ident$8.ident$9;
+import ident$1.ident$2.ident$3.ident$10.ident$11;
+public abstract class ident$15<ident$16 extends Enum<ident$16>, ident$19> extends ident$20<ident$19> implements State<ident$16, ident$19>
+{
+protected enum ident$25
+{
+ident$26, ident$27,
+ident$28, ident$29;
+protected boolean ident$31()
+{
+switch (this)
+{
+case ident$26:
+case ident$27:
+return ident$36;
+case ident$28:
+case ident$29:
+return ident$37;
+default:
+throw new IllegalStateException("literal$0" + this);
+}
+}
+}
+public static final int ident$45 = -1;
+public static final int ident$46 = -2;
+private final Class<ident$16> ident$49;
+protected final long[] ident$51;
+protected int ident$52 = ident$45;
+public ident$15(ident$11 ident$53, ident$19 ident$54, Class<ident$16> ident$49)
+{
+super(ident$53, ident$54);
+this.ident$49 = ident$49;
+this.ident$51 = new long[ident$49.ident$56().ident$57];
+}
 @Override
-public <ident$22> ident$22 ident$23(Class<ident$22> ident$25, ident$11 ident$26, Object ident$28) {
-if (ident$28 instanceof ident$12 || ident$28 instanceof ident$13 || ident$28 instanceof ident$10) {
-return (ident$22) ident$32;
+public boolean ident$59()
+{
+return ident$52 == ident$45 ? ident$36 : ident$37;
 }
-if (ident$25.ident$33(String.class)) {
-return (ident$22) ident$28.ident$35();
-}
+@Override
+public ident$16 ident$60()
+{
+int ident$61 = ident$52;
+if (ident$61 < 0)
 return null;
+return ident$49.ident$56()[ident$61];
+}
+public String ident$65()
+{
+ident$16 ident$5 = ident$60();
+ident$66 ident$67 = ident$68();
+if (ident$67 != null)
+return ident$67.ident$69.ident$70();
+if (ident$5 == null)
+return "literal$1";
+return ident$5.ident$70();
+}
+@Override
+public String ident$71()
+{
+return ident$72().ident$73() + "literal$2" +
+"literal$3" + ident$54 +
+"literal$4" + ident$65() +
+"literal$5" + ident$74 +
+'char-literal$6';
+}
+public int ident$75()
+{
+return ident$52;
+}
+@Override
+public ident$9<ident$16, Long> ident$77()
+{
+long[] ident$78 = ident$79();
+ident$9<ident$16, Long> ident$80 = new ident$9<>(ident$49);
+for (int ident$82 = 0; ident$82 < ident$78.ident$57; ident$82++)
+{
+long ident$83 = ident$78[ident$82];
+if (ident$83 != 0)
+ident$80.ident$84(ident$49.ident$56()[ident$82], ident$83);
+}
+return ident$80;
+}
+@Override
+protected void ident$86()
+{
+ident$52 = ident$46;
+}
+private long[] ident$79()
+{
+long[] ident$78 = new long[ident$51.ident$57];
+for (int ident$82 = 0; ident$82 < ident$78.ident$57; ident$82++)
+{
+long ident$87 = ident$51[ident$82];
+if (ident$87 != 0)
+ident$78[ident$82] = ident$88(ident$87);
+}
+return ident$78;
+}
+protected void ident$89(ident$16 ident$5)
+{
+if (ident$90(ident$5).ident$31())
+throw new IllegalStateException("literal$7" + ident$49.ident$56()[ident$52] + "literal$8" + ident$5);
+}
+protected ident$25 ident$90(ident$16 ident$5)
+{
+int ident$52 = this.ident$52;
+if (ident$52 == ident$46)
+return ident$25.ident$29;
+if (ident$52 == ident$5.ident$91())
+return ident$25.ident$26;
+if (ident$52 > ident$5.ident$91())
+return ident$25.ident$28;
+long ident$92 = ident$53.ident$93();
+ident$51[this.ident$52 = ident$5.ident$91()] = ident$92;
+ident$74 = ident$92;
+return ident$25.ident$27;
 }
 }

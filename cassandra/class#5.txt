@@ -1,62 +1,34 @@
 package ident$1.ident$2.ident$3.ident$4;
-import ident$1.ident$2.ident$3.ident$6;
-import ident$1.ident$2.ident$3.ident$7;
-import ident$1.ident$2.ident$3.ident$8;
-import ident$1.ident$2.ident$3.ident$9;
-import ident$1.ident$2.ident$3.ident$10;
-import ident$1.ident$2.ident$3.ident$11;
-import ident$1.ident$2.ident$3.ident$12.ident$13;
-import ident$1.ident$2.ident$3.ident$12.ident$14;
-import ident$1.ident$2.ident$3.ident$12.ident$15.ident$16;
-import ident$1.ident$2.ident$3.ident$12.ident$17.ident$18;
-import ident$1.ident$2.ident$3.ident$12.ident$19.ident$20;
-import ident$1.ident$2.ident$3.ident$12.ident$21.ident$22;
-import ident$1.ident$2.ident$3.ident$23.ident$24;
-import ident$1.ident$2.ident$3.ident$23.ident$25.ident$26;
-import ident$1.ident$2.ident$3.ident$23.ident$15.ident$27;
-import ident$1.ident$2.ident$3.ident$23.ident$17.ident$28;
-import ident$1.ident$2.ident$3.ident$23.ident$19.ident$29;
-import ident$1.ident$2.ident$3.ident$23.ident$21.ident$30;
-import ident$1.ident$2.ident$3.ident$31.ident$32;
-import ident$1.ident$2.ident$3.ident$31.ident$33;
-import ident$1.ident$2.ident$3.ident$31.ident$34;
-import ident$1.ident$2.ident$3.ident$31.ident$35;
-public class ident$38 implements ident$33 {
-@Override
-public ident$11 ident$41(ident$6 ident$42, Object ident$44) {
-return new ident$24(ident$42, (ident$14<?>) ident$44).ident$41();
+import java.ident$7.ident$8;
+import ident$1.ident$2.ident$3.ident$9.ident$10;
+import ident$1.ident$2.ident$3.ident$11.ident$12;
+import ident$1.ident$2.ident$3.ident$4.ident$13.ident$14;
+final class ident$17
+{
+private static final ident$10 ident$20 = ident$10.ident$21();
+private ident$17()
+{
 }
-@Override
-public ident$32 ident$47(ident$6 ident$42, Object ident$48) {
-return ident$26.ident$23(ident$42, (ident$13) ident$48).ident$47();
+static void ident$23(ident$8<ident$12> ident$24, ident$8<ident$12> ident$25)
+{
+if (ident$27(ident$14.ident$28))
+ident$20.ident$29(new ident$13(ident$14.ident$28,
+ident$24, ident$25, null, null));
 }
-@Override
-public ident$10 ident$49(ident$11 ident$50, ident$10 ident$51) throws Exception {
-return ident$49(ident$50, ident$50.ident$54(), ident$51);
+public static void ident$33(ident$12 ident$34)
+{
+if (ident$27(ident$14.ident$35))
+ident$20.ident$29(new ident$13(ident$14.ident$35,
+null, null, null, ident$34));
 }
-@Override
-public ident$10 ident$49(ident$11 ident$50, ident$7 ident$55, ident$10 ident$51)
-throws Exception {
-return ident$27.ident$23(ident$50, ident$55).ident$49(ident$51);
+static void ident$36(ident$8<ident$12> ident$24, ident$8<ident$12> ident$25, ident$37 ident$38)
+{
+if (ident$27(ident$14.ident$39))
+ident$20.ident$29(new ident$13(ident$14.ident$39,
+ident$24, ident$25, ident$38, null));
 }
-@Override
-public ident$7 ident$56() {
-return new ident$16();
-}
-@Override
-public ident$8 ident$57(ident$6 ident$42, Object ident$58) {
-return ident$28.ident$23(ident$42, (ident$18) ident$58).ident$57();
-}
-@Override
-public ident$9 ident$59(ident$6 ident$42, Object ident$58) {
-return ident$28.ident$23(ident$42, (ident$18) ident$58).ident$59();
-}
-@Override
-public ident$34 ident$60(ident$6 ident$42, Object ident$61) {
-return ident$29.ident$23(ident$42, (ident$20) ident$61).ident$60();
-}
-@Override
-public ident$35 ident$62(ident$6 ident$42, Object ident$61) {
-return ident$30.ident$23(ident$42, (ident$22) ident$61).ident$62();
+private static boolean ident$27(ident$14 ident$41)
+{
+return ident$20.ident$27(ident$13.class, ident$41);
 }
 }

@@ -1,12 +1,102 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+* Licensed to the Apache Software Foundation (ASF) under one
+* or more contributor license agreements.  See the NOTICE file
+* distributed with this work for additional information
+* regarding copyright ownership.  The ASF licenses this file
+* to you under the Apache License, Version 2.0 (the
+* "License"); you may not use this file except in compliance
+* with the License.  You may obtain a copy of the License at
+*
+*    http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied.  See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
+package org.apache.cassandra.utils;
+
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
+import com.google.common.collect.PeekingIterator;
+
+public abstract class AbstractIterator<V> implements Iterator<V>, PeekingIterator<V>, CloseableIterator<V>
+{
+
+    private static enum State { MUST_FETCH, HAS_NEXT, DONE, FAILED }
+    private State state = State.MUST_FETCH;
+    private V next;
+
+    protected V endOfData()
+    {
+        state = State.DONE;
+        return null;
+    }
+
+    protected abstract V computeNext();
+
+    public boolean hasNext()
+    {
+        switch (state)
+        {
+            case MUST_FETCH:
+                state = State.FAILED;
+                next = computeNext();
+
+            default:
+                if (state == State.DONE)
+                    return false;
+
+                state = State.HAS_NEXT;
+                return true;
+
+            case FAILED:
+                throw new IllegalStateException();
+        }
+    }
+
+    public V next()
+    {
+        if (state != State.HAS_NEXT && !hasNext())
+            throw new NoSuchElementException();
+
+        state = State.MUST_FETCH;
+        V result = next;
+        next = null;
+        return result;
+    }
+
+    public V peek()
+    {
+        if (!hasNext())
+            throw new NoSuchElementException();
+        return next;
+    }
+
+    public void remove()
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public void close()
+    {
+        //no-op
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,327 +104,324 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.apache.cassandra.repair.state;
 
-package org.apache.camel.processor;
+import java.util.EnumMap;
 
-import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.ScheduledExecutorService;
+import org.apache.cassandra.utils.Clock;
 
-import org.apache.camel.AsyncCallback;
-import org.apache.camel.CamelContext;
-import org.apache.camel.Exchange;
-import org.apache.camel.Expression;
-import org.apache.camel.Traceable;
-import org.apache.camel.spi.IdAware;
-import org.apache.camel.spi.RouteIdAware;
-import org.apache.camel.support.AsyncProcessorSupport;
-import org.apache.camel.util.ObjectHelper;
+public abstract class AbstractState<T extends Enum<T>, I> extends AbstractCompletable<I> implements State<T, I>
+{
+    protected enum UpdateType
+    {
+        NO_CHANGE, ACCEPTED,
+        LARGER_STATE_SEEN, ALREADY_COMPLETED;
+
+        protected boolean isRejected()
+        {
+            switch (this)
+            {
+                case NO_CHANGE:
+                case ACCEPTED:
+                    return false;
+                case LARGER_STATE_SEEN:
+                case ALREADY_COMPLETED:
+                    return true;
+                default:
+                    throw new IllegalStateException("Unknown type: " + this);
+            }
+        }
+    }
+
+    public static final int INIT = -1;
+    public static final int COMPLETE = -2;
+
+    private final Class<T> klass;
+    protected final long[] stateTimesNanos;
+    protected int currentState = INIT;
+
+    public AbstractState(Clock clock, I id, Class<T> klass)
+    {
+        super(clock, id);
+        this.klass = klass;
+        this.stateTimesNanos = new long[klass.getEnumConstants().length];
+    }
+
+    @Override
+    public boolean isAccepted()
+    {
+        return currentState == INIT ? false : true;
+    }
+
+    @Override
+    public T getStatus()
+    {
+        int current = currentState;
+        if (current < 0) // init or complete
+            return null;
+        return klass.getEnumConstants()[current];
+    }
+
+    public String status()
+    {
+        T state = getStatus();
+        Result result = getResult();
+        if (result != null)
+            return result.kind.name();
+        if (state == null)
+            return "init";
+        return state.name();
+    }
+
+    @Override
+    public String toString()
+    {
+        return getClass().getSimpleName() + "{" +
+               "id=" + id +
+               ", status=" + status() +
+               ", lastUpdatedAtNs=" + lastUpdatedAtNs +
+               '}';
+    }
+
+    public int getCurrentState()
+    {
+        return currentState;
+    }
+
+    @Override
+    public EnumMap<T, Long> getStateTimesMillis()
+    {
+        long[] millis = getStateTimesMillisArray();
+        EnumMap<T, Long> map = new EnumMap<>(klass);
+        for (int i = 0; i < millis.length; i++)
+        {
+            long ms = millis[i];
+            if (ms != 0)
+                map.put(klass.getEnumConstants()[i], ms);
+        }
+        return map;
+    }
+
+    @Override
+    protected void onComplete()
+    {
+        currentState = COMPLETE;
+    }
+
+    private long[] getStateTimesMillisArray()
+    {
+        long[] millis = new long[stateTimesNanos.length];
+        for (int i = 0; i < millis.length; i++)
+        {
+            long value = stateTimesNanos[i];
+            if (value != 0)
+                millis[i] = nanosToMillis(value);
+        }
+        return millis;
+    }
+
+    protected void updateState(T state)
+    {
+        if (maybeUpdateState(state).isRejected())
+            throw new IllegalStateException("State went backwards; current=" + klass.getEnumConstants()[currentState] + ", desired=" + state);
+    }
+
+    protected UpdateType maybeUpdateState(T state)
+    {
+        int currentState = this.currentState;
+        if (currentState == COMPLETE)
+            return UpdateType.ALREADY_COMPLETED;
+        if (currentState == state.ordinal())
+            return UpdateType.NO_CHANGE;
+        if (currentState > state.ordinal())
+            return UpdateType.LARGER_STATE_SEEN;
+        long now = clock.nanoTime();
+        stateTimesNanos[this.currentState = state.ordinal()] = now;
+        lastUpdatedAtNs = now;
+        return UpdateType.ACCEPTED;
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.cassandra.security;
+
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.Arrays;
+import java.util.concurrent.CompletionException;
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.IvParameterSpec;
+
+import com.google.common.annotations.VisibleForTesting;
+
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractThrottler extends AsyncProcessorSupport implements Traceable, IdAware, RouteIdAware, Throttler {
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractThrottler.class);
-
-    protected static final String DEFAULT_KEY = "CamelThrottlerDefaultKey";
-    protected static final String PROPERTY_EXCHANGE_QUEUED_TIMESTAMP = "CamelThrottlerExchangeQueuedTimestamp";
-    protected static final String PROPERTY_EXCHANGE_STATE = "CamelThrottlerExchangeState";
-    protected final ScheduledExecutorService asyncExecutor;
-    protected final boolean shutdownAsyncExecutor;
-    protected final CamelContext camelContext;
-    protected final Expression correlationExpression;
-    protected String id;
-    protected String routeId;
-    protected boolean rejectExecution;
-    protected boolean asyncDelayed;
-    protected boolean callerRunsWhenRejected = true;
-    protected Expression maxRequestsExpression;
-
-    AbstractThrottler(final ScheduledExecutorService asyncExecutor, final boolean shutdownAsyncExecutor,
-                      final CamelContext camelContext, final boolean rejectExecution, Expression correlation,
-                      final Expression maxRequestsExpression) {
-        this.asyncExecutor = asyncExecutor;
-        this.shutdownAsyncExecutor = shutdownAsyncExecutor;
-        this.camelContext = camelContext;
-        this.rejectExecution = rejectExecution;
-        this.correlationExpression = correlation;
-        this.maxRequestsExpression = ObjectHelper.notNull(maxRequestsExpression, "maxConcurrentRequestsExpression");
-    }
-
-    protected static boolean handleInterrupt(
-            Exchange exchange, AsyncCallback callback, InterruptedException e, boolean doneSync) {
-        // determine if we can still run, or the camel context is forcing a shutdown
-        boolean forceShutdown = exchange.getContext().getShutdownStrategy().isForceShutdown();
-        if (forceShutdown) {
-            String msg = "Run not allowed as ShutdownStrategy is forcing shutting down, will reject executing exchange: "
-                         + exchange;
-            LOG.debug(msg);
-            exchange.setException(new RejectedExecutionException(msg, e));
-        } else {
-            exchange.setException(e);
-        }
-        callback.done(doneSync);
-        return doneSync;
-    }
-
-    protected static boolean handleException(Exchange exchange, AsyncCallback callback, Exception t, boolean doneSync) {
-        exchange.setException(t);
-        callback.done(doneSync);
-        return doneSync;
-    }
-
-    @Override
-    public boolean isRejectExecution() {
-        return rejectExecution;
-    }
-
-    public void setRejectExecution(boolean rejectExecution) {
-        this.rejectExecution = rejectExecution;
-    }
-
-    @Override
-    public boolean isAsyncDelayed() {
-        return asyncDelayed;
-    }
-
-    public void setAsyncDelayed(boolean asyncDelayed) {
-        this.asyncDelayed = asyncDelayed;
-    }
-
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(final String id) {
-        this.id = id;
-    }
-
-    @Override
-    public String getRouteId() {
-        return routeId;
-    }
-
-    @Override
-    public void setRouteId(String routeId) {
-        this.routeId = routeId;
-    }
-
-    @Override
-    public boolean isCallerRunsWhenRejected() {
-        return callerRunsWhenRejected;
-    }
-
-    public void setCallerRunsWhenRejected(boolean callerRunsWhenRejected) {
-        this.callerRunsWhenRejected = callerRunsWhenRejected;
-    }
-
-    /**
-     * Sets the maximum number of concurrent requests.
-     */
-    @Override
-    public void setMaximumRequestsExpression(Expression maxConcurrentRequestsExpression) {
-        this.maxRequestsExpression = maxConcurrentRequestsExpression;
-    }
-
-    public Expression getMaximumRequestsExpression() {
-        return maxRequestsExpression;
-    }
-
-    protected enum State {
-        SYNC,
-        ASYNC,
-        ASYNC_REJECTED
-    }
-
-    @Override
-    public abstract String getMode();
-}
-<<<<<<<<DIVIDER>>>>>>>>
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package org.apache.camel;
-
-import org.slf4j.LoggerFactory;
+import io.netty.util.concurrent.FastThreadLocal;
+import org.apache.cassandra.concurrent.ImmediateExecutor;
+import org.apache.cassandra.config.TransparentDataEncryptionOptions;
 
 /**
- * A strategy for aggregating two exchanges together into a single exchange.
- * <p/>
- * On the first invocation of the {@link #aggregate(org.apache.camel.Exchange, org.apache.camel.Exchange) aggregate}
- * method the <tt>oldExchange</tt> parameter is <tt>null</tt>. The reason is that we have not aggregated anything yet.
- * So its only the <tt>newExchange</tt> that has a value. Usually you just return the <tt>newExchange</tt> in this
- * situation. But you still have the power to decide what to do, for example you can do some alternation on the exchange
- * or remove some headers. And a more common use case is for instance to count some values from the body payload. That
- * could be to sum up a total amount etc.
- * <p/>
- * Note that <tt>oldExchange</tt> may be <tt>null</tt> more than once when this strategy is throwing a
- * {@link java.lang.RuntimeException} and <tt>parallelProcessing</tt> is used. You can work around this behavior using
- * the <tt>stopOnAggregateException</tt> option.
- * <p/>
- * It is possible that <tt>newExchange</tt> is <tt>null</tt> which could happen if there was no data possible to
- * acquire. Such as when using a <tt>PollEnricher</tt> to poll from a JMS queue which is empty and a timeout was set.
- * <p/>
- * Important: In the aggregate method, do not create a new exchange instance to return, instead return either the old or
- * new exchange from the input parameters; favor returning the old exchange whenever possible.
- * <p/>
- * Possible implementations include performing some kind of combining or delta processing, such as adding line items
- * together into an invoice or just using the newest exchange and removing old exchanges such as for state tracking or
- * market data prices; where old values are of little use.
- * <p/>
- * If an implementation also implements {@link org.apache.camel.Service} then any
- * <a href="http://camel.apache.org/eip">EIP</a> that allowing configuring a {@link AggregationStrategy} will invoke the
- * {@link org.apache.camel.Service#start()} and {@link org.apache.camel.Service#stop()} to control the lifecycle aligned
- * with the EIP itself.
- * <p/>
- * If an implementation also implements {@link org.apache.camel.CamelContextAware} then any
- * <a href="http://camel.apache.org/eip">EIP</a> that allowing configuring a {@link AggregationStrategy} will inject the
- * {@link org.apache.camel.CamelContext} prior to using the aggregation strategy.
+ * A factory for loading encryption keys from {@link KeyProvider} instances.
+ * Maintains a cache of loaded keys to avoid invoking the key provider on every call.
  */
-public interface AggregationStrategy {
+public class CipherFactory
+{
+    private final Logger logger = LoggerFactory.getLogger(CipherFactory.class);
 
     /**
-     * Aggregates an old and new exchange together to create a single combined exchange
-     * <p/>
-     * Important: In the aggregate method, do not create a new exchange instance to return, instead return either the
-     * old or new exchange from the input parameters; favor returning the old exchange whenever possible.
-     *
-     * @param  oldExchange the oldest exchange (is <tt>null</tt> on first aggregation as we only have the new exchange)
-     * @param  newExchange the newest exchange (can be <tt>null</tt> if there was no data possible to acquire)
-     * @return             a combined composite of the two exchanges, return either the old or new exchange from the
-     *                     input parameters; favor returning the old exchange whenever possible)
+     * Keep around thread local instances of Cipher as they are quite expensive to instantiate (@code Cipher#getInstance).
+     * Bonus points if you can avoid calling (@code Cipher#init); hence, the point of the supporting struct
+     * for caching Cipher instances.
      */
-    Exchange aggregate(Exchange oldExchange, Exchange newExchange);
+    private static final FastThreadLocal<CachedCipher> cipherThreadLocal = new FastThreadLocal<>();
 
-    /**
-     * Aggregates an old and new exchange together to create a single combined exchange.
-     * <p/>
-     * Important: In the aggregate method, do not create a new exchange instance to return, instead return either the
-     * old or new exchange from the input parameters; favor returning the old exchange whenever possible.
-     * <p/>
-     * Important: Only Multicast, Recipient List, and Splitter EIP supports this method with access to the input
-     * exchange. All other EIPs does not and uses the {@link #aggregate(Exchange, Exchange)} method instead.
-     *
-     * @param  oldExchange   the oldest exchange (is <tt>null</tt> on first aggregation as we only have the new
-     *                       exchange)
-     * @param  newExchange   the newest exchange (can be <tt>null</tt> if there was no data possible to acquire)
-     * @param  inputExchange the input exchange (input to the EIP)
-     * @return               a combined composite of the two exchanges, return either the old or new exchange from the
-     *                       input parameters; favor returning the old exchange whenever possible)
-     */
-    default Exchange aggregate(Exchange oldExchange, Exchange newExchange, Exchange inputExchange) {
-        return aggregate(oldExchange, newExchange);
+    private final SecureRandom secureRandom;
+    private final LoadingCache<String, Key> cache;
+    private final int ivLength;
+    private final KeyProvider keyProvider;
+
+    public CipherFactory(TransparentDataEncryptionOptions options)
+    {
+        logger.info("initializing CipherFactory");
+        ivLength = options.iv_length;
+
+        try
+        {
+            secureRandom = SecureRandom.getInstance("SHA1PRNG");
+            Class<KeyProvider> keyProviderClass = (Class<KeyProvider>)Class.forName(options.key_provider.class_name);
+            Constructor ctor = keyProviderClass.getConstructor(TransparentDataEncryptionOptions.class);
+            keyProvider = (KeyProvider)ctor.newInstance(options);
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException("couldn't load cipher factory", e);
+        }
+
+        cache = Caffeine.newBuilder() // by default cache is unbounded
+                .maximumSize(64) // a value large enough that we should never even get close (so nothing gets evicted)
+                .executor(ImmediateExecutor.INSTANCE)
+                .removalListener((key, value, cause) ->
+                {
+                    // maybe reload the key? (to avoid the reload being on the user's dime)
+                    logger.info("key {} removed from cipher key cache", key);
+                })
+                .build(alias ->
+                       {
+                           logger.info("loading secret key for alias {}", alias);
+                           return keyProvider.getSecretKey(alias);
+                       });
+    }
+
+    public Cipher getEncryptor(String transformation, String keyAlias) throws IOException
+    {
+        byte[] iv = new byte[ivLength];
+        secureRandom.nextBytes(iv);
+        return buildCipher(transformation, keyAlias, iv, Cipher.ENCRYPT_MODE);
+    }
+
+    public Cipher getDecryptor(String transformation, String keyAlias, byte[] iv) throws IOException
+    {
+        assert iv != null && iv.length > 0 : "trying to decrypt, but the initialization vector is empty";
+        return buildCipher(transformation, keyAlias, iv, Cipher.DECRYPT_MODE);
+    }
+
+    @VisibleForTesting
+    Cipher buildCipher(String transformation, String keyAlias, byte[] iv, int cipherMode) throws IOException
+    {
+        try
+        {
+            CachedCipher cachedCipher = cipherThreadLocal.get();
+            if (cachedCipher != null)
+            {
+                Cipher cipher = cachedCipher.cipher;
+                // rigorous checks to make sure we've absolutely got the correct instance (with correct alg/key/iv/...)
+                if (cachedCipher.mode == cipherMode && cipher.getAlgorithm().equals(transformation)
+                    && cachedCipher.keyAlias.equals(keyAlias) && Arrays.equals(cipher.getIV(), iv))
+                    return cipher;
+            }
+
+            Key key = retrieveKey(keyAlias);
+            Cipher cipher = Cipher.getInstance(transformation);
+            cipher.init(cipherMode, key, new IvParameterSpec(iv));
+            cipherThreadLocal.set(new CachedCipher(cipherMode, keyAlias, cipher));
+            return cipher;
+        }
+        catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException | InvalidKeyException e)
+        {
+            logger.error("could not build cipher", e);
+            throw new IOException("cannot load cipher", e);
+        }
+    }
+
+    private Key retrieveKey(String keyAlias) throws IOException
+    {
+        try
+        {
+            return cache.get(keyAlias);
+        }
+        catch (CompletionException e)
+        {
+            if (e.getCause() instanceof IOException)
+                throw (IOException)e.getCause();
+            throw new IOException("failed to load key from cache: " + keyAlias, e);
+        }
     }
 
     /**
-     * Indicates if this aggregation strategy uses pre-completion mode.
-     *
-     * @return <tt>true</tt> if this strategy uses pre-completion mode, or <tt>false</tt> otherwise.
+     * A simple struct to use with the thread local caching of Cipher as we can't get the mode (encrypt/decrypt) nor
+     * key_alias (or key!) from the Cipher itself to use for comparisons
      */
-    default boolean canPreComplete() {
-        return false;
-    }
+    private static class CachedCipher
+    {
+        public final int mode;
+        public final String keyAlias;
+        public final Cipher cipher;
 
-    /**
-     * Determines if the aggregation should complete the current group, and start a new group, or the aggregation should
-     * continue using the current group. This callback will only be called if {@link #canPreComplete()} returns
-     * <tt>true</tt>.
-     *
-     * @param  oldExchange the oldest exchange (is <tt>null</tt> on first aggregation as we only have the new exchange)
-     * @param  newExchange the newest exchange (can be <tt>null</tt> if there was no data possible to acquire)
-     * @return             <tt>true</tt> to complete current group and start a new group, or <tt>false</tt> to keep
-     *                     using current
-     */
-    default boolean preComplete(Exchange oldExchange, Exchange newExchange) {
-        return false;
+        private CachedCipher(int mode, String keyAlias, Cipher cipher)
+        {
+            this.mode = mode;
+            this.keyAlias = keyAlias;
+            this.cipher = cipher;
+        }
     }
-
-    /**
-     * The aggregated {@link Exchange} has completed
-     *
-     * <b>Important: </b> This method must <b>not</b> throw any exceptions.
-     *
-     * @param exchange the current aggregated exchange, or the original {@link org.apache.camel.Exchange} if no
-     *                 aggregation has been done before the completion occurred
-     */
-    default void onCompletion(Exchange exchange) {
-    }
-
-    /**
-     * The aggregated {@link Exchange} has completed
-     *
-     * <b>Important: </b> This method must <b>not</b> throw any exceptions.
-     *
-     * @param exchange      the current aggregated exchange, or the original {@link org.apache.camel.Exchange} if no
-     *                      aggregation has been done before the completion occurred
-     * @param inputExchange the input exchange (input to the EIP)
-     */
-    default void onCompletion(Exchange exchange, Exchange inputExchange) {
-        onCompletion(exchange);
-    }
-
-    /**
-     * A timeout occurred.
-     * <p/>
-     * <b>Important: </b> This method must <b>not</b> throw any exceptions.
-     *
-     * @param exchange the current aggregated exchange, or the original {@link Exchange} if no aggregation has been done
-     *                 before the timeout occurred
-     * @param index    the index, may be <tt>-1</tt> if not possible to determine the index
-     * @param total    the total, may be <tt>-1</tt> if not possible to determine the total
-     * @param timeout  the timeout value in millis, may be <tt>-1</tt> if not possible to determine the timeout
-     */
-    default void timeout(Exchange exchange, int index, int total, long timeout) {
-    }
-
-    /**
-     * Callback when the aggregated {@link Exchange} fails to add in the
-     * {@link org.apache.camel.spi.OptimisticLockingAggregationRepository} because of an
-     * {@link org.apache.camel.spi.OptimisticLockingAggregationRepository.OptimisticLockingException}.
-     * <p/>
-     * Please note that when aggregating {@link Exchange}'s to be careful not to modify and return the
-     * {@code oldExchange} from the
-     * {@link AggregationStrategy#aggregate(org.apache.camel.Exchange, org.apache.camel.Exchange)} method. If you are
-     * using the default MemoryAggregationRepository this will mean you have modified the value of an object already
-     * referenced/stored by the MemoryAggregationRepository. This makes it impossible for optimistic locking to work
-     * correctly with the MemoryAggregationRepository.
-     * <p/>
-     * You should instead return either the new {@code newExchange} or a completely new instance of {@link Exchange}.
-     * This is due to the nature of how the underlying {@link java.util.concurrent.ConcurrentHashMap} performs CAS
-     * operations on the value identity.
-     *
-     * @see java.util.concurrent.ConcurrentHashMap
-     */
-    default void onOptimisticLockFailure(Exchange oldExchange, Exchange newExchange) {
-        LoggerFactory.getLogger(getClass()).trace(
-                "onOptimisticLockFailure with AggregationStrategy: {}, oldExchange: {}, newExchange: {}", this, oldExchange,
-                newExchange);
-    }
-
 }
 <<<<<<<<DIVIDER>>>>>>>>
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -342,705 +429,189 @@ public interface AggregationStrategy {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.camel.processor.aggregator;
+package org.apache.cassandra.index.sasi.disk;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.ByteBuffer;
+import java.util.*;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
+import org.apache.cassandra.utils.AbstractIterator;
+import org.apache.cassandra.utils.Pair;
 
-import org.apache.camel.ContextTestSupport;
-import org.apache.camel.builder.AggregationStrategies;
-import org.apache.camel.builder.RouteBuilder;
-import org.junit.jupiter.api.Test;
+import com.carrotsearch.hppc.LongHashSet;
+import com.carrotsearch.hppc.LongSet;
+import com.carrotsearch.hppc.cursors.LongCursor;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+public class DynamicTokenTreeBuilder extends AbstractTokenTreeBuilder
+{
+    private final SortedMap<Long, LongSet> tokens = new TreeMap<>();
 
-public class AggregationStrategyBeanAdapterAllowNullTest extends ContextTestSupport {
 
-    private final MyUserAppender appender = new MyUserAppender();
+    public DynamicTokenTreeBuilder()
+    {}
 
-    @Test
-    public void testAggregate() throws Exception {
-        getMockEndpoint("mock:result").expectedMessageCount(1);
-
-        template.sendBody("direct:start", new User("Claus"));
-        template.sendBody("direct:start", new User("James"));
-        template.sendBody("direct:start", new User("Jonathan"));
-
-        assertMockEndpointsSatisfied();
-
-        List<?> names = getMockEndpoint("mock:result").getReceivedExchanges().get(0).getIn().getBody(List.class);
-        assertEquals("Claus", names.get(0));
-        assertEquals("James", names.get(1));
-        assertEquals("Jonathan", names.get(2));
+    public DynamicTokenTreeBuilder(TokenTreeBuilder data)
+    {
+        add(data);
     }
 
-    @Override
-    protected RouteBuilder createRouteBuilder() {
-        return new RouteBuilder() {
-            @Override
-            public void configure() {
-                from("direct:start").aggregate(constant(true), AggregationStrategies.beanAllowNull(appender, "addUsers"))
-                        .completionSize(3).to("mock:result");
+    public DynamicTokenTreeBuilder(SortedMap<Long, LongSet> data)
+    {
+        add(data);
+    }
+
+    public void add(Long token, long keyPosition)
+    {
+        LongSet found = tokens.get(token);
+        if (found == null)
+            tokens.put(token, (found = new LongHashSet(2)));
+
+        found.add(keyPosition);
+    }
+
+    public void add(Iterator<Pair<Long, LongSet>> data)
+    {
+        while (data.hasNext())
+        {
+            Pair<Long, LongSet> entry = data.next();
+            for (LongCursor l : entry.right)
+                add(entry.left, l.value);
+        }
+    }
+
+    public void add(SortedMap<Long, LongSet> data)
+    {
+        for (Map.Entry<Long, LongSet> newEntry : data.entrySet())
+        {
+            LongSet found = tokens.get(newEntry.getKey());
+            if (found == null)
+                tokens.put(newEntry.getKey(), (found = new LongHashSet(4)));
+
+            for (LongCursor offset : newEntry.getValue())
+                found.add(offset.value);
+        }
+    }
+
+    public Iterator<Pair<Long, LongSet>> iterator()
+    {
+        final Iterator<Map.Entry<Long, LongSet>> iterator = tokens.entrySet().iterator();
+        return new AbstractIterator<Pair<Long, LongSet>>()
+        {
+            protected Pair<Long, LongSet> computeNext()
+            {
+                if (!iterator.hasNext())
+                    return endOfData();
+
+                Map.Entry<Long, LongSet> entry = iterator.next();
+                return Pair.create(entry.getKey(), entry.getValue());
             }
         };
     }
 
-    public static final class MyUserAppender {
+    public boolean isEmpty()
+    {
+        return tokens.size() == 0;
+    }
 
-        public List<String> addUsers(List<String> names, User user) {
-            if (names == null) {
-                names = new ArrayList<>();
-            }
-            names.add(user.getName());
-            return names;
+    protected void constructTree()
+    {
+        tokenCount = tokens.size();
+        treeMinToken = tokens.firstKey();
+        treeMaxToken = tokens.lastKey();
+        numBlocks = 1;
+
+        // special case the tree that only has a single block in it (so we don't create a useless root)
+        if (tokenCount <= TOKENS_PER_BLOCK)
+        {
+            leftmostLeaf = new DynamicLeaf(tokens);
+            rightmostLeaf = leftmostLeaf;
+            root = leftmostLeaf;
         }
-    }
-
-    /**
-     * We support annotations on the types.
-     */
-    @XmlRootElement(name = "user")
-    public static final class User {
-        private final String name;
-
-        public User(String name) {
-            this.name = name;
-        }
-
-        public String getName() {
-            return name;
-        }
-    }
-
-}
-<<<<<<<<DIVIDER>>>>>>>>
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package org.apache.camel.impl;
-
-import org.apache.camel.CamelContext;
-import org.apache.camel.ErrorHandlerFactory;
-import org.apache.camel.Expression;
-import org.apache.camel.Predicate;
-import org.apache.camel.Processor;
-import org.apache.camel.Route;
-import org.apache.camel.model.DataFormatDefinition;
-import org.apache.camel.model.ProcessorDefinition;
-import org.apache.camel.model.errorhandler.DefaultErrorHandlerDefinition;
-import org.apache.camel.model.language.ExpressionDefinition;
-import org.apache.camel.model.transformer.TransformerDefinition;
-import org.apache.camel.model.validator.ValidatorDefinition;
-import org.apache.camel.reifier.RouteReifier;
-import org.apache.camel.reifier.dataformat.DataFormatReifier;
-import org.apache.camel.reifier.errorhandler.ErrorHandlerReifier;
-import org.apache.camel.reifier.language.ExpressionReifier;
-import org.apache.camel.reifier.transformer.TransformerReifier;
-import org.apache.camel.reifier.validator.ValidatorReifier;
-import org.apache.camel.spi.DataFormat;
-import org.apache.camel.spi.ModelReifierFactory;
-import org.apache.camel.spi.Transformer;
-import org.apache.camel.spi.Validator;
-
-/**
- * Default {@link ModelReifierFactory}
- */
-public class DefaultModelReifierFactory implements ModelReifierFactory {
-
-    @Override
-    public Route createRoute(CamelContext camelContext, Object routeDefinition) {
-        return new RouteReifier(camelContext, (ProcessorDefinition<?>) routeDefinition).createRoute();
-    }
-
-    @Override
-    public DataFormat createDataFormat(CamelContext camelContext, Object dataFormatDefinition) {
-        return DataFormatReifier.reifier(camelContext, (DataFormatDefinition) dataFormatDefinition).createDataFormat();
-    }
-
-    @Override
-    public Processor createErrorHandler(Route route, Processor processor) throws Exception {
-        return createErrorHandler(route, route.getErrorHandlerFactory(), processor);
-    }
-
-    @Override
-    public Processor createErrorHandler(Route route, ErrorHandlerFactory errorHandlerFactory, Processor processor)
-            throws Exception {
-        return ErrorHandlerReifier.reifier(route, errorHandlerFactory).createErrorHandler(processor);
-    }
-
-    @Override
-    public ErrorHandlerFactory createDefaultErrorHandler() {
-        return new DefaultErrorHandlerDefinition();
-    }
-
-    @Override
-    public Expression createExpression(CamelContext camelContext, Object expressionDefinition) {
-        return ExpressionReifier.reifier(camelContext, (ExpressionDefinition) expressionDefinition).createExpression();
-    }
-
-    @Override
-    public Predicate createPredicate(CamelContext camelContext, Object expressionDefinition) {
-        return ExpressionReifier.reifier(camelContext, (ExpressionDefinition) expressionDefinition).createPredicate();
-    }
-
-    @Override
-    public Transformer createTransformer(CamelContext camelContext, Object transformerDefinition) {
-        return TransformerReifier.reifier(camelContext, (TransformerDefinition) transformerDefinition).createTransformer();
-    }
-
-    @Override
-    public Validator createValidator(CamelContext camelContext, Object transformerDefinition) {
-        return ValidatorReifier.reifier(camelContext, (ValidatorDefinition) transformerDefinition).createValidator();
-    }
-}
-<<<<<<<<DIVIDER>>>>>>>>
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package org.apache.camel.processor;
-
-import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-
-import org.apache.camel.CamelContext;
-import org.apache.camel.ExchangePattern;
-import org.apache.camel.Expression;
-import org.apache.camel.LineNumberAware;
-import org.apache.camel.NamedNode;
-import org.apache.camel.NoFactoryAvailableException;
-import org.apache.camel.Processor;
-import org.apache.camel.Route;
-import org.apache.camel.spi.BootstrapCloseable;
-import org.apache.camel.spi.FactoryFinder;
-import org.apache.camel.spi.ProcessorFactory;
-import org.apache.camel.spi.annotations.JdkService;
-import org.apache.camel.support.PluginHelper;
-
-/**
- * Default {@link ProcessorFactory} that supports using 3rd party Camel components to implement the EIP
- * {@link Processor}.
- * <p/>
- * The component should use the {@link FactoryFinder} SPI to specify a file with the name of the EIP model in the
- * directory of {@link #RESOURCE_PATH}. The file should contain a property with key <tt>class</tt> that refers to the
- * name of the {@link ProcessorFactory} the Camel component implement, which gets called for creating the
- * {@link Processor}s for the EIP.
- * <p/>
- */
-@JdkService(ProcessorFactory.FACTORY)
-public class DefaultProcessorFactory implements ProcessorFactory, BootstrapCloseable {
-
-    public static final String RESOURCE_PATH = "META-INF/services/org/apache/camel/model/";
-
-    private FactoryFinder finder;
-
-    @Override
-    public void close() throws IOException {
-        if (finder instanceof BootstrapCloseable bootstrapCloseable) {
-            bootstrapCloseable.close();
-            finder = null;
-        }
-    }
-
-    @Override
-    public Processor createChildProcessor(Route route, NamedNode definition, boolean mandatory) throws Exception {
-        String name = definition.getClass().getSimpleName();
-        if (finder == null) {
-            finder = PluginHelper.getFactoryFinderResolver(route.getCamelContext())
-                    .resolveBootstrapFactoryFinder(route.getCamelContext().getClassResolver(), RESOURCE_PATH);
-        }
-        try {
-            Object object = finder.newInstance(name).orElse(null);
-            if (object instanceof ProcessorFactory pc) {
-                Processor processor = pc.createChildProcessor(route, definition, mandatory);
-                LineNumberAware.trySetLineNumberAware(processor, definition);
-                return processor;
-            }
-        } catch (NoFactoryAvailableException e) {
-            // ignore there is no custom factory
-        }
-
-        return null;
-    }
-
-    @Override
-    public Processor createProcessor(Route route, NamedNode definition) throws Exception {
-        String name = definition.getClass().getSimpleName();
-        if (finder == null) {
-            finder = PluginHelper.getFactoryFinderResolver(route.getCamelContext())
-                    .resolveBootstrapFactoryFinder(route.getCamelContext().getClassResolver(), RESOURCE_PATH);
-        }
-        ProcessorFactory pc = finder.newInstance(name, ProcessorFactory.class).orElse(null);
-        if (pc != null) {
-            Processor processor = pc.createProcessor(route, definition);
-            LineNumberAware.trySetLineNumberAware(processor, definition);
-            return processor;
-        }
-        return null;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public Processor createProcessor(CamelContext camelContext, String definitionName, Object[] args)
-            throws Exception {
-        if ("SendDynamicProcessor".equals(definitionName)) {
-            String uri = (String) args[0];
-            Expression expression = (Expression) args[1];
-            ExchangePattern exchangePattern = (ExchangePattern) args[2];
-            SendDynamicProcessor processor = new SendDynamicProcessor(uri, expression);
-            processor.setCamelContext(camelContext);
-            if (exchangePattern != null) {
-                processor.setPattern(exchangePattern);
-            }
-            return processor;
-        } else if ("MulticastProcessor".equals(definitionName)) {
-            Collection<Processor> processors = (Collection<Processor>) args[0];
-            ExecutorService executor = (ExecutorService) args[1];
-            boolean shutdownExecutorService = (boolean) args[2];
-            return new MulticastProcessor(
-                    camelContext, null, processors, null, true, executor, shutdownExecutorService, false, false, 0,
-                    null, false, false, 0);
-        } else if ("Pipeline".equals(definitionName)) {
-            List<Processor> processors = (List<Processor>) args[0];
-            return Pipeline.newInstance(camelContext, processors);
-        }
-
-        return null;
-    }
-}
-<<<<<<<<DIVIDER>>>>>>>>
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package org.apache.camel.component.properties;
-
-import org.apache.camel.spi.PropertiesSource;
-import org.apache.camel.spi.PropertiesSourceFactory;
-
-public class DefaultPropertiesSourceFactory implements PropertiesSourceFactory {
-
-    private final PropertiesComponent pc;
-
-    public DefaultPropertiesSourceFactory(PropertiesComponent pc) {
-        this.pc = pc;
-    }
-
-    @Override
-    public PropertiesSource newFilePropertiesSource(String location) {
-        return new FilePropertiesSource(pc, new PropertiesLocation("file", location));
-    }
-
-    @Override
-    public PropertiesSource newClasspathPropertiesSource(String location) {
-        return new ClasspathPropertiesSource(pc, new PropertiesLocation("classpath", location));
-    }
-
-    @Override
-    public PropertiesSource newRefPropertiesSource(String ref) {
-        return new RefPropertiesSource(pc, new PropertiesLocation("ref", ref));
-    }
-}
-<<<<<<<<DIVIDER>>>>>>>>
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package org.apache.camel.tooling.util;
-
-import static org.apache.camel.tooling.util.Strings.isNullOrEmpty;
-
-public final class JavadocHelper {
-
-    private static final String VALID_CHARS = ".,-='/\\!&%():;#${}";
-
-    private JavadocHelper() {
-    }
-
-    /**
-     * Sanitizes the javadoc to removed invalid characters so it can be used as json description
-     *
-     * @param  javadoc the javadoc
-     * @return         the text that is valid as json
-     */
-    public static String sanitizeDescription(String javadoc, boolean summary) {
-        if (isNullOrEmpty(javadoc)) {
-            return null;
-        }
-
-        // lets just use what java accepts as identifiers
-        StringBuilder sb = new StringBuilder(javadoc.length());
-
-        // split into lines
-        String[] lines = javadoc.split("\n");
-
-        boolean first = true;
-        for (String line : lines) {
-            line = line.trim();
-
-            if (line.startsWith("**")) {
-                continue;
-            }
-            // remove leading javadoc *
-            if (line.startsWith("*")) {
-                line = line.substring(1);
-                line = line.trim();
-            }
-
-            // terminate if we reach @param, @return or @deprecated as we only want the javadoc summary
-            if (line.startsWith("@param") || line.startsWith("@return") || line.startsWith("@deprecated")) {
-                break;
-            }
-
-            // skip lines that are javadoc references
-            if (line.startsWith("@")) {
-                continue;
-            }
-
-            // we are starting from a new line, so add a whitespace
-            if (!first) {
-                sb.append(' ');
-            }
-
-            // append data
-            String s = line.trim();
-            sb.append(s);
-
-            boolean empty = isNullOrEmpty(s);
-            boolean endWithDot = s.endsWith(".");
-            boolean haveText = !sb.isEmpty();
-
-            if (haveText && summary && (empty || endWithDot)) {
-                // if we only want a summary, then skip at first empty line we encounter, or if the sentence ends with a dot
-                break;
-            }
-
-            first = false;
-        }
-
-        String s = sb.toString();
-        // remove all XML tags
-        s = s.replaceAll("<.*?>", "");
-        // remove {@link inlined javadoc links which is special handled
-        s = s.replaceAll("\\{@link\\s\\w+\\s(\\w+)}", "$1");
-        s = s.replaceAll("\\{@link\\s([\\w]+)}", "$1");
-        // also remove the commonly mistake to do with @{link
-        s = s.replaceAll("@\\{link\\s\\w+\\s(\\w+)}", "$1");
-        s = s.replaceAll("@\\{link\\s([\\w]+)}", "$1");
-
-        // remove all inlined javadoc links, eg such as {@link org.apache.camel.spi.Registry}
-        // use #? to remove leading # in case its a local reference
-        s = s.replaceAll("\\{@\\w+\\s#?([\\w.#(\\d,)]+)}", "$1");
-
-        // create a new line
-        StringBuilder cb = new StringBuilder(s.length() + 16);
-        for (char c : s.toCharArray()) {
-            if (Character.isJavaIdentifierPart(c) || VALID_CHARS.indexOf(c) != -1) {
-                cb.append(c);
-            } else if (Character.isWhitespace(c)) {
-                // always use space as whitespace, also for line feeds etc
-                cb.append(' ');
-            }
-        }
-        s = cb.toString();
-
-        // remove double whitespaces, and trim
-        s = s.replaceAll("\\s+", " ");
-        // unescape http links
-        s = s.replaceAll("\\\\(http:|https:)", "$1");
-        return s.trim();
-    }
-
-    /**
-     * Encodes the text into safe XML by replacing &lt; $gt; and &amp; with XML tokens
-     *
-     * @param  text the text
-     * @return      the encoded text
-     */
-    public static String xmlEncode(String text) {
-        if (text == null) {
-            return "";
-        }
-        // must replace amp first, so we dont replace &lt; to amp later
-        text = text.replace("&", "&amp;");
-        text = text.replace("\"", "&quot;");
-        text = text.replace("<", "&lt;");
-        text = text.replace(">", "&gt;");
-        return text;
-    }
-
-}
-<<<<<<<<DIVIDER>>>>>>>>
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package org.apache.camel.util;
-
-import java.util.Objects;
-
-/**
- * Holder for a key and value.
- */
-public class KeyValueHolder<K, V> {
-
-    private final K key;
-    private final V value;
-
-    public KeyValueHolder(K key, V value) {
-        this.key = key;
-        this.value = value;
-    }
-
-    public K getKey() {
-        return key;
-    }
-
-    public V getValue() {
-        return value;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        KeyValueHolder<?, ?> that = (KeyValueHolder<?, ?>) o;
-        return Objects.equals(key, that.key)
-                && Objects.equals(value, that.value);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(key, value);
-    }
-
-    @Override
-    public String toString() {
-        return key + " -> " + value;
-    }
-}
-<<<<<<<<DIVIDER>>>>>>>>
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package org.apache.camel.tooling.model;
-
-/**
- * Some String helper methods
- */
-public final class Strings {
-
-    private Strings() {
-        //Helper class
-    }
-
-    /**
-     * Returns true if the given text is null or empty string or has <var>null</var> as the value
-     */
-    public static boolean isNullOrEmpty(String text) {
-        return text == null || text.isEmpty() || "null".equals(text);
-    }
-
-    public static String cutLastZeroDigit(String version) {
-        String answer = version;
-        // cut last digit so its not 2.18.0 but 2.18
-        String[] parts = version.split("\\.");
-        if (parts.length == 3 && parts[2].equals("0")) {
-            answer = parts[0] + "." + parts[1];
-        }
-        return answer;
-    }
-
-    /**
-     * To wrap long camel cased texts by words.
-     *
-     * @param option    the option which is camel cased.
-     * @param watermark a watermark to denote the size to cut after
-     * @param lineSep   the new line to use when breaking into a new line
-     */
-    public static String wrapCamelCaseWords(String option, int watermark, String lineSep) {
-        String text = option.replaceAll("(?=[A-Z][a-z])", " ");
-        text = wrapWords(text, "", lineSep, watermark, false);
-        text = Character.toUpperCase(text.charAt(0)) + text.substring(1);
-        if (text.startsWith(lineSep)) {
-            text = text.substring(lineSep.length());
-        }
-        if (text.endsWith(lineSep)) {
-            text = text.substring(0, text.length() - lineSep.length());
-        }
-        return text;
-    }
-
-    /**
-     * To wrap a big line by words.
-     *
-     * @param line          the big line
-     * @param wordSep       the word separator
-     * @param lineSep       the new line to use when breaking into a new line
-     * @param watermark     a watermark to denote the size to cut after
-     * @param wrapLongWords whether to wrap long words
-     */
-    public static String wrapWords(String line, String wordSep, String lineSep, int watermark, boolean wrapLongWords) {
-        if (line == null) {
-            return null;
-        } else {
-            if (lineSep == null) {
-                lineSep = System.lineSeparator();
-            }
-            if (wordSep == null) {
-                wordSep = "";
-            }
-
-            if (watermark < 1) {
-                watermark = 1;
-            }
-
-            int inputLineLength = line.length();
-            int offset = 0;
-            StringBuilder sb = new StringBuilder(inputLineLength + 32);
-            int currentLength = 0;
-            while (offset < inputLineLength) {
-                if (line.charAt(offset) == ' ') {
-                    offset++;
+        else
+        {
+            root = new InteriorNode();
+            rightmostParent = (InteriorNode) root;
+
+            int i = 0;
+            Leaf lastLeaf = null;
+            Long firstToken = tokens.firstKey();
+            Long finalToken = tokens.lastKey();
+            Long lastToken;
+            for (Long token : tokens.keySet())
+            {
+                if (i == 0 || (i % TOKENS_PER_BLOCK != 0 && i != (tokenCount - 1)))
+                {
+                    i++;
                     continue;
                 }
-                int next = line.indexOf(' ', offset);
-                if (next < 0) {
-                    next = inputLineLength;
-                    if (wrapLongWords && inputLineLength - offset > watermark) {
-                        if (currentLength > 0) {
-                            sb.append(wordSep);
-                            currentLength += wordSep.length();
-                        }
-                        sb.append(line, offset, watermark - currentLength);
-                        sb.append(lineSep);
-                        offset += watermark - currentLength;
-                    }
-                }
-                if (currentLength + (currentLength > 0 ? wordSep.length() : 0) + next - offset <= watermark) {
-                    if (currentLength > 0) {
-                        sb.append(wordSep);
-                        currentLength += wordSep.length();
-                    }
-                    sb.append(line, offset, next);
-                    currentLength += next - offset;
-                    offset = next + 1;
-                } else {
-                    sb.append(lineSep);
-                    sb.append(line, offset, next);
-                    currentLength = next - offset;
-                    offset = next + 1;
+
+                lastToken = token;
+                Leaf leaf = (i != (tokenCount - 1) || token.equals(finalToken)) ?
+                        new DynamicLeaf(tokens.subMap(firstToken, lastToken)) : new DynamicLeaf(tokens.tailMap(firstToken));
+
+                if (i == TOKENS_PER_BLOCK)
+                    leftmostLeaf = leaf;
+                else
+                    lastLeaf.next = leaf;
+
+                rightmostParent.add(leaf);
+                lastLeaf = leaf;
+                rightmostLeaf = leaf;
+                firstToken = lastToken;
+                i++;
+                numBlocks++;
+
+                if (token.equals(finalToken))
+                {
+                    Leaf finalLeaf = new DynamicLeaf(tokens.tailMap(token));
+                    lastLeaf.next = finalLeaf;
+                    rightmostParent.add(finalLeaf);
+                    rightmostLeaf = finalLeaf;
+                    numBlocks++;
                 }
             }
-            return sb.toString();
+
         }
     }
 
-    /**
-     * Returns the base class name, i.e. without package and generic related information.
-     *
-     * @param  className The class name which base class is to be computed.
-     * @return           the base class name, i.e. without package and generic related information.
-     */
-    public static String getClassShortName(String className) {
-        if (className != null) {
-            return className.replaceAll("<.*>", "").replaceAll(".*[.]([^.]+)", "$1");
+    private class DynamicLeaf extends Leaf
+    {
+        private final SortedMap<Long, LongSet> tokens;
+
+        DynamicLeaf(SortedMap<Long, LongSet> data)
+        {
+            super(data.firstKey(), data.lastKey());
+            tokens = data;
         }
-        return className;
+
+        public int tokenCount()
+        {
+            return tokens.size();
+        }
+
+        public boolean isSerializable()
+        {
+            return true;
+        }
+
+        protected void serializeData(ByteBuffer buf)
+        {
+            for (Map.Entry<Long, LongSet> entry : tokens.entrySet())
+                createEntry(entry.getKey(), entry.getValue()).serialize(buf);
+        }
+
     }
 }
 <<<<<<<<DIVIDER>>>>>>>>
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -1048,33 +619,788 @@ public final class Strings {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.camel.impl.converter;
+package org.apache.cassandra.hints;
 
-import java.util.concurrent.Future;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Queue;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.zip.CRC32;
 
-import org.apache.camel.Exchange;
-import org.apache.camel.Message;
-import org.apache.camel.WrappedFile;
-import org.apache.camel.support.TypeConverterSupport;
+import org.apache.cassandra.io.util.DataOutputBuffer;
+import org.apache.cassandra.io.util.DataOutputBufferFixed;
+import org.apache.cassandra.net.MessagingService;
+import org.apache.cassandra.utils.AbstractIterator;
+import org.apache.cassandra.utils.concurrent.OpOrder;
+import org.apache.cassandra.utils.memory.MemoryUtil;
+
+import static org.apache.cassandra.utils.FBUtilities.updateChecksum;
+import static org.apache.cassandra.utils.FBUtilities.updateChecksumInt;
 
 /**
- * A simple converter that can convert any object to a String type by using the toString() method of the object.
+ * A shared buffer that temporarily holds the serialized hints before they are flushed to disk.
+ *
+ * Consists of :
+ * - a ByteBuffer holding the serialized hints (length, length checksum and total checksum included)
+ * - a pointer to the current allocation offset
+ * - an {@link OpOrder} appendOrder for {@link HintsWriteExecutor} to wait on for all writes completion
+ * - a map of (host id -> offset queue) for the hints written
+ *
+ * It's possible to write a single hint for two or more hosts at the same time, in which case the same offset will be put
+ * into two or more offset queues.
  */
-public class ToStringTypeConverter extends TypeConverterSupport {
+final class HintsBuffer
+{
+    // hint entry overhead in bytes (int length, int length checksum, int body checksum)
+    static final int ENTRY_OVERHEAD_SIZE = 12;
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> T convertTo(Class<T> toType, Exchange exchange, Object value) {
+    private final ByteBuffer slab; // the underlying backing ByteBuffer for all the serialized hints
+    private final AtomicLong position; // the position in the slab that we currently allocate from
 
-        // should not try to convert these specific types
-        if (value instanceof Message || value instanceof WrappedFile || value instanceof Future) {
-            return (T) MISS_VALUE;
-        }
+    private final ConcurrentMap<UUID, Queue<Integer>> offsets;
+    private final OpOrder appendOrder;
 
-        if (toType.equals(String.class)) {
-            return (T) value.toString();
-        }
-        return null;
+    private HintsBuffer(ByteBuffer slab)
+    {
+        this.slab = slab;
+
+        position = new AtomicLong();
+        offsets = new ConcurrentHashMap<>();
+        appendOrder = new OpOrder();
     }
 
+    static HintsBuffer create(int slabSize)
+    {
+        return new HintsBuffer(ByteBuffer.allocateDirect(slabSize));
+    }
+
+    boolean isClosed()
+    {
+        return position.get() < 0;
+    }
+
+    int capacity()
+    {
+        return slab.capacity();
+    }
+
+    int remaining()
+    {
+        long pos = position.get();
+        return (int) (pos < 0 ? 0 : Math.max(0, capacity() - pos));
+    }
+
+    HintsBuffer recycle()
+    {
+        slab.clear();
+        return new HintsBuffer(slab);
+    }
+
+    void free()
+    {
+        MemoryUtil.clean(slab);
+    }
+
+    /**
+     * Wait for any appends started before this method was called.
+     */
+    void waitForModifications()
+    {
+        appendOrder.awaitNewBarrier(); // issue a barrier and wait for it
+    }
+
+    Set<UUID> hostIds()
+    {
+        return offsets.keySet();
+    }
+
+    /**
+     * Coverts the queue of offsets for the selected host id into an iterator of hints encoded as ByteBuffers.
+     */
+    Iterator<ByteBuffer> consumingHintsIterator(UUID hostId)
+    {
+        final Queue<Integer> bufferOffsets = offsets.get(hostId);
+
+        if (bufferOffsets == null)
+            return Collections.emptyIterator();
+
+        return new AbstractIterator<>()
+        {
+            private final ByteBuffer flyweight = slab.duplicate();
+
+            protected ByteBuffer computeNext()
+            {
+                Integer offset = bufferOffsets.poll();
+
+                if (offset == null)
+                    return endOfData();
+
+                int totalSize = slab.getInt(offset) + ENTRY_OVERHEAD_SIZE;
+
+                return flyweight.clear().position(offset).limit(offset + totalSize);
+            }
+        };
+    }
+
+    Allocation allocate(int hintSize)
+    {
+        int totalSize = hintSize + ENTRY_OVERHEAD_SIZE;
+
+        if (totalSize > slab.capacity() / 2)
+        {
+            throw new IllegalArgumentException(String.format("Hint of %s bytes is too large - the maximum size is %s",
+                                                             hintSize,
+                                                             slab.capacity() / 2));
+        }
+
+        OpOrder.Group opGroup = appendOrder.start(); // will eventually be closed by the receiver of the allocation
+        try
+        {
+            return allocate(totalSize, opGroup);
+        }
+        catch (Throwable t)
+        {
+            opGroup.close();
+            throw t;
+        }
+    }
+
+    private Allocation allocate(int totalSize, OpOrder.Group opGroup)
+    {
+        int offset = allocateBytes(totalSize);
+        if (offset < 0)
+        {
+            opGroup.close();
+            return null;
+        }
+        return new Allocation(offset, totalSize, opGroup);
+    }
+
+    /**
+     * Allocate bytes in the segment, or return -1 if not enough space. Method ensures that marker bytes
+     * for each allocation (i.e. offset of its end) is written as a 32 bit integer at its beginning, and
+     * that these marker bytes are always written sequentially. In other words, if allocation A has a lower
+     * starting offset than allocation B, A's marker will always be written before the offset for B is returned.
+     *
+     * `allocateOffset` consists of two integers:
+     *    64                 32                0
+     *    | (i32) inProgress | (i32) writtenTo |
+     *
+     *  If inProgress bytes are not zeroes, they contain an unwritten offset. Before allocating any bytes,
+     *  inProgresss bytes need to be written at the writtenTo location in the target buffer.
+     */
+    private int allocateBytes(int totalSize)
+    {
+        long prev = position.getAndAdd(totalSize);
+
+        if (prev < 0) // the slab has been 'closed'
+            return -1;
+
+        if ((prev + totalSize) > slab.capacity())
+        {
+            position.set(Long.MIN_VALUE); // mark the slab as no longer allocating if we've exceeded its capacity
+            return -1;
+        }
+
+        return (int)prev;
+    }
+
+    private void put(UUID hostId, int offset)
+    {
+        // we intentionally don't just return offsets.computeIfAbsent() because it's expensive compared to simple get(),
+        // and the method is on a really hot path
+        Queue<Integer> queue = offsets.get(hostId);
+        if (queue == null)
+            queue = offsets.computeIfAbsent(hostId, (id) -> new ConcurrentLinkedQueue<>());
+        queue.offer(offset);
+    }
+
+    /**
+     * A placeholder for hint serialization. Should always be used in a try-with-resources block.
+     */
+    final class Allocation implements AutoCloseable
+    {
+        private final Integer offset;
+        private final int totalSize;
+        private final OpOrder.Group opGroup;
+
+        Allocation(int offset, int totalSize, OpOrder.Group opGroup)
+        {
+            this.offset = offset;
+            this.totalSize = totalSize;
+            this.opGroup = opGroup;
+        }
+
+        void write(Iterable<UUID> hostIds, Hint hint)
+        {
+            write(hint);
+            for (UUID hostId : hostIds)
+                put(hostId, offset);
+        }
+
+        public void close()
+        {
+            opGroup.close();
+        }
+
+        private void write(Hint hint)
+        {
+            ByteBuffer buffer = slab.duplicate().position(offset).limit(offset + totalSize);
+            CRC32 crc = new CRC32();
+            int hintSize = totalSize - ENTRY_OVERHEAD_SIZE;
+            try (DataOutputBuffer dop = new DataOutputBufferFixed(buffer))
+            {
+                dop.writeInt(hintSize);
+                updateChecksumInt(crc, hintSize);
+                dop.writeInt((int) crc.getValue());
+
+                Hint.serializer.serialize(hint, dop, MessagingService.current_version);
+                updateChecksum(crc, buffer, buffer.position() - hintSize, hintSize);
+                dop.writeInt((int) crc.getValue());
+            }
+            catch (IOException e)
+            {
+                throw new AssertionError(); // cannot happen
+            }
+        }
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.cassandra.streaming.async;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import com.google.common.annotations.VisibleForTesting;
+
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.EventLoop;
+import io.netty.util.concurrent.Future; // checkstyle: permit this import
+import org.apache.cassandra.net.ConnectionCategory;
+import org.apache.cassandra.net.MessagingService;
+import org.apache.cassandra.net.OutboundConnectionInitiator.Result;
+import org.apache.cassandra.net.OutboundConnectionInitiator.Result.StreamingSuccess;
+import org.apache.cassandra.net.OutboundConnectionSettings;
+import org.apache.cassandra.streaming.StreamingChannel;
+
+import static org.apache.cassandra.locator.InetAddressAndPort.getByAddress;
+import static org.apache.cassandra.net.InternodeConnectionUtils.isSSLError;
+import static org.apache.cassandra.net.OutboundConnectionInitiator.initiateStreaming;
+import static org.apache.cassandra.net.OutboundConnectionInitiator.SslFallbackConnectionType;
+import static org.apache.cassandra.net.OutboundConnectionInitiator.SslFallbackConnectionType.SERVER_CONFIG;
+
+public class NettyStreamingConnectionFactory implements StreamingChannel.Factory
+{
+    @VisibleForTesting
+    public static int MAX_CONNECT_ATTEMPTS = 3;
+
+    public static NettyStreamingChannel connect(OutboundConnectionSettings template, int messagingVersion, StreamingChannel.Kind kind) throws IOException
+    {
+        EventLoop eventLoop = MessagingService.instance().socketFactory.outboundStreamingGroup().next();
+        OutboundConnectionSettings settings = template.withDefaults(ConnectionCategory.STREAMING);
+        List<SslFallbackConnectionType> sslFallbacks = settings.withEncryption() && settings.encryption.getOptional()
+                                                       ? Arrays.asList(SslFallbackConnectionType.values())
+                                                       : Collections.singletonList(SERVER_CONFIG);
+
+        Throwable cause = null;
+        for (final SslFallbackConnectionType sslFallbackConnectionType : sslFallbacks)
+        {
+            for (int i = 0; i < MAX_CONNECT_ATTEMPTS; i++)
+            {
+                Future<Result<StreamingSuccess>> result = initiateStreaming(eventLoop, settings, sslFallbackConnectionType);
+                result.awaitUninterruptibly(); // initiate has its own timeout, so this is "guaranteed" to return relatively promptly
+                if (result.isSuccess())
+                {
+                    Channel channel = result.getNow().success().channel;
+                    NettyStreamingChannel streamingChannel = new NettyStreamingChannel(channel, kind);
+                    if (kind == StreamingChannel.Kind.CONTROL)
+                    {
+                        ChannelPipeline pipeline = channel.pipeline();
+                        pipeline.addLast("stream", streamingChannel);
+                    }
+                    return streamingChannel;
+                }
+                cause = result.cause();
+            }
+            if (!isSSLError(cause))
+            {
+                // Fallback only when the error is SSL related, otherwise retries are exhausted, so fail
+                break;
+            }
+        }
+        throw new IOException("failed to connect to " + template.to + " for streaming data", cause);
+    }
+
+    @Override
+    public StreamingChannel create(InetSocketAddress to, int messagingVersion, StreamingChannel.Kind kind) throws IOException
+    {
+        return connect(new OutboundConnectionSettings(getByAddress(to)), messagingVersion, kind);
+    }
+
+    @Override
+    public StreamingChannel create(InetSocketAddress to,
+                                   InetSocketAddress preferred,
+                                   int messagingVersion,
+                                   StreamingChannel.Kind kind) throws IOException
+    {
+        return connect(new OutboundConnectionSettings(getByAddress(to), getByAddress(preferred)), messagingVersion, kind);
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.cassandra.schema;
+
+import java.util.Set;
+
+import org.apache.cassandra.diag.DiagnosticEventService;
+import org.apache.cassandra.locator.InetAddressAndPort;
+import org.apache.cassandra.schema.SchemaAnnouncementEvent.SchemaAnnouncementEventType;
+
+final class SchemaAnnouncementDiagnostics
+{
+    private static final DiagnosticEventService service = DiagnosticEventService.instance();
+
+    private SchemaAnnouncementDiagnostics()
+    {
+    }
+
+    static void schemaMutationsAnnounced(Set<InetAddressAndPort> schemaDestinationEndpoints, Set<InetAddressAndPort> schemaEndpointsIgnored)
+    {
+        if (isEnabled(SchemaAnnouncementEventType.SCHEMA_MUTATIONS_ANNOUNCED))
+            service.publish(new SchemaAnnouncementEvent(SchemaAnnouncementEventType.SCHEMA_MUTATIONS_ANNOUNCED,
+                                                        schemaDestinationEndpoints, schemaEndpointsIgnored, null, null));
+    }
+
+    public static void schemataMutationsReceived(InetAddressAndPort from)
+    {
+        if (isEnabled(SchemaAnnouncementEventType.SCHEMA_MUTATIONS_RECEIVED))
+            service.publish(new SchemaAnnouncementEvent(SchemaAnnouncementEventType.SCHEMA_MUTATIONS_RECEIVED,
+                                                        null, null, null, from));
+    }
+
+    static void schemaTransformationAnnounced(Set<InetAddressAndPort> schemaDestinationEndpoints, Set<InetAddressAndPort> schemaEndpointsIgnored, SchemaTransformation transformation)
+    {
+        if (isEnabled(SchemaAnnouncementEventType.SCHEMA_TRANSFORMATION_ANNOUNCED))
+            service.publish(new SchemaAnnouncementEvent(SchemaAnnouncementEventType.SCHEMA_TRANSFORMATION_ANNOUNCED,
+                                                        schemaDestinationEndpoints, schemaEndpointsIgnored, transformation, null));
+    }
+
+    private static boolean isEnabled(SchemaAnnouncementEventType type)
+    {
+        return service.isEnabled(SchemaAnnouncementEvent.class, type);
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.cassandra.schema;
+
+import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.apache.cassandra.net.IVerbHandler;
+import org.apache.cassandra.net.Message;
+import org.apache.cassandra.net.MessagingService;
+import org.apache.cassandra.net.NoPayload;
+
+public final class SchemaVersionVerbHandler implements IVerbHandler<NoPayload>
+{
+    public static final SchemaVersionVerbHandler instance = new SchemaVersionVerbHandler();
+
+    private final Logger logger = LoggerFactory.getLogger(SchemaVersionVerbHandler.class);
+
+    public void doVerb(Message<NoPayload> message)
+    {
+        logger.trace("Received schema version request from {}", message.from());
+        Message<UUID> response = message.responseWith(Schema.instance.getVersion());
+        MessagingService.instance().send(response, message.from());
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.cassandra.locator;
+
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.apache.cassandra.exceptions.ConfigurationException;
+import org.apache.cassandra.tcm.ClusterMetadata;
+import org.apache.cassandra.tcm.membership.Location;
+import org.apache.cassandra.utils.Sortable;
+
+public class SnitchAdapter implements InitialLocationProvider, NodeProximity, NodeAddressConfig
+{
+    public final IEndpointSnitch snitch;
+
+    public SnitchAdapter(IEndpointSnitch snitch)
+    {
+        this.snitch = snitch;
+    }
+
+    @Override
+    public Location initialLocation()
+    {
+        return new Location(snitch.getLocalDatacenter(), snitch.getLocalRack());
+    }
+
+    @Override
+    public void validate(ClusterMetadata metadata)
+    {
+        Set<String> datacenters = metadata.directory.allDatacenterRacks().keySet();
+        Set<String> racks = new HashSet<>();
+        for (String dc : datacenters)
+            racks.addAll(metadata.directory.datacenterRacks(dc).keySet());
+        if (!snitch.validate(datacenters, racks))
+            throw new ConfigurationException("Initial location provider rejected registration location, " +
+                                             "please check the system log for errors");
+    }
+
+    @Override
+    public <C extends ReplicaCollection<? extends C>> C sortedByProximity(InetAddressAndPort address, C addresses)
+    {
+        return snitch.sortedByProximity(address, addresses);
+    }
+
+    @Override
+    public int compareEndpoints(InetAddressAndPort target, Replica r1, Replica r2)
+    {
+        return snitch.compareEndpoints(target, r1, r2);
+    }
+
+    @Override
+    public boolean isWorthMergingForRangeQuery(ReplicaCollection<?> merged, ReplicaCollection<?> l1, ReplicaCollection<?> l2)
+    {
+        return snitch.isWorthMergingForRangeQuery(merged, l1, l2);
+    }
+
+    @Override
+    public void configureAddresses()
+    {
+        snitch.configureAddresses();
+    }
+
+    @Override
+    public boolean preferLocalConnections()
+    {
+        return snitch.preferLocalConnections();
+    }
+
+    @Override
+    public boolean supportCompareByEndpoint()
+    {
+        return snitch.supportCompareByEndpoint();
+    }
+
+    @Override
+    public <C extends Sortable<? extends Endpoint, ? extends C>> Comparator<Endpoint> endpointComparator(InetAddressAndPort address, C addresses)
+    {
+        return snitch.endpointComparator(address, addresses);
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.cassandra.io.util;
+
+import java.io.EOFException;
+import java.io.IOException;
+
+import org.apache.cassandra.db.TypeSizes;
+import org.apache.cassandra.utils.Throwables;
+
+/**
+ * DataInput that also stores the raw inputs into an output buffer
+ * This is useful for storing serialized buffers as they are deserialized.
+ *
+ * Note: If a non-zero limit is included it is important to for callers to check {@link #isLimitReached()}
+ * before using the tee buffer as it could be cropped.
+ */
+public class TeeDataInputPlus implements DataInputPlus
+{
+    private final DataInputPlus source;
+    private final DataOutputPlus teeBuffer;
+
+    private final long limit;
+    private boolean limitReached;
+
+    public TeeDataInputPlus(DataInputPlus source, DataOutputPlus teeBuffer)
+    {
+        this(source, teeBuffer, 0);
+    }
+
+    public TeeDataInputPlus(DataInputPlus source, DataOutputPlus teeBuffer, long limit)
+    {
+        assert source != null && teeBuffer != null;
+        this.source = source;
+        this.teeBuffer = teeBuffer;
+        this.limit = limit;
+        this.limitReached = false;
+    }
+
+    private void maybeWrite(int length, Throwables.DiscreteAction<IOException> writeAction) throws IOException
+    {
+        if (limit <= 0 || (!limitReached && (teeBuffer.position() + length) < limit))
+            writeAction.perform();
+        else
+            limitReached = true;
+    }
+
+    @Override
+    public void readFully(byte[] bytes) throws IOException
+    {
+        source.readFully(bytes);
+        maybeWrite(bytes.length, () -> teeBuffer.write(bytes));
+    }
+
+    @Override
+    public void readFully(byte[] bytes, int offset, int length) throws IOException
+    {
+        source.readFully(bytes, offset, length);
+        maybeWrite(length, () -> teeBuffer.write(bytes, offset, length));
+    }
+
+    @Override
+    public int skipBytes(int n) throws IOException
+    {
+        for (int i = 0; i < n; i++)
+        {
+            try
+            {
+                byte v = source.readByte();
+                maybeWrite(TypeSizes.BYTE_SIZE, () -> teeBuffer.writeByte(v));
+            }
+            catch (EOFException eof)
+            {
+                return i;
+            }
+        }
+        return n;
+    }
+
+    @Override
+    public boolean readBoolean() throws IOException
+    {
+        boolean v = source.readBoolean();
+        maybeWrite(TypeSizes.BOOL_SIZE, () -> teeBuffer.writeBoolean(v));
+        return v;
+    }
+
+    @Override
+    public byte readByte() throws IOException
+    {
+        byte v = source.readByte();
+        maybeWrite(TypeSizes.BYTE_SIZE, () -> teeBuffer.writeByte(v));
+        return v;
+    }
+
+    @Override
+    public int readUnsignedByte() throws IOException
+    {
+        int v = source.readUnsignedByte();
+        maybeWrite(TypeSizes.BYTE_SIZE, () -> teeBuffer.writeByte(v));
+        return v;
+    }
+
+    @Override
+    public short readShort() throws IOException
+    {
+        short v = source.readShort();
+        maybeWrite(TypeSizes.SHORT_SIZE, () -> teeBuffer.writeShort(v));
+        return v;
+    }
+
+    @Override
+    public int readUnsignedShort() throws IOException
+    {
+        int v = source.readUnsignedShort();
+        maybeWrite(TypeSizes.SHORT_SIZE, () -> teeBuffer.writeShort(v));
+        return v;
+    }
+
+    @Override
+    public char readChar() throws IOException
+    {
+        char v = source.readChar();
+        maybeWrite(TypeSizes.BYTE_SIZE, () -> teeBuffer.writeChar(v));
+        return v;
+    }
+
+    @Override
+    public int readInt() throws IOException
+    {
+        int v = source.readInt();
+        maybeWrite(TypeSizes.INT_SIZE, () -> teeBuffer.writeInt(v));
+        return v;
+    }
+
+    @Override
+    public long readLong() throws IOException
+    {
+        long v = source.readLong();
+        maybeWrite(TypeSizes.LONG_SIZE, () -> teeBuffer.writeLong(v));
+        return v;
+    }
+
+    @Override
+    public float readFloat() throws IOException
+    {
+        float v = source.readFloat();
+        maybeWrite(TypeSizes.FLOAT_SIZE, () -> teeBuffer.writeFloat(v));
+        return v;
+    }
+
+    @Override
+    public double readDouble() throws IOException
+    {
+        double v = source.readDouble();
+        maybeWrite(TypeSizes.DOUBLE_SIZE, () -> teeBuffer.writeDouble(v));
+        return v;
+    }
+
+    @Override
+    public String readLine() throws IOException
+    {
+        //This one isn't safe since we know the actual line termination type
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String readUTF() throws IOException
+    {
+        String v = source.readUTF();
+        maybeWrite(TypeSizes.sizeof(v), () -> teeBuffer.writeUTF(v));
+        return v;
+    }
+
+    @Override
+    public long readVInt() throws IOException
+    {
+        long v = source.readVInt();
+        maybeWrite(TypeSizes.sizeofVInt(v), () -> teeBuffer.writeVInt(v));
+        return v;
+    }
+
+    @Override
+    public long readUnsignedVInt() throws IOException
+    {
+        long v = source.readUnsignedVInt();
+        maybeWrite(TypeSizes.sizeofUnsignedVInt(v), () -> teeBuffer.writeUnsignedVInt(v));
+        return v;
+    }
+
+    @Override
+    public void skipBytesFully(int n) throws IOException
+    {
+        source.skipBytesFully(n);
+        maybeWrite(n, () -> {
+            for (int i = 0; i < n; i++)
+                teeBuffer.writeByte(0);
+        });
+    }
+
+    /**
+     * Used to detect if the teeBuffer hit the supplied limit.
+     * If true this means the teeBuffer does not contain the full input.
+     */
+    public boolean isLimitReached()
+    {
+        return limitReached;
+    }
 }
