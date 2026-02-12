@@ -1,0 +1,81 @@
+package ident$1.ident$2.ident$3.ident$4;
+import java.ident$7.ident$8;
+import java.ident$7.ident$9;
+import java.ident$10.ident$11;
+import java.ident$10.ident$12.ident$13;
+import ident$1.ident$2.ident$3.ident$4.ident$14.ident$15 ;
+import ident$1.ident$2.ident$3.ident$4.ident$14.ident$16.*;
+import ident$1.ident$2.ident$3.ident$17.ident$16.ident$18 ;
+public class ident$21 {
+public static ident$21 ident$23() {
+return ident$25;
+}
+public static void ident$27(ident$21 ident$28) {
+ident$25 = ident$28 ;
+}
+private static ident$21 ident$25;
+static { ident$30() ; }
+public static void ident$30() {
+ident$25 = new ident$21();
+ident$25.ident$32(ident$33.ident$34) ;
+ident$25.ident$32(ident$35.ident$36) ;
+ident$25.ident$32(ident$37.ident$38);
+ident$25.ident$32(ident$39.ident$40);
+ident$25.ident$32(ident$41.ident$42);
+ident$15.ident$43(ident$25);
+ident$25.ident$44.ident$45(float.class, ident$25.ident$44.ident$47(Float.class));
+ident$25.ident$44.ident$45(double.class, ident$25.ident$44.ident$47(Double.class));
+ident$25.ident$44.ident$45(int.class, ident$25.ident$44.ident$47(Integer.class));
+ident$25.ident$44.ident$45(long.class, ident$25.ident$44.ident$47(Long.class));
+ident$25.ident$44.ident$45(short.class, ident$25.ident$44.ident$47(Short.class));
+ident$25.ident$44.ident$45(byte.class, ident$25.ident$44.ident$47(Byte.class));
+ident$25.ident$44.ident$45(boolean.class, ident$25.ident$44.ident$47(Boolean.class));
+ident$25.ident$44.ident$45(char.class, ident$25.ident$44.ident$47(String.class));
+ident$25.ident$44.ident$45(Character.class, ident$25.ident$44.ident$47(String.class));
+ident$25.ident$44.ident$45(ident$9.class, ident$25.ident$44.ident$47(ident$8.class));
+}
+public ident$21() {
+super();
+}
+private final ident$13<String, ident$66> ident$67 = new ident$13<>();
+private final ident$13<Class<?>, ident$66> ident$44 = new ident$13<>();
+public ident$66 ident$69(final String ident$70) {
+if (ident$70 == null) {
+return null;
+}
+return ident$67.ident$73(ident$70, ident$74 -> {
+if (ident$18.ident$75) {
+return new ident$76(ident$74);
+} else {
+throw new ident$79(
+"literal$0" + ident$70);
+}
+});
+}
+public ident$66 ident$80(final String ident$70) {
+return ident$70 == null ? null : ident$67.ident$47(ident$70);
+}
+public ident$66 ident$81(final Object ident$83) {
+return ident$44.ident$47(ident$83.ident$84());
+}
+public ident$11<ident$66> ident$85() {
+return ident$67.ident$86().ident$87();
+}
+public ident$66 ident$88(final Class<?> ident$89) {
+return ident$89 == null ? null : ident$44.ident$47(ident$89);
+}
+public void ident$32(final ident$66 ident$90) {
+ident$67.ident$45(ident$90.ident$91(), ident$90);
+final Class<?> ident$92 = ident$90.ident$93();
+if (ident$92 != null) {
+ident$44.ident$45(ident$92, ident$90);
+}
+}
+public void ident$94(final ident$66 ident$90) {
+ident$67.ident$95(ident$90.ident$91());
+final Class<?> ident$92 = ident$90.ident$93();
+if (ident$92 != null) {
+ident$44.ident$95(ident$92);
+}
+}
+}

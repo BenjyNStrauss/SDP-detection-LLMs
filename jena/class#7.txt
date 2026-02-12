@@ -1,0 +1,58 @@
+package ident$1.ident$2.ident$3.ident$4.ident$5.ident$6;
+import java.ident$9.*;
+import ident$1.ident$2.ident$3.ident$10.* ;
+import ident$1.ident$2.ident$3.ident$4.ident$5.* ;
+public class ident$13 implements ident$15 {
+protected ident$17 ident$18;
+protected ident$19 ident$20;
+public ident$13( ident$17 ident$18, ident$19 ident$20 )
+{ this.ident$18 = ident$18; this.ident$20 = ident$20; }
+@Override
+public void ident$24( ident$25 ident$10, ident$26 [] ident$27 )
+{ ident$20.ident$28( ident$18.ident$29( ident$27 ) ); }
+@Override
+public void ident$30( ident$25 ident$31, ident$26 [] ident$27 )
+{ ident$20.ident$32( ident$18.ident$29( ident$27 ) ); }
+@Override
+public void ident$33( ident$25 ident$31, ident$26 ident$34 )
+{ ident$20.ident$35( ident$18.ident$36( ident$34 ) ); }
+@Override
+public void ident$37( ident$25 ident$31, ident$38<ident$26> ident$27 )
+{ ident$20.ident$28( ident$18.ident$29( ident$27 ) ); }
+@Override
+public void ident$39( ident$25 ident$31, ident$40<ident$26> ident$41 )
+{ ident$20.ident$28( ident$18.ident$29( ident$41 ) ); }
+@Override
+public void ident$42( ident$25 ident$31, ident$25 ident$43 )
+{ ident$20.ident$28( ident$18.ident$44( ident$43 ) ); }
+@Override
+public void ident$45( ident$25 ident$31, ident$40<ident$26> ident$41 )
+{ ident$20.ident$32( ident$18.ident$29( ident$41 ) ); }
+@Override
+public void ident$46( ident$25 ident$31, ident$26 ident$34 )
+{ ident$20.ident$47( ident$18.ident$36( ident$34 ) ); }
+public void ident$39( ident$25 ident$31, ident$38<ident$26> ident$27 )
+{ ident$20.ident$28( ident$18.ident$29( ident$27 ) ); }
+@Override
+public void ident$48( ident$25 ident$31, ident$38<ident$26> ident$27 )
+{ ident$20.ident$32( ident$18.ident$29( ident$27 ) ); }
+@Override
+public void ident$49( ident$25 ident$31, ident$25 ident$50 )
+{ ident$20.ident$32( ident$18.ident$44( ident$50 ) ); }
+@Override
+public void ident$51( ident$25 ident$31, Object ident$53 )
+{ ident$20.ident$51( ident$18, ident$53 ); }
+@Override
+public int ident$55() {
+return ident$57.ident$58(ident$20, ident$18);
+}
+@Override
+public boolean ident$60(Object ident$61) {
+if ( this == ident$61 )
+return ident$63;
+if ( !(ident$61 instanceof ident$13) )
+return ident$65;
+ident$13 ident$66 = (ident$13)ident$61;
+return ident$57.ident$60(ident$20, ident$66.ident$20) && ident$57.ident$60(ident$18, ident$66.ident$18);
+}
+}

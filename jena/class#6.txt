@@ -1,0 +1,61 @@
+package ident$1.ident$2.ident$3.ident$4;
+import java.ident$7.ident$8;
+import java.ident$7.ident$9.ident$10;
+import ident$1.ident$2.ident$3.ident$11.ident$12.ident$13;
+import ident$1.ident$2.ident$3.ident$4.ident$14.ident$15;
+import ident$1.ident$2.ident$3.ident$4.ident$14.ident$16 ;
+import ident$1.ident$2.ident$3.ident$17.ident$18 ;
+import ident$1.ident$2.ident$3.ident$17.ident$19 ;
+import ident$1.ident$2.ident$3.ident$17.ident$20 ;
+import ident$1.ident$2.ident$3.ident$7.ident$12.ident$21 ;
+import ident$1.ident$2.ident$3.ident$7.ident$12.ident$22 ;
+public interface ident$25 {
+public static final ident$25 ident$28 = new ident$16() {
+@Override
+public ident$21<ident$31> ident$32(ident$31 ident$33) {
+return ident$22.ident$35();
+}
+};
+@Deprecated(ident$37 = ident$38)
+boolean ident$40( ident$25 ident$41 );
+ident$42 ident$43();
+@Deprecated(ident$37 = ident$38)
+default ident$45 ident$46() {
+return ident$15.ident$47;
+}
+ident$48 ident$49();
+ident$20 ident$50();
+void ident$52( ident$31 ident$53 ) throws ident$18;
+default void ident$52(ident$55 ident$56, ident$55 ident$57, ident$55 ident$58) throws ident$18 {
+ident$8.ident$59(ident$56, "literal$0");
+ident$8.ident$59(ident$57, "literal$1");
+ident$8.ident$59(ident$58, "literal$2");
+ident$52(ident$31.ident$60(ident$56, ident$57, ident$58));
+}
+void ident$61(ident$31 ident$53) throws ident$19;
+default void ident$61(ident$55 ident$56, ident$55 ident$57, ident$55 ident$58) throws ident$19 {
+ident$8.ident$59(ident$56, "literal$0");
+ident$8.ident$59(ident$57, "literal$1");
+ident$8.ident$59(ident$58, "literal$2");
+ident$61(ident$31.ident$60(ident$56, ident$57, ident$58));
+}
+ident$21<ident$31> ident$62(ident$31 ident$63);
+ident$21<ident$31> ident$62(ident$55 ident$56, ident$55 ident$57, ident$55 ident$58);
+default ident$10<ident$31> ident$9(ident$55 ident$56, ident$55 ident$57, ident$55 ident$58) {
+return ident$13.ident$64(ident$62(ident$56,ident$57,ident$58));
+}
+default ident$10<ident$31> ident$9() {
+return ident$9(ident$55.ident$65, ident$55.ident$65, ident$55.ident$65);
+}
+default ident$21<ident$31> ident$62() { return ident$62(ident$55.ident$65, ident$55.ident$65, ident$55.ident$65); }
+boolean ident$66(ident$25 ident$67);
+boolean ident$68( ident$55 ident$56, ident$55 ident$57, ident$55 ident$58 );
+boolean ident$68( ident$31 ident$53 );
+void ident$69();
+void ident$70( ident$55 ident$56, ident$55 ident$57, ident$55 ident$58 );
+void ident$71();
+boolean ident$72();
+int ident$74();
+default long ident$76() { return ident$74(); }
+boolean ident$77();
+}

@@ -1,0 +1,65 @@
+package ident$1.ident$2.ident$3.ident$4;
+import ident$1.ident$2.ident$3.ident$6.* ;
+import ident$1.ident$2.ident$3.ident$7.ident$8.* ;
+public class ident$11 {
+public static final String ident$15="literal$0";
+protected static final ident$17 ident$18( String ident$19 )
+{ return ident$21.ident$22( ident$15 + ident$19 ); }
+protected static final ident$23 ident$24( String ident$19 )
+{ return ident$21.ident$25( ident$15, ident$19 ); }
+public static final ident$17 Class = ident$27.Class();
+public static final ident$17 ident$28 = ident$27.ident$28();
+public static final ident$17 ident$29 = ident$27.ident$29();
+public static final ident$17 ident$30 = ident$27.ident$30();
+public static final ident$17 ident$31 = ident$27.ident$31();
+public static final ident$17 ident$17 = ident$27.ident$17();
+public static final ident$23 ident$32 = ident$27.ident$32();
+public static final ident$23 ident$33 = ident$27.ident$33();
+public static final ident$23 ident$34 = ident$27.ident$34();
+public static final ident$23 ident$35 = ident$27.ident$35();
+public static final ident$23 ident$36 = ident$27.ident$36();
+public static final ident$23 ident$37 = ident$27.ident$37();
+public static final ident$23 ident$38 = ident$27.ident$38();
+public static final ident$23 ident$39 = ident$27.ident$39();
+public static final ident$23 ident$40 = ident$27.ident$40();
+public static class ident$27 {
+public static ident$17 Class() { return ident$18( "literal$1"); }
+public static ident$17 ident$28() { return ident$18( "literal$2"); }
+public static ident$17 ident$29 () { return ident$18( "literal$3"); }
+public static ident$17 ident$30()
+{ return ident$18( "literal$4"); }
+public static ident$17 ident$31() { return ident$18( "literal$5"); }
+public static ident$17 ident$17() { return ident$18( "literal$6"); }
+public static ident$23 ident$32() { return ident$24( "literal$7"); }
+public static ident$23 ident$33() { return ident$24( "literal$8"); }
+public static ident$23 ident$34() { return ident$24( "literal$9"); }
+public static ident$23 ident$35() { return ident$24( "literal$10"); }
+public static ident$23 ident$36() { return ident$24( "literal$11"); }
+public static ident$23 ident$37() { return ident$24( "literal$12"); }
+public static ident$23 ident$38 () { return ident$24( "literal$13"); }
+public static ident$23 ident$39 () { return ident$24( "literal$14"); }
+public static ident$23 ident$40 () { return ident$24( "literal$15"); }
+}
+@SuppressWarnings("literal$16") public static class ident$42
+{
+public static final ident$43 Class = ident$27.Class().ident$44();
+public static final ident$43 ident$28 = ident$27.ident$28().ident$44();
+public static final ident$43 ident$29 = ident$27.ident$29().ident$44();
+public static final ident$43 ident$30
+= ident$27.ident$30().ident$44();
+public static final ident$43 ident$31 = ident$27.ident$31().ident$44();
+public static final ident$43 ident$17 = ident$27.ident$17().ident$44();
+public static final ident$43 ident$32 = ident$27.ident$32().ident$44();
+public static final ident$43 ident$33 = ident$27.ident$33().ident$44();
+public static final ident$43 ident$34 = ident$27.ident$34().ident$44();
+public static final ident$43 ident$35 = ident$27.ident$35().ident$44();
+public static final ident$43 ident$36 = ident$27.ident$36().ident$44();
+public static final ident$43 ident$37 = ident$27.ident$37().ident$44();
+public static final ident$43 ident$38 = ident$27.ident$38().ident$44();
+public static final ident$43 ident$39 = ident$27.ident$39().ident$44();
+public static final ident$43 ident$40 = ident$27.ident$40().ident$44();
+}
+public static String ident$45() {
+return ident$15;
+}
+}

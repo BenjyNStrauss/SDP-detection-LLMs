@@ -1,0 +1,1251 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.jena.util;
+
+import java.util.*;
+
+/**
+    CollectionFactory - a central place for allocating sets and maps, mostly so that
+    it's easy to plug in new implementations (eg trove).
+*/
+public class CollectionFactory
+    {
+    /**
+         Answer a new Map which uses hashing for lookup.
+    */
+    public static <K,V> Map<K,V> createHashedMap()
+        { return new HashMap<>(); }
+
+    /**
+         Answer a new Map which uses hashing for lookup and has initial size
+         <code>size</code>.
+    */
+    public static <K,V> Map<K,V> createHashedMap( int size )
+        { return new HashMap<>( size ); }
+
+    /**
+         Answer a new Map which uses hashing for lookup and is initialised to be
+         a copy of <code>toCopy</code>.
+    */
+    public static <K,V> Map<K,V> createHashedMap( Map<K,V> toCopy )
+        { return new HashMap<>( toCopy ); }
+
+    /**
+         Answer a new Set which uses haashing for lookup.
+    */
+    public static <T> Set<T> createHashedSet()
+        { return new HashSet<>(); }
+
+    /**
+         Answer a new Set which uses hashing for lookup and is initialised as a copy
+         of <code>toCopy</code>.
+    */
+    public static <T> Set<T> createHashedSet( Collection<T> toCopy )
+        { return new HashSet<>( toCopy ); }
+    }
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.jena.graph;
+
+import java.util.Objects;
+import java.util.stream.Stream;
+
+import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.graph.impl.AllCapabilities;
+import org.apache.jena.graph.impl.GraphBase ;
+import org.apache.jena.shared.AddDeniedException ;
+import org.apache.jena.shared.DeleteDeniedException ;
+import org.apache.jena.shared.PrefixMapping ;
+import org.apache.jena.util.iterator.ExtendedIterator ;
+import org.apache.jena.util.iterator.NullIterator ;
+
+/**
+    The interface to be satisfied by implementations maintaining collections
+    of RDF triples. The core interface is small (add, delete, find, contains) and
+    is augmented by additional classes to handle more complicated matters
+    such as event management.
+    The good practice is to explicitly close every {@link ExtendedIterator} and {@link Stream} produced by the {@code Graph}
+    right after query operation.
+    Depending on the implementation,
+    the iterator and stream may throw a {@link java.util.ConcurrentModificationException}
+    if continued with it after modification operation.
+    This may happen even if the queried data does not relate directly to the modified data
+    (i.e. when triple search pattern does not match added or deleted triple).
+    A {@link ExtendedIterator} and {@link Stream} should be operated on
+    (invoking materializing {@code ExtendedIterator} or terminal {@code Stream} operation) only once;
+    in general reusable are not allowed and may lead to an exception.
+
+    @see GraphBase for an implementation framework.
+*/
+public interface Graph {
+    /**
+        An immutable empty graph.
+    */
+    public static final Graph emptyGraph = new GraphBase() {
+        @Override
+        public ExtendedIterator<Triple> graphBaseFind(Triple tm) {
+            return NullIterator.instance();
+        }
+    };
+
+    /**
+        true if this graph's content depends on the other graph. May be
+        pessimistic (i.e. return true if it's not sure). Typically true when a
+        graph is a composition of other graphs, eg union.
+
+        @param other the graph this graph may depend on
+        @return false if this does not depend on other
+        @deprecated To be removed.
+    */
+    @Deprecated(forRemoval = true)
+    boolean dependsOn( Graph other );
+
+    /** returns this Graph's transaction handler */
+    TransactionHandler getTransactionHandler();
+
+    /**
+     * returns this Graph's capabilities
+     * @deprecated To be removed.
+     */
+    @Deprecated(forRemoval = true)
+    default Capabilities getCapabilities() {
+        return AllCapabilities.updateAllowed;
+    }
+
+    /**
+        Answer this Graph's event manager.
+    */
+    GraphEventManager getEventManager();
+
+    /**
+        returns this Graph's prefix mapping. Each call on a given Graph gets the
+        same PrefixMapping object, which is the one used by the Graph.
+    */
+    PrefixMapping getPrefixMapping();
+
+    /**
+        Add the triple t (if possible) to the set belonging to this graph
+        @param t the triple to add to the graph
+        @throws AddDeniedException if the triple cannot be added
+     */
+    void add( Triple t ) throws AddDeniedException;
+
+    /**
+     * Add the triple comprised of s,p,o to the set belonging to this graph
+     *
+     * @throws AddDeniedException if the triple cannot be added
+     */
+    default void add(Node s, Node p, Node o) throws AddDeniedException {
+        Objects.requireNonNull(s, "Subject must not be null");
+        Objects.requireNonNull(p, "Predicate must not be null");
+        Objects.requireNonNull(o, "Object must not be null");
+        add(Triple.create(s, p, o));
+    }
+
+    /**
+        Delete the triple t (if possible) from the set belonging to this graph
+
+        @param  t the triple to delete to the graph
+        @throws DeleteDeniedException if the triple cannot be removed
+    */
+	void delete(Triple t) throws DeleteDeniedException;
+
+    /**
+     * Delete the triple comprised of s,p,o from the set belonging to this graph
+     *
+     * @throws AddDeniedException if the triple cannot be added
+     */
+    default void delete(Node s, Node p, Node o) throws DeleteDeniedException {
+        Objects.requireNonNull(s, "Subject must not be null");
+        Objects.requireNonNull(p, "Predicate must not be null");
+        Objects.requireNonNull(o, "Object must not be null");
+        delete(Triple.create(s, p, o));
+    }
+
+	/**
+        Returns an iterator over all the Triples that match the triple pattern.
+
+        @param m a Triple encoding the pattern to look for
+        @return an iterator of all triples in this graph that match m
+	 */
+	ExtendedIterator<Triple> find(Triple m);
+
+	/** Returns an iterator over Triples matching a pattern.
+     *
+     * @return an iterator of triples in this graph matching the pattern.
+	 */
+	ExtendedIterator<Triple> find(Node s, Node p, Node o);
+
+	/** Returns a {@link Stream} of Triples matching a pattern.
+	 *
+	 * @return a stream  of triples in this graph matching the pattern.
+	 */
+	default Stream<Triple> stream(Node s, Node p, Node o) {
+	    return Iter.asStream(find(s,p,o));
+	}
+
+	/** Returns a {@link Stream} of all triples in the graph.
+	 *
+	 * @return a stream  of triples in this graph.
+	 */
+	default Stream<Triple> stream() {
+	    return stream(Node.ANY, Node.ANY, Node.ANY);
+	}
+
+	/** Returns an iterator over all Triples in the graph.
+     * Equivalent to {@code find(Node.ANY, Node.ANY, Node.ANY)}
+     *
+     * @return an iterator of all triples in this graph
+     */
+    default ExtendedIterator<Triple> find() { return find(Node.ANY, Node.ANY, Node.ANY); }
+
+    /**
+	 * Compare this graph with another using the method
+	 * described in
+	 * <a href="http://www.w3.org/TR/rdf-concepts#section-Graph-syntax">
+     * http://www.w3.org/TR/rdf-concepts#section-Graph-syntax
+     * </a>
+     *
+     * Note: this implementation does not handle correctly blank nodes in
+     * quoted triples (RDF-star). If you need to work with RDF-star,
+     * use the slower implementation in
+     * {@code org.apache.jena.sparql.util.IsoMatcher}.
+     *
+	 * @param g Compare against this.
+	 * @return boolean True if the two graphs are isomorphic.
+	 */
+	boolean isIsomorphicWith(Graph g);
+
+    /**
+        Answer true iff the graph contains a triple matching (s, p, o).
+        s/p/o may be concrete or fluid. Equivalent to find(s,p,o).hasNext,
+        but an implementation is expected to optimise this in easy cases.
+    */
+    boolean contains( Node s, Node p, Node o );
+
+    /**
+        Answer true iff the graph contains a triple that t matches; t may be
+        fluid.
+    */
+    boolean contains( Triple t );
+
+    /**
+        Remove all the statements from this graph.
+    */
+    void clear();
+
+    /**
+       Remove all triples that match by find(s, p, o)
+    */
+    void remove( Node s, Node p, Node o );
+
+	/** Free all resources, any further use of this Graph is an error.
+	 */
+	void close();
+
+    /**
+        Answer true iff this graph is empty. "Empty" means "has as few triples as it
+        can manage", because an inference graph may have irremovable axioms
+        and their consequences.
+    */
+    boolean isEmpty();
+
+    /**
+     * For a concrete graph, this returns the number of triples in the graph. For graphs which
+     * might infer additional triples it results an estimated lower bound of the number of triples.
+     * For example, an inference graph might return the number of triples in the raw data graph.
+     *
+     * @see #sizeLong
+     */
+	 int size();
+
+	 /**
+	  * For a concrete graph, this returns the number of triples in the graph. For graphs which
+	  * might infer additional triples it results an estimated lower bound of the number of triples.
+	  * For example, an inference graph might return the number of triples in the raw data graph.
+	  * This method returns a long.
+	  */
+	 default long sizeLong() { return size(); }
+
+    /**
+        Answer true iff .close() has been called on this Graph.
+    */
+    boolean isClosed();
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.jena.langtagx;
+
+import org.apache.jena.langtag.LangTag;
+import org.apache.jena.langtag.LangTagException;
+import org.apache.jena.langtag.LangTags;
+import org.apache.jena.shared.JenaException;
+
+/**
+ * This class defined the Jena side policies for language tags and maps operations to
+ * {@link org.apache.jena.langtag.LangTags}.
+ */
+public class LangTagX {
+
+    /**
+     * Create a {@link LangTag} object, using the Jena system default
+     * implementation of the {@code LangTag} interface.
+     * The string must conform to the syntax defined in rules and syntax in
+     * <a href="https://datatracker.ietf.org/doc/html/rfc5646">RFC 5646</a>
+     */
+    public static LangTag createLanguageTag(String langTagStr) {
+        try {
+            return org.apache.jena.langtag.LangTags.create(langTagStr);
+        } catch (LangTagException ex) {
+            throw convertException(ex);
+        }
+    }
+
+    /*package*/ static final boolean legacyLangTag = false;
+    /**
+     * Prepare the language tag - apply formatting normalization, and always return a string.
+     * If the input is invalid as a language tag, return the input as-is.
+     * @throws JenaException on an all blank string.
+     */
+    public static String formatLanguageTag(String langTagStr) {
+        if ( langTagStr == null )
+            return langTagStr;
+        if ( legacyLangTag )
+            return langTagStr;
+        if ( langTagStr.isEmpty() )
+            return langTagStr;
+        try {
+            return LangTags.format(langTagStr);
+        } catch (LangTagException ex) {
+            if ( langTagStr.isBlank() )
+                throw new JenaException("Language tag string is all white space");
+            // Bad language tag. e.g. over long primary language or subtags.
+            // Apply a more basic formatting - split into segments and
+            // apply the subtag length rules.
+            try {
+                return LangTags.basicFormat(langTagStr);
+            } catch (LangTagException ex2) {
+                // Very bad
+                return langTagStr;
+            }
+        }
+    }
+
+    /** @deprecated Use {@link #formatLanguageTag(String)} */
+    @Deprecated(forRemoval = true)
+    public static String canonical(String langTagStr) {
+        // Only for transition support.
+        return formatLanguageTag(langTagStr);
+    }
+
+    /**
+     * Check a string is valid as a language tag.
+     * This function returns true or false and does not throw an exception.
+     */
+    public static boolean checkLanguageTag(String langTagStr) {
+        return org.apache.jena.langtag.LangTags.check(langTagStr);
+    }
+
+    /**
+     * Check a language tag string meets the Turtle(etc) and SPARQL grammar rule
+     * for a language tag without initial text direction.
+     * <p>
+     * Passing this test does not guarantee the string is valid language tag. Use
+     * {@link LangTagX#checkLanguageTag(String)} for validity checking.
+     *
+     * @returns true or false
+     */
+    public static boolean checkLanguageTagBasicSyntax(String langTagStr) {
+        return org.apache.jena.langtag.LangTags.basicCheck(langTagStr);
+    }
+
+    /**
+     * Check a string is valid as a language tag.
+     * Throw a {@link JenaException} if it is not valid.
+     */
+    public static void requireValidLanguageTag(String langTagStr) {
+        try {
+            org.apache.jena.langtag.LangTags.requireValid(langTagStr);
+        } catch (LangTagException ex)  {
+            throw convertException(ex);
+        }
+    }
+
+    /** Is @code{langTagStr1} the same language tag as @code{langTagStr2}? */
+    public static boolean sameLanguageTagAs(String langTagStr1, String langTagStr2) {
+        requireValidLanguageTag(langTagStr1);
+        requireValidLanguageTag(langTagStr2);
+        return langTagStr1.equalsIgnoreCase(langTagStr2);
+    }
+
+    private static JenaException convertException(LangTagException ex) {
+        return new JenaException(ex.getMessage());
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.jena.riot.system.stream;
+
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.atlas.web.TypedInputStream;
+import org.apache.jena.irix.IRIs;
+import org.slf4j.Logger;
+
+public abstract class LocatorURL implements Locator
+{
+    private final String[] schemeNames;
+
+    protected LocatorURL(String[] sNames) {
+        schemeNames = sNames;
+    }
+
+    protected abstract Logger log();
+
+    @Override
+    public TypedInputStream open(String uri) {
+        if ( ! acceptByScheme(uri) ) {
+            if ( StreamManager.logAllLookups && log().isTraceEnabled() )
+                log().trace("Not found : "+uri);
+            return null;
+        }
+        return performOpen(uri);
+    }
+
+    protected abstract TypedInputStream performOpen(String uri);
+
+    protected boolean acceptByScheme(String filenameOrURI) {
+        String uriSchemeName = IRIs.scheme(filenameOrURI);
+        if ( uriSchemeName == null )
+            return false;
+        uriSchemeName = Lib.lowercase(uriSchemeName);
+        for ( String schemeName : schemeNames )
+        {
+            if ( uriSchemeName.equals( schemeName ) )
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public abstract int hashCode();
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        return getClass() == obj.getClass();
+    }
+}
+
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.jena.rdf.model.impl;
+
+import java.util.*;
+
+import org.apache.jena.graph.* ;
+import org.apache.jena.rdf.model.* ;
+
+/**
+    Adapter class that converts a ModelChangedListener into a GraphListener.
+    The only tricky bit is that we have to implement equality as equality of the
+    underlying ModelChangedListeners/ModelCom pairs.
+<p>
+    This implementation only works for <code>ModelCom</code> models,
+    because it relies on various service methods; this gives the model the
+    opportunity to cache various mappings for efficiency.
+*/
+public class ModelListenerAdapter implements GraphListener {
+    protected ModelCom m;
+    protected ModelChangedListener L;
+
+    public ModelListenerAdapter( ModelCom m, ModelChangedListener L )
+        { this.m = m; this.L = L; }
+
+    @Override
+    public void notifyAddArray( Graph graph, Triple [] triples )
+        { L.addedStatements( m.asStatements( triples ) ); }
+
+    @Override
+    public void notifyDeleteArray( Graph g, Triple [] triples )
+        { L.removedStatements( m.asStatements( triples ) ); }
+
+    @Override
+    public void notifyAddTriple( Graph g, Triple t )
+        { L.addedStatement( m.asStatement( t ) ); }
+
+    @Override
+    public void notifyAddList( Graph g, List<Triple> triples )
+        { L.addedStatements( m.asStatements( triples ) ); }
+
+    @Override
+    public void notifyAddIterator( Graph g, Iterator<Triple> it )
+        { L.addedStatements( m.asStatements( it ) ); }
+
+    @Override
+    public void notifyAddGraph( Graph g, Graph added )
+        { L.addedStatements( m.asModel( added ) ); }
+
+    @Override
+    public void notifyDeleteIterator( Graph g, Iterator<Triple> it )
+        { L.removedStatements( m.asStatements( it ) ); }
+
+    @Override
+    public void notifyDeleteTriple( Graph g, Triple t )
+        { L.removedStatement( m.asStatement( t ) ); }
+
+    public void notifyAddIterator( Graph g, List<Triple> triples )
+        { L.addedStatements( m.asStatements( triples ) ); }
+
+    @Override
+    public void notifyDeleteList( Graph g, List<Triple> triples )
+        { L.removedStatements( m.asStatements( triples ) ); }
+
+    @Override
+    public void notifyDeleteGraph( Graph g, Graph removed )
+        { L.removedStatements( m.asModel( removed ) ); }
+
+    @Override
+    public void notifyEvent( Graph g, Object event )
+        { L.notifyEvent( m, event ); }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(L, m);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true;
+        if ( !(obj instanceof ModelListenerAdapter) )
+            return false;
+        ModelListenerAdapter other = (ModelListenerAdapter)obj;
+        return Objects.equals(L, other.L) && Objects.equals(m, other.m);
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.jena.vocabulary;
+
+import org.apache.jena.graph.* ;
+import org.apache.jena.rdf.model.* ;
+
+/**
+    RDFS vocabulary items
+ */
+public class RDFS {
+
+    /**
+     * The namespace of the vocabulary as a string
+     */
+    public static final String uri="http://www.w3.org/2000/01/rdf-schema#";
+
+    protected static final Resource resource( String local )
+        { return ResourceFactory.createResource( uri + local ); }
+
+    protected static final Property property( String local )
+        { return ResourceFactory.createProperty( uri, local ); }
+
+    public static final Resource Class          = Init.Class();
+    public static final Resource Datatype       = Init.Datatype();
+    
+    public static final Resource Container      = Init.Container();
+    
+    public static final Resource ContainerMembershipProperty = Init.ContainerMembershipProperty();
+    
+    public static final Resource Literal        = Init.Literal();
+    public static final Resource Resource       = Init.Resource();
+
+    public static final Property comment        = Init.comment();
+    public static final Property domain         = Init.domain();
+    public static final Property label          = Init.label();
+    public static final Property isDefinedBy    = Init.isDefinedBy();
+    public static final Property range          = Init.range();
+    public static final Property seeAlso        = Init.seeAlso();
+    public static final Property subClassOf     = Init.subClassOf();
+    public static final Property subPropertyOf  = Init.subPropertyOf();
+    public static final Property member         = Init.member();
+
+    /** RDFS constants are used during Jena initialization.
+     * <p>
+     * If that initialization is triggered by touching the RDFS class,
+     * then the constants are null.
+     * <p>
+     * So for these cases, call this helper class: Init.function()   
+     */
+    public static class Init {
+        public static Resource Class()          { return resource( "Class"); }
+        public static Resource Datatype()       { return resource( "Datatype"); }
+        public static Resource Container ()     { return resource( "Container"); }
+        public static Resource ContainerMembershipProperty()
+                                                { return resource( "ContainerMembershipProperty");   }
+        public static Resource Literal()        { return resource( "Literal"); }
+        public static Resource Resource()       { return resource( "Resource"); }
+        public static Property comment()        { return property( "comment"); }
+        public static Property domain()         { return property( "domain"); }
+        public static Property label()          { return property( "label"); }
+        public static Property isDefinedBy()    { return property( "isDefinedBy"); }
+        public static Property range()          { return property( "range"); }
+        public static Property seeAlso()        { return property( "seeAlso"); }
+        public static Property subClassOf ()    { return property( "subClassOf"); }
+        public static Property subPropertyOf () { return property( "subPropertyOf"); }
+        public static Property member ()        { return property( "member"); }
+    }
+    
+    /**
+        The RDFS vocabulary, expressed for the SPI layer in terms of .graph Nodes.
+    */
+    @SuppressWarnings("hiding") public static class Nodes
+        {
+        public static final Node Class          = Init.Class().asNode();
+        public static final Node Datatype       = Init.Datatype().asNode();
+        public static final Node Container      = Init.Container().asNode();
+        public static final Node ContainerMembershipProperty
+                                                = Init.ContainerMembershipProperty().asNode();
+        public static final Node Literal        = Init.Literal().asNode();
+        public static final Node Resource       = Init.Resource().asNode();
+        public static final Node comment        = Init.comment().asNode();
+        public static final Node domain         = Init.domain().asNode();
+        public static final Node label          = Init.label().asNode();
+        public static final Node isDefinedBy    = Init.isDefinedBy().asNode();
+        public static final Node range          = Init.range().asNode();
+        public static final Node seeAlso        = Init.seeAlso().asNode();
+        public static final Node subClassOf     = Init.subClassOf().asNode();
+        public static final Node subPropertyOf  = Init.subPropertyOf().asNode();
+        public static final Node member         = Init.member().asNode();
+        }
+
+    /**
+        returns the URI for this schema
+        @return the URI for this schema
+    */
+    public static String getURI() {
+        return uri;
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.jena.vocabulary;
+
+import org.apache.jena.rdf.model.* ;
+import org.apache.jena.reasoner.ReasonerRegistry ;
+import org.apache.jena.reasoner.rulesys.RDFSRuleReasoner ;
+
+/**
+ * A collection of RDF terms used in driving or configuring some of the
+ * builtin reasoners.
+ */
+public class ReasonerVocabulary {
+    
+    /** The namespace used for system level descriptive properties of any reasoner */
+    public static final String JenaReasonerNS = "http://jena.hpl.hp.com/2003/JenaReasoner#";
+    
+    /** The RDF class to which all Reasoners belong */
+    public static final Resource ReasonerClass = ResourceFactory.createResource(JenaReasonerNS + "ReasonerClass");
+    
+    /** Reasoner description property: name of the reasoner */
+    public static final Property nameP = jenaReasonerProperty( "name" );
+    
+    /** Reasoner description property: text description of the reasoner */
+    public static final Property descriptionP = jenaReasonerProperty( "description" );
+    
+    /** Reasoner description property: version of the reasoner */
+    public static final Property versionP = jenaReasonerProperty( "version" );
+    
+    /** Reasoner description property: a schema property supported by the reasoner */
+    public static final Property supportsP = jenaReasonerProperty( "supports" );
+    
+    /** Reasoner description property: a configuration property supported by the reasoner */
+    public static final Property configurationP = jenaReasonerProperty( "configurationProperty" );
+
+    /** A faux property used in reasoner capabilty models to denote reasoners that infer that individuals have rdf:type owl:Thing (or daml:Thing) */
+    public static final Property individualAsThingP = jenaReasonerProperty( "individualAsThing" ); 
+
+    /** The property that represents the direct/minimal version of the subClassOf relationship */
+    public static final Property directSubClassOf = makeDirect( RDFS.subClassOf ); 
+
+    /** The property that represents the direct/minimal version of the subPropertyOf relationship */
+    public static final Property directSubPropertyOf = makeDirect( RDFS.subPropertyOf ); 
+
+    /** The property that represents the direct/minimal version of the rdf:type relationship */
+    public static final Property directRDFType = makeDirect( RDF.type ); 
+    
+    /** Base URI used for configuration properties for rule reasoners */
+    public static final String PropURI = "http://jena.hpl.hp.com/2003/RuleReasoner";
+
+    /** Property used to configure the derivation logging behaviour of a reasoner.
+     *  Set to "true" to enable logging of derivations. */
+    public static final Property PROPderivationLogging = ruleReasonerProperty( "derivationLogging" );
+
+    /** Property used to configure the tracing behaviour of a reasoner.
+     *  Set to "true" to enable internal trace message to be sent to Logger.info . */
+    public static final Property PROPtraceOn = ruleReasonerProperty( "traceOn" );
+
+    /** Property used to set the mode of a generic rule reasoner.
+     *  Valid values are the strings "forward", "backward" or "hybrid" */
+    public static final Property PROPruleMode = ruleReasonerProperty( "ruleMode" );
+    
+    /** Property used to attach a file a rules to a generic rule reasoner.
+     *  Value should a URI giving the rule set to use. */
+    public static final Property PROPruleSet = ruleReasonerProperty( "ruleSet" );
+    
+    /** Property used to switch on/off OWL schema translation on a generic rule reasoner.
+     *  Value should be "true" to enable OWL translation */
+    public static final Property PROPenableOWLTranslation = ruleReasonerProperty( "enableOWLTranslation" );
+    
+    /** Property used to switch on/off use of the dedicated subclass/subproperty
+     *  caching in a generic rule reasoner. Set to "true" to enable caching. */
+    public static final Property PROPenableTGCCaching = ruleReasonerProperty( "enableTGCCaching" );
+    
+    /** Property used to switch on/off scanning of data for container membership
+     * properties in RDFS preprocessing. */
+    public static final Property PROPenableCMPScan = ruleReasonerProperty( "enableCMPScan" );
+    
+    /** Property used to switch to different RDFS processing levles. The
+     * legal levels are "default", "simple", and "full". */
+    public static final Property PROPsetRDFSLevel = ruleReasonerProperty( "setRDFSLevel" );
+    
+    /** Property used to switch on/off filtering of functors from returned results
+     *  in the generic rule engine. Default is filtering on. */
+    public static final Property PROPenableFunctorFiltering = ruleReasonerProperty( "enableFunctorFiltering" );
+    
+    /** Constant for PROPsetRDFSLevel - default behaviour */
+    public static final String RDFS_DEFAULT = RDFSRuleReasoner.DEFAULT_RULES;
+    
+    /** Constant for PROPsetRDFSLevel - fullest implementation supported. */
+    public static final String RDFS_FULL = RDFSRuleReasoner.FULL_RULES;
+    
+    /** Constant for PROPsetRDFSLevel - simplified, higher performance rules. */
+    public static final String RDFS_SIMPLE = RDFSRuleReasoner.SIMPLE_RULES;    
+
+    /** A namespace used for Rubrik specific properties */
+    public static final String RBNamespace = "urn:x-hp-jena:rubrik/";
+
+    /** Property used to switch on validation in owl ruleset */
+    public static final Property RB_VALIDATION = ResourceFactory.createProperty(RBNamespace, "validation");
+
+    /** Property used for validation reports in owl ruleset */
+    public static final Property RB_VALIDATION_REPORT = ResourceFactory.createProperty(RBNamespace, "violation");
+    
+                
+    /** Property to denote the URL of an external reasoner. Default is http://localhost:8081 */
+    public static final Property EXT_REASONER_URL = ResourceFactory.createProperty( JenaReasonerNS, "extReasonerURL" );
+    
+    /** Property to denote the ontology language (OWL, DAML, RDFS) an external reasoner will process. 
+     *  Values are URI's, see {@link org.apache.jena.ontology.ProfileRegistry}. Default is OWL. */
+    public static final Property EXT_REASONER_ONT_LANG = ResourceFactory.createProperty( JenaReasonerNS, "extReasonerOntologyLang" );
+    
+    /** Property to denote the axioms file that the reasoner will use for background knowledge. 
+     *  Values are URL's. Default is no axioms. */
+    public static final Property EXT_REASONER_AXIOMS = ResourceFactory.createProperty( JenaReasonerNS, "extReasonerAxioms" );
+
+    /**
+        Property of a GRR config with object a node with rule set properties.
+    */
+    public static final Property ruleSet = jenaReasonerProperty( "ruleSet" );
+
+    /**
+        Property of a GRR config with object a resource who's URI is the URL
+        of a Jena rules text.
+    */
+    public static final Property ruleSetURL = jenaReasonerProperty( "ruleSetURL" );
+
+    /**
+        Property of a GRR rule-set config that specifies a rule as a string in the
+        Jena rules language.
+    */
+    public static final Property hasRule = jenaReasonerProperty( "hasRule" );
+
+    /**
+        Property of a reasoner that specifies the URL of a schema to load.
+    */
+    public static final Property schemaURL = jenaReasonerProperty( "schemaURL" );
+    
+    protected static final Property jenaReasonerProperty( String localName )
+        { return ResourceFactory.createProperty( JenaReasonerNS, localName ); }
+
+    protected static final Property ruleReasonerProperty( String localName )
+        { return ResourceFactory.createProperty( PropURI + "#" + localName ); }
+
+    /**
+        compact call to ReasonerRegistry.makeDirect
+    */
+    private static final Property makeDirect( Property type )
+        { return ResourceFactory.createProperty( ReasonerRegistry.makeDirect( type.asNode().getURI() ) ); }
+
+    //  --------------------------------------------------------------------
+// Method versions of key namespaces which are more initializer friendly
+
+
+    /** Return namespace used for Rubric specific properties */
+    public static final String getRBNamespace() {
+        return RBNamespace;
+    }
+    
+    /** Return namespace used for system level descriptive properties of any reasoner */
+    public static final String getJenaReasonerNS() {
+        return JenaReasonerNS;
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.jena.ext.xerces.impl.dv;
+
+import org.apache.jena.ext.xerces.util.SymbolHash;
+
+/**
+ * Defines a factory API that enables applications to <p>
+ * 1. to get the instance of specified SchemaDVFactory implementation <p>
+ * 2. to create/return built-in schema simple types <p>
+ * 3. to create user defined simple types. <p>
+ *
+ * Implementations of this abstract class can be used to get built-in simple
+ * types and create user-defined simle types. <p>
+ *
+ * The implementation should store the built-in datatypes in static data, so
+ * that they can be shared by multiple parser instance, and multiple threads.
+ * 
+ * {@literal @xerces.internal} 
+ *
+ * @author Sandy Gao, IBM
+ *
+ * @version $Id: SchemaDVFactory.java 558582 2007-07-23 02:05:04Z mrglavas $
+ */
+public abstract class SchemaDVFactory {
+    
+    // JENA-1670
+    //private static final String DEFAULT_FACTORY_CLASS = "org.apache.jena.ext.xerces.impl.dv.xs.SchemaDVFactoryImpl";
+    static SchemaDVFactory INSTANCE = new org.apache.jena.ext.xerces.impl.dv.xs.SchemaDVFactoryImpl();
+    
+    /**
+     * Get a default instance of SchemaDVFactory implementation.
+     *
+     * @return  an instance of SchemaDVFactory implementation
+     */
+    public static final SchemaDVFactory getInstance() {
+        return INSTANCE;
+    }
+
+    // can't create a new object of this class
+    protected SchemaDVFactory() {}
+
+    /**
+     * Get a built-in simple type of the given name
+     * REVISIT: its still not decided within the Schema WG how to define the
+     *          ur-types and if all simple types should be derived from a
+     *          complex type, so as of now we ignore the fact that anySimpleType
+     *          is derived from anyType, and pass 'null' as the base of
+     *          anySimpleType. It needs to be changed as per the decision taken.
+     *
+     * @param name  the name of the datatype
+     * @return      the datatype validator of the given name
+     */
+    public abstract XSSimpleType getBuiltInType(String name);
+
+    /**
+     * get all built-in simple types, which are stored in a SymbolHash keyed by
+     * the name
+     *
+     * @return      a SymbolHash which contains all built-in simple types
+     */
+    public abstract SymbolHash getBuiltInTypes();
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.jena.datatypes;
+
+import java.net.URI;
+import java.net.URL;
+import java.util.Iterator;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.apache.jena.datatypes.xsd.XSDDatatype ;
+import org.apache.jena.datatypes.xsd.impl.*;
+import org.apache.jena.shared.impl.JenaParameters ;
+
+/**
+ * The TypeMapper provides a global registry of known datatypes.
+ * The datatypes can be retrieved by their URI or from the java class
+ * that is used to represent them.
+ */
+
+// Added extended set of class mappings and getTypeByClass
+// as suggested by Thorsten Moeller. der 8/5/09
+
+public class TypeMapper {
+
+//=======================================================================
+// Statics
+
+    /**
+     * Return the single global instance of the TypeMapper.
+     * Done this way rather than simply making the static
+     * field directly accessible to allow us to dynamically
+     * replace the entire mapper table if needed.
+     */
+    public static TypeMapper getInstance() {
+        return theTypeMap;
+    }
+
+    public static void setInstance(TypeMapper typeMapper) {
+        theTypeMap = typeMapper ;
+    }
+
+    /**
+     * The single global instance of the TypeMapper
+     */
+    private static TypeMapper theTypeMap;
+
+    /**
+     * Static initializer. Adds builtin datatypes to the mapper.
+     */
+    static { reset() ; }
+    public static void reset() {
+        theTypeMap = new TypeMapper();
+        theTypeMap.registerDatatype(RDFLangString.rdfLangString) ;
+        theTypeMap.registerDatatype(RDFDirLangString.rdfDirLangString) ;
+        theTypeMap.registerDatatype(RDFjson.rdfJSON);
+        theTypeMap.registerDatatype(XMLLiteralType.rdfXMLLiteral);
+        theTypeMap.registerDatatype(RDFhtml.rdfHTML);
+        XSDDatatype.loadXSDSimpleTypes(theTypeMap);
+
+        // add primitive types
+        theTypeMap.classToDT.put(float.class, theTypeMap.classToDT.get(Float.class));
+        theTypeMap.classToDT.put(double.class, theTypeMap.classToDT.get(Double.class));
+        theTypeMap.classToDT.put(int.class, theTypeMap.classToDT.get(Integer.class));
+        theTypeMap.classToDT.put(long.class, theTypeMap.classToDT.get(Long.class));
+        theTypeMap.classToDT.put(short.class, theTypeMap.classToDT.get(Short.class));
+        theTypeMap.classToDT.put(byte.class, theTypeMap.classToDT.get(Byte.class));
+        theTypeMap.classToDT.put(boolean.class, theTypeMap.classToDT.get(Boolean.class));
+
+        // add missing character types
+        theTypeMap.classToDT.put(char.class, theTypeMap.classToDT.get(String.class));
+        theTypeMap.classToDT.put(Character.class, theTypeMap.classToDT.get(String.class));
+
+        // add mapping for URL class
+        theTypeMap.classToDT.put(URL.class, theTypeMap.classToDT.get(URI.class));
+    }
+
+    public TypeMapper() {
+   	 super();
+    }
+
+//=======================================================================
+// Variables
+
+    /** Map from uri to datatype */
+    private final ConcurrentHashMap<String, RDFDatatype> uriToDT = new ConcurrentHashMap<>();
+
+    /** Map from java class to datatype */
+    private final ConcurrentHashMap<Class<?>, RDFDatatype> classToDT = new ConcurrentHashMap<>();
+
+//=======================================================================
+// Methods
+
+
+    /**
+     * Version of getTypeByName which will treat unknown URIs as typed literals but with
+     * just the default implementation
+     * <p>
+     * RDF 1.1: null for {@code uri} returns null and it will mean {@code xsd:string}
+     * because plain literals (no lang tag) and xsd:strings are now the same.
+     *
+     * @param uri
+     *            the URI of the desired datatype
+     * @return Datatype the datatype definition registered at uri, if there is no such
+     *         registered type it returns a new instance of the default datatype
+     *         implementation, if the uri is null it returns null (indicating a plain RDF
+     *         literal).
+     */
+    public RDFDatatype getSafeTypeByName(final String uri) {
+        if (uri == null) {
+            // Plain literal
+            return null;
+        }
+        return uriToDT.computeIfAbsent(uri, u -> {
+            // Unknown datatype
+            if (JenaParameters.enableSilentAcceptanceOfUnknownDatatypes) {
+                // No need to update classToDT because BaseDatatype.getJavaClass is always null
+                return new BaseDatatype(u);
+            } else {
+                throw new DatatypeFormatException(
+                    "Attempted to created typed literal using an unknown datatype - " + uri);
+            }
+        });
+    }
+
+    /**
+     * Lookup a known datatype. An unknown datatype or a datatype with uri null
+     * will return null will mean that the value will be treated as a old-style plain literal.
+     *
+     * @param uri the URI of the desired datatype
+     * @return Datatype the datatype definition of null if not known.
+     */
+    public RDFDatatype getTypeByName(final String uri) {
+        return uri == null ? null : uriToDT.get(uri);
+    }
+
+    /**
+     * Method getTypeByValue. Look up a datatype suitable for representing
+     * the given java value object.
+     *
+     * @param value a value instance to be represented
+     * @return Datatype a datatype whose value space matches the java class
+     * of <code>value</code>
+     */
+    public RDFDatatype getTypeByValue(final Object value) {
+        return classToDT.get(value.getClass());
+    }
+
+    /**
+     * List all the known datatypes
+     */
+    public Iterator<RDFDatatype> listTypes() {
+        return uriToDT.values().iterator();
+    }
+
+    /**
+     * Look up a datatype suitable for representing instances of the
+     * given Java class.
+     *
+     * @param clazz a Java class to be represented
+     * @return a datatype whose value space matches the given java class
+     */
+    public RDFDatatype getTypeByClass(final Class<?> clazz) {
+        return clazz == null ? null : classToDT.get(clazz);
+    }
+
+    /**
+     * Register a new datatype
+     * This will overwrite any existing registration for this datatype IRI.
+     * Comparisons of literals with different datatype instances will fail, so be careful
+     * if you are using this outside of initialization code.
+     */
+    public void registerDatatype(final RDFDatatype type) {
+        uriToDT.put(type.getURI(), type);
+        final Class<?> jc = type.getJavaClass();
+        if (jc != null) {
+            classToDT.put(jc, type);
+        }
+    }
+
+    /**
+     * Remove a datatype registration.
+     * <p>
+     * WARNING: This method may cause unexpected behavior if the datatype is still in use.
+     * If you unregister a datatype that is still used somewhere on the heap, literal comparisons with
+     * that datatype will fail.
+     */
+    public void unregisterDatatype(final RDFDatatype type) {
+        uriToDT.remove(type.getURI());
+        final Class<?> jc = type.getJavaClass();
+        if (jc != null) {
+            classToDT.remove(jc);
+        }
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.jena.ext.xerces.impl.dv;
+
+/**
+ * Class to get the information back after content is validated. This info
+ * would be filled by validate().
+ * 
+ * {@literal @xerces.internal} 
+ *
+ * @author Neeraj Bajaj, Sun Microsystems, inc.
+ *
+ * @version $Id: ValidatedInfo.java 1026362 2010-10-22 15:15:18Z sandygao $
+ */
+public class ValidatedInfo {
+
+    /**
+     * The normalized value of a string value
+     */
+    public String normalizedValue;
+
+    /**
+     * The actual value from a string value (QName, Boolean, etc.)
+     * An array of Objects if the type is a list.
+     */
+    public Object actualValue;
+
+    /**
+     * The type of the actual value. It's one of the _DT constants
+     * defined in XSConstants.java. The value is used to indicate
+     * the most specific built-in type.
+     * (i.e. short instead of decimal or integer).
+     */
+    public short actualValueType;
+}

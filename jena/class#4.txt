@@ -1,0 +1,6 @@
+package ident$1.ident$2.ident$3.ident$4.ident$5.ident$6.ident$7;
+public class ident$10 {
+public String ident$12;
+public Object ident$14;
+public short ident$16;
+}

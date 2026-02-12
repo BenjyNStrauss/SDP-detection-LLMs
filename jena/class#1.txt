@@ -1,0 +1,15 @@
+package ident$1.ident$2.ident$3.ident$4;
+import java.ident$4.*;
+public class ident$9
+{
+public static <ident$11,ident$12> ident$13<ident$11,ident$12> ident$14()
+{ return new ident$17<>(); }
+public static <ident$11,ident$12> ident$13<ident$11,ident$12> ident$14( int ident$19 )
+{ return new ident$17<>( ident$19 ); }
+public static <ident$11,ident$12> ident$13<ident$11,ident$12> ident$14( ident$13<ident$11,ident$12> ident$20 )
+{ return new ident$17<>( ident$20 ); }
+public static <ident$21> ident$22<ident$21> ident$23()
+{ return new ident$24<>(); }
+public static <ident$21> ident$22<ident$21> ident$23( ident$25<ident$21> ident$20 )
+{ return new ident$24<>( ident$20 ); }
+}

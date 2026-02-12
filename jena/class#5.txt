@@ -1,0 +1,11 @@
+package ident$1.ident$2.ident$3.ident$4.ident$5.ident$6.ident$7;
+import ident$1.ident$2.ident$3.ident$4.ident$5.ident$9.ident$10;
+public abstract class ident$14 {
+static ident$14 ident$16 = new ident$1.ident$2.ident$3.ident$4.ident$5.ident$6.ident$7.ident$18.ident$19();
+public static final ident$14 ident$21() {
+return ident$16;
+}
+protected ident$14() {}
+public abstract ident$24 ident$25(String ident$27);
+public abstract ident$10 ident$28();
+}

@@ -1,0 +1,45 @@
+package ident$1.ident$2.ident$3.ident$4.ident$5.ident$6;
+import ident$1.ident$2.ident$3.ident$8.ident$9.ident$10;
+import ident$1.ident$2.ident$3.ident$8.ident$11.ident$12;
+import ident$1.ident$2.ident$3.ident$13.ident$14;
+import ident$1.ident$15.ident$16;
+public abstract class ident$20 implements ident$22
+{
+private final String[] ident$26;
+protected ident$20(String[] ident$28) {
+ident$26 = ident$28;
+}
+protected abstract ident$16 ident$29();
+@Override
+public ident$12 open(String ident$32) {
+if ( ! ident$34(ident$32) ) {
+if ( ident$35.ident$36 && ident$29().ident$37() )
+ident$29().ident$38("literal$0"+ident$32);
+return null;
+}
+return ident$41(ident$32);
+}
+protected abstract ident$12 ident$41(String ident$32);
+protected boolean ident$34(String ident$43) {
+String ident$44 = ident$14.ident$45(ident$43);
+if ( ident$44 == null )
+return ident$46;
+ident$44 = ident$10.ident$47(ident$44);
+for ( String ident$49 : ident$26 )
+{
+if ( ident$44.ident$50( ident$49 ) )
+{
+return ident$51;
+}
+}
+return ident$46;
+}
+@Override
+public abstract int ident$53();
+@Override
+public boolean ident$50(Object ident$55) {
+if (this == ident$55) return ident$51;
+if (ident$55 == null) return ident$46;
+return ident$57() == ident$55.ident$57();
+}
+}
