@@ -1,19 +1,132 @@
-package ident$1.ident$2.ident$3.ident$4;
-import java.ident$7.ident$8;
-import ident$1.ident$2.ident$3.ident$9.ident$10;
-public class ident$13 extends ident$15 {
-private final Throwable ident$19;
-public ident$13(ident$10 ident$9, long ident$7, Throwable ident$19) {
-this(ident$9, ident$8.ident$22(ident$7), ident$19);
+package ident$1.ident$2.ident$3.ident$4.ident$5;
+import ident$7.ident$8.ident$9.ident$10.ident$11;
+import ident$1.ident$2.ident$3.ident$4.ident$10.ident$12;
+import ident$1.ident$2.ident$3.ident$4.ident$10.ident$13;
+import ident$1.ident$2.ident$3.ident$4.ident$10.ident$14.ident$15;
+import ident$1.ident$2.ident$3.ident$4.ident$10.ident$14.ident$16.ident$17;
+import ident$1.ident$2.ident$3.ident$4.ident$10.ident$14.ident$16.ident$18;
+import ident$1.ident$2.ident$3.ident$4.ident$10.ident$19.ident$20;
+import ident$1.ident$2.ident$3.ident$4.ident$10.ident$19.ident$21.ident$22;
+import ident$1.ident$2.ident$3.ident$4.ident$10.ident$19.ident$21.ident$23;
+import ident$1.ident$2.ident$3.ident$4.ident$10.ident$19.ident$21.ident$24;
+import ident$1.ident$2.ident$3.ident$4.ident$10.ident$19.ident$21.ident$25;
+import ident$1.ident$2.ident$3.ident$4.ident$10.ident$19.ident$21.ident$26.ident$27.ident$28;
+import ident$1.ident$2.ident$3.ident$4.ident$10.ident$29.ident$30;
+import ident$1.ident$2.ident$3.ident$4.ident$10.ident$31.ident$32;
+@ident$22(
+ident$33 = "literal$0",
+ident$34 = ident$12.ident$35,
+ident$36 = ident$37.ident$38,
+ident$39 = ident$40)
+public class ident$37 extends ident$17<ident$44> {
+private ident$37(
+final String ident$33,
+final ident$13 ident$48,
+final boolean ident$50,
+final ident$20[] ident$51,
+final ident$44 ident$52) {
+super(ident$33, ident$48, null, ident$50, ident$51, ident$52);
 }
-public ident$13(ident$10 ident$9, ident$8 ident$7, Throwable ident$19) {
-this(ident$9, ident$7, ident$7, ident$19);
+@ident$24
+public static <ident$56 extends ident$57<ident$56>> ident$56 ident$58() {
+return new ident$57<ident$56>().ident$61();
 }
-public ident$13(ident$10 ident$9, ident$8 ident$23, ident$8 ident$24, Throwable ident$19) {
-super(ident$9, ident$23, ident$24);
-this.ident$19 = ident$19;
+public static class ident$57<ident$56 extends ident$57<ident$56>> extends ident$15.ident$57<ident$56>
+implements ident$1.ident$2.ident$3.ident$4.ident$10.ident$31.ident$57<ident$37> {
+@ident$25("literal$1")
+@ident$28(ident$63 = "literal$2")
+private ident$30[] ident$64 = new ident$30[] {ident$30.ident$65()};
+@ident$25("literal$3")
+@ident$28(ident$63 = "literal$4")
+private ident$18[] ident$66;
+@ident$23
+private boolean ident$67;
+@ident$23
+@ident$28(ident$63 = "literal$5")
+private String ident$68;
+@ident$23
+@ident$28(ident$63 = "literal$6")
+private String ident$69;
+@ident$23
+@ident$28(ident$63 = "literal$7")
+private String ident$70;
+@ident$23
+private String ident$71;
+@ident$23(ident$72 = ident$40)
+private String ident$73;
+@ident$23
+private boolean ident$74;
+@ident$23
+private int ident$76;
+@ident$23
+private boolean ident$77;
+@ident$23
+private ident$11.Type ident$79 = ident$11.Type.ident$80;
+public ident$56 ident$81(final ident$30... ident$64) {
+this.ident$64 = ident$64;
+return ident$61();
 }
-public Throwable ident$26() {
-return ident$19;
+public ident$56 ident$83(final ident$18... ident$66) {
+this.ident$66 = ident$66;
+return ident$61();
+}
+public ident$56 ident$84(final boolean ident$67) {
+this.ident$67 = ident$67;
+return ident$61();
+}
+public ident$56 ident$85(final String ident$68) {
+this.ident$68 = ident$68;
+return ident$61();
+}
+public ident$56 ident$86(final String ident$69) {
+this.ident$69 = ident$69;
+return ident$61();
+}
+public ident$56 ident$87(final String ident$70) {
+this.ident$70 = ident$70;
+return ident$61();
+}
+public ident$56 ident$88(final String ident$71) {
+this.ident$71 = ident$71;
+return ident$61();
+}
+public ident$56 ident$89(final String ident$73) {
+this.ident$73 = ident$73;
+return ident$61();
+}
+public ident$56 ident$90(final boolean ident$74) {
+this.ident$74 = ident$74;
+return ident$61();
+}
+public ident$56 ident$91(final int ident$76) {
+this.ident$76 = ident$76;
+return ident$61();
+}
+public ident$56 ident$92(final boolean ident$77) {
+this.ident$77 = ident$77;
+return ident$61();
+}
+public ident$56 ident$93(final ident$11.Type ident$79) {
+this.ident$79 = ident$79;
+return ident$61();
+}
+@Override
+public ident$37 ident$95() {
+final ident$44 ident$52 = ident$44.ident$96(
+ident$97(),
+ident$64,
+ident$66,
+ident$67,
+ident$68,
+ident$69,
+ident$70,
+ident$71,
+ident$73,
+ident$74,
+ident$76,
+ident$77,
+ident$79);
+return new ident$37(ident$97(), ident$98(), ident$99(), null, ident$52);
+}
 }
 }

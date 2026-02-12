@@ -1,81 +1,58 @@
-package ident$1.ident$2.ident$3.ident$4.ident$5;
-import javax.ident$8.ident$9;
-import javax.ident$8.ident$10;
-import javax.ident$8.ident$11;
+package ident$1.ident$2.ident$3.ident$4.ident$5.ident$6.ident$7.ident$8;
+import java.ident$11.ident$12;
 import java.ident$13.ident$14;
 import java.ident$13.ident$15;
-import java.ident$16.ident$17;
-import java.ident$16.ident$18;
-import ident$1.ident$2.ident$3.ident$4.ident$19;
-import ident$1.ident$20.ident$21.ident$22.ident$23;
-import ident$1.ident$20.ident$21.ident$22.ident$24;
-import ident$1.ident$20.ident$21.ident$22.ident$25;
-import ident$1.ident$20.ident$21.ident$22.ident$26;
-import ident$1.ident$27.ident$28;
-import ident$1.ident$27.ident$29;
-@ident$10
-@ident$11
-public class ident$32 implements ident$19 {
-private final ident$28 ident$36 = ident$29.ident$37(ident$38());
-private final ident$26 ident$39;
-private final String ident$41;
-@ident$9
-public ident$32(ident$26 ident$39) {
-this.ident$39 = ident$39;
-this.ident$41 = ident$43();
+public class ident$18 extends ident$20 {
+private final ident$23[] ident$24;
+private final boolean ident$26;
+public ident$18(final ident$15<ident$23> ident$24, final boolean ident$26) {
+this.ident$24 = new ident$23[ident$24.ident$29()];
+ident$24.ident$30(this.ident$24);
+this.ident$26 = ident$26;
 }
 @Override
-public String ident$45() {
-return ident$41;
-}
-private String ident$43() {
-ident$18 ident$47 = new ident$18();
-String ident$49 = "literal$0";
-try (ident$15 ident$51 = ident$32.class.ident$52("literal$1" + ident$49)) {
-if (ident$51 != null) {
-ident$47.ident$55(ident$51);
-} else {
-ident$36.ident$57("literal$2" + ident$49 + "literal$3");
-}
-} catch (ident$14 ident$59) {
-String ident$60 = "literal$4" + ident$49 + "literal$5";
-if (ident$36.ident$61()) {
-ident$36.ident$57(ident$60, ident$59);
-} else {
-ident$36.ident$57(ident$60);
-}
-}
-String ident$22 = ident$47.ident$62("literal$6", "literal$7").ident$63();
-if (!ident$22.ident$64("literal$8")) {
-return ident$22;
-} else {
-return "literal$7";
+public void ident$33() {
+try {
+ident$35();
+} catch (final ident$12 ident$37) {
+ident$38.ident$39("literal$0", ident$37);
 }
 }
 @Override
-public boolean ident$66(String ident$67) {
-if (ident$17.ident$68(ident$67, "literal$9").ident$69()) {
-throw new IllegalArgumentException("literal$10");
+public boolean ident$35() throws ident$12 {
+if (ident$26) {
+for (final ident$23 ident$8 : ident$24) {
+if (!ident$8.ident$35()) {
+return ident$44;
 }
-ident$25 ident$72;
+}
+return ident$45;
+}
+boolean ident$46 = ident$45;
+ident$12 ident$47 = null;
+for (final ident$23 ident$8 : ident$24) {
 try {
-ident$72 = ident$39.ident$73(ident$67);
-} catch (ident$23 ident$59) {
-throw new IllegalArgumentException(ident$59.ident$74(), ident$59);
+ident$46 &= ident$8.ident$35();
+} catch (final ident$12 ident$37) {
+ident$46 = ident$44;
+if (ident$47 == null) {
+ident$47 = ident$37;
 }
-ident$24 ident$75;
-try {
-String ident$41 = ident$45();
-if (ident$41.ident$69()) {
-throw new IllegalArgumentException("literal$11");
 }
-ident$75 = ident$39.ident$76(ident$41);
-} catch (ident$23 ident$59) {
-throw new IllegalStateException("literal$12" + ident$59.ident$74(), ident$59);
 }
-if (ident$72.ident$78() == null) {
-return ident$72.ident$79().ident$80(ident$75) <= 0;
+if (ident$47 != null) {
+throw ident$47;
 }
-return ident$72.ident$81(ident$75);
+return ident$46;
+}
+@Override
+public String ident$51() {
+return ident$18.class.ident$52() + ident$14.ident$51(ident$24);
+}
+public ident$23[] ident$53() {
+return ident$24;
+}
+public boolean ident$54() {
+return ident$26;
 }
 }

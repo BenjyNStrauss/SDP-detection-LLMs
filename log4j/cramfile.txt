@@ -1,1482 +1,1191 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to you under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-package org.apache.maven.artifact;
+package org.apache.logging.log4j.core.async;
 
-import java.io.File;
-import java.util.Collection;
-import java.util.List;
-import java.util.regex.Pattern;
-
-import org.apache.maven.artifact.handler.ArtifactHandler;
-import org.apache.maven.artifact.metadata.ArtifactMetadata;
-import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
-import org.apache.maven.artifact.versioning.ArtifactVersion;
-import org.apache.maven.artifact.versioning.OverConstrainedVersionException;
-import org.apache.maven.artifact.versioning.VersionRange;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import org.apache.logging.log4j.core.config.Node;
+import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
 /**
- * Maven Artifact interface. Notice that it mixes artifact definition concepts (groupId, artifactId, version)
- * with dependency information (version range, scope).
- */
-public interface Artifact extends Comparable<Artifact> {
-
-    @Deprecated(since = "4.0.0")
-    String RELEASE_VERSION = "RELEASE";
-
-    @Deprecated(since = "4.0.0")
-    String LATEST_VERSION = "LATEST";
-
-    String SNAPSHOT_VERSION = "SNAPSHOT";
-
-    Pattern VERSION_FILE_PATTERN = Pattern.compile("^(.*)-(\\d{8}\\.\\d{6})-(\\d+)$");
-
-    // TODO into artifactScope handler
-
-    String SCOPE_COMPILE = "compile";
-
-    String SCOPE_COMPILE_PLUS_RUNTIME = "compile+runtime";
-
-    String SCOPE_TEST = "test";
-
-    String SCOPE_RUNTIME = "runtime";
-
-    String SCOPE_RUNTIME_PLUS_SYSTEM = "runtime+system";
-
-    String SCOPE_PROVIDED = "provided";
-
-    String SCOPE_SYSTEM = "system";
-
-    String SCOPE_IMPORT = "import"; // Used to import dependencyManagement dependencies
-
-    String getGroupId();
-
-    String getArtifactId();
-
-    String getVersion();
-
-    void setVersion(String version);
-
-    String getScope();
-
-    String getType();
-
-    String getClassifier();
-
-    boolean hasClassifier();
-
-    File getFile();
-
-    void setFile(File destination);
-
-    String getBaseVersion();
-
-    void setBaseVersion(String baseVersion);
-
-    String getId();
-
-    String getDependencyConflictId();
-
-    void addMetadata(ArtifactMetadata metadata);
-
-    Collection<ArtifactMetadata> getMetadataList();
-
-    void setRepository(ArtifactRepository remoteRepository);
-
-    ArtifactRepository getRepository();
-
-    void updateVersion(String version, ArtifactRepository localRepository);
-
-    String getDownloadUrl();
-
-    void setDownloadUrl(String downloadUrl);
-
-    ArtifactFilter getDependencyFilter();
-
-    void setDependencyFilter(ArtifactFilter artifactFilter);
-
-    ArtifactHandler getArtifactHandler();
-
-    List<String> getDependencyTrail();
-
-    void setDependencyTrail(List<String> dependencyTrail);
-
-    void setScope(String scope);
-
-    VersionRange getVersionRange();
-
-    void setVersionRange(VersionRange newRange);
-
-    void selectVersion(String version);
-
-    void setGroupId(String groupId);
-
-    void setArtifactId(String artifactId);
-
-    boolean isSnapshot();
-
-    void setResolved(boolean resolved);
-
-    boolean isResolved();
-
-    void setResolvedVersion(String version);
-
-    void setArtifactHandler(ArtifactHandler handler);
-
-    boolean isRelease();
-
-    void setRelease(boolean release);
-
-    List<ArtifactVersion> getAvailableVersions();
-
-    void setAvailableVersions(List<ArtifactVersion> versions);
-
-    boolean isOptional();
-
-    void setOptional(boolean optional);
-
-    ArtifactVersion getSelectedVersion() throws OverConstrainedVersionException;
-
-    boolean isSelectedVersionKnown() throws OverConstrainedVersionException;
-}
-<<<<<<<<DIVIDER>>>>>>>>
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ * Factory for creating instances of {@link ArrayBlockingQueue}.
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * @since 2.7
  */
-package org.apache.maven.execution;
-
-import java.time.Duration;
-
-import org.apache.maven.project.MavenProject;
-
-/**
- * Summarizes the result of a failed project build in the reactor.
- *
- */
-public class BuildFailure extends BuildSummary {
-
-    /**
-     * The cause of the build failure.
-     */
-    private final Throwable cause;
-
-    /**
-     * Creates a new build summary for the specified project.
-     *
-     * @param project The project being summarized, must not be {@code null}.
-     * @param time The build time of the project in milliseconds.
-     * @param cause The cause of the build failure, may be {@code null}.
-     */
-    public BuildFailure(MavenProject project, long time, Throwable cause) {
-        this(project, Duration.ofMillis(time), cause);
+@Plugin(name = "ArrayBlockingQueue", category = Node.CATEGORY, elementType = BlockingQueueFactory.ELEMENT_TYPE)
+public class ArrayBlockingQueueFactory<E> implements BlockingQueueFactory<E> {
+    @Override
+    public BlockingQueue<E> create(final int capacity) {
+        return new ArrayBlockingQueue<>(capacity);
     }
 
-    /**
-     * Creates a new build summary for the specified project.
-     *
-     * @param project The project being summarized, must not be {@code null}.
-     * @param time The build time of the project in milliseconds.
-     * @param cause The cause of the build failure, may be {@code null}.
-     */
-    public BuildFailure(MavenProject project, Duration time, Throwable cause) {
-        this(project, time, time, cause);
-    }
-
-    /**
-     * Creates a new build summary for the specified project.
-     *
-     * @param project The project being summarized, must not be {@code null}.
-     * @param execTime The exec time of the project in milliseconds.
-     * @param wallTime The wall time of the project in milliseconds.
-     * @param cause The cause of the build failure, may be {@code null}.
-     */
-    public BuildFailure(MavenProject project, Duration execTime, Duration wallTime, Throwable cause) {
-        super(project, execTime, wallTime);
-        this.cause = cause;
-    }
-
-    /**
-     * Gets the cause of the build failure.
-     *
-     * @return The cause of the build failure or {@code null} if unknown.
-     */
-    public Throwable getCause() {
-        return cause;
+    @PluginFactory
+    public static <E> ArrayBlockingQueueFactory<E> createFactory() {
+        return new ArrayBlockingQueueFactory<>();
     }
 }
 <<<<<<<<DIVIDER>>>>>>>>
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to you under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-package org.apache.maven.extension.internal;
+package org.apache.logging.log4j.core.async;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Provider;
-import javax.inject.Singleton;
-
-import java.util.Objects;
-
-import org.apache.maven.internal.CoreRealm;
+import com.lmax.disruptor.WaitStrategy;
 
 /**
- * CoreExportsProvider
+ * This interface allows users to configure a custom Disruptor WaitStrategy used for
+ * Async Loggers and Async LoggerConfigs.
+ *
+ * @since 2.17.3
  */
-@Named
-@Singleton
-public class CoreExportsProvider implements Provider<CoreExports> {
-
-    private final CoreExports exports;
-
-    @Inject
-    public CoreExportsProvider(CoreRealm coreRealm) {
-        this(new CoreExports(CoreExtensionEntry.discoverFrom(coreRealm.getRealm())));
-    }
-
-    public CoreExportsProvider(CoreExports exports) {
-        this.exports = Objects.requireNonNull(exports);
-    }
-
-    @Override
-    public CoreExports get() {
-        return exports;
-    }
+public interface AsyncWaitStrategyFactory {
+    /**
+     * Creates and returns a non-null implementation of the LMAX Disruptor's WaitStrategy interface.
+     * This WaitStrategy will be used by Log4j Async Loggers and Async LoggerConfigs.
+     *
+     * @return the WaitStrategy instance to be used by Async Loggers and Async LoggerConfigs
+     */
+    WaitStrategy createWaitStrategy();
 }
 <<<<<<<<DIVIDER>>>>>>>>
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to you under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-package org.apache.maven.plugin;
-
-import org.apache.maven.model.Plugin;
-import org.codehaus.plexus.component.composition.CycleDetectedInComponentGraphException;
+package org.apache.logging.log4j;
 
 /**
- * Exception occurring trying to resolve a plugin.
+ * Extended interface to allow bridges between logging systems to convey the
+ * correct location information.
  *
+ * @since 2.19.0
  */
-public class CycleDetectedInPluginGraphException extends Exception {
-    private final Plugin plugin;
+public interface BridgeAware {
 
-    public CycleDetectedInPluginGraphException(Plugin plugin, CycleDetectedInComponentGraphException e) {
-        super("A cycle was detected in the component graph of the plugin: " + plugin.getArtifactId());
-
-        this.plugin = plugin;
-    }
-
-    public Plugin getPlugin() {
-        return plugin;
-    }
+    /**
+     * To set fully qualified class name of the entry point to the logging system. This
+     * class will not appear in the location information.
+     *
+     * @param fqcn fully qualified class name
+     */
+    void setEntryPoint(final String fqcn);
 }
 <<<<<<<<DIVIDER>>>>>>>>
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to you under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-package org.apache.maven.execution;
+package org.apache.logging.log4j.cassandra;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.maven.api.Constants;
-import org.apache.maven.artifact.InvalidRepositoryException;
-import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.bridge.MavenRepositorySystem;
-import org.apache.maven.settings.Mirror;
-import org.apache.maven.settings.Proxy;
-import org.apache.maven.settings.Repository;
-import org.apache.maven.settings.Server;
-import org.apache.maven.settings.Settings;
-import org.apache.maven.settings.SettingsUtils;
-import org.apache.maven.toolchain.model.PersistedToolchains;
-import org.apache.maven.toolchain.model.ToolchainModel;
+import com.datastax.driver.core.BatchStatement;
+import org.apache.logging.log4j.core.Core;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.appender.db.AbstractDatabaseAppender;
+import org.apache.logging.log4j.core.appender.db.ColumnMapping;
+import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.core.net.SocketAddress;
+import org.apache.logging.log4j.core.util.Clock;
 
 /**
- * Assists in populating an execution request for invocation of Maven.
+ * Appender plugin that uses a Cassandra database.
+ *
+ * @see SocketAddress
+ * @see ColumnMapping
  */
-@Named
-@Singleton
-public class DefaultMavenExecutionRequestPopulator implements MavenExecutionRequestPopulator {
+@Plugin(
+        name = "Cassandra",
+        category = Core.CATEGORY_NAME,
+        elementType = CassandraAppender.ELEMENT_TYPE,
+        printObject = true)
+public class CassandraAppender extends AbstractDatabaseAppender<CassandraManager> {
 
-    private final MavenRepositorySystem repositorySystem;
-
-    @Inject
-    public DefaultMavenExecutionRequestPopulator(MavenRepositorySystem repositorySystem) {
-        this.repositorySystem = repositorySystem;
+    private CassandraAppender(
+            final String name,
+            final Filter filter,
+            final boolean ignoreExceptions,
+            final Property[] properties,
+            final CassandraManager manager) {
+        super(name, filter, null, ignoreExceptions, properties, manager);
     }
 
-    @Override
-    public MavenExecutionRequest populateFromToolchains(MavenExecutionRequest request, PersistedToolchains toolchains)
-            throws MavenExecutionRequestPopulationException {
-        if (toolchains != null) {
-            Map<String, List<ToolchainModel>> groupedToolchains = new HashMap<>(2);
-
-            for (ToolchainModel model : toolchains.getToolchains()) {
-                if (!groupedToolchains.containsKey(model.getType())) {
-                    groupedToolchains.put(model.getType(), new ArrayList<>());
-                }
-
-                groupedToolchains.get(model.getType()).add(model);
-            }
-
-            request.setToolchains(groupedToolchains);
-        }
-        return request;
+    @PluginBuilderFactory
+    public static <B extends Builder<B>> B newBuilder() {
+        return new Builder<B>().asBuilder();
     }
 
-    @Override
-    public MavenExecutionRequest populateDefaults(MavenExecutionRequest request)
-            throws MavenExecutionRequestPopulationException {
-        baseDirectory(request);
-
-        localRepository(request);
-
-        populateDefaultPluginGroups(request);
-
-        return request;
-    }
-
-    //
-    //
-    //
-
-    private void populateDefaultPluginGroups(MavenExecutionRequest request) {
-        request.addPluginGroup("org.apache.maven.plugins");
-        request.addPluginGroup("org.codehaus.mojo");
-    }
-
-    private void localRepository(MavenExecutionRequest request) throws MavenExecutionRequestPopulationException {
-        // ------------------------------------------------------------------------
-        // Local Repository
-        //
-        // 1. Use a value has been passed in via the configuration
-        // 2. Use value in the resultant settings
-        // 3. Use default value
-        // ------------------------------------------------------------------------
-
-        if (request.getLocalRepository() == null) {
-            request.setLocalRepository(createLocalRepository(request));
-        }
-
-        if (request.getLocalRepositoryPath() == null) {
-            request.setLocalRepositoryPath(new File(request.getLocalRepository().getBasedir()).getAbsoluteFile());
-        }
-    }
-
-    // ------------------------------------------------------------------------
-    // Artifact Transfer Mechanism
-    // ------------------------------------------------------------------------
-
-    private ArtifactRepository createLocalRepository(MavenExecutionRequest request)
-            throws MavenExecutionRequestPopulationException {
-        String localRepositoryPath = null;
-
-        if (request.getLocalRepositoryPath() != null) {
-            localRepositoryPath = request.getLocalRepositoryPath().getAbsolutePath();
-        }
-
-        if (localRepositoryPath == null || localRepositoryPath.isEmpty()) {
-            String path = request.getUserProperties().getProperty(Constants.MAVEN_USER_CONF);
-            if (path == null) {
-                path = request.getSystemProperties().getProperty("user.home") + File.separator + ".m2";
-            }
-            localRepositoryPath = new File(path, "repository").getAbsolutePath();
-        }
-
-        try {
-            return repositorySystem.createLocalRepository(new File(localRepositoryPath));
-        } catch (Exception e) {
-            throw new MavenExecutionRequestPopulationException("Cannot create local repository.", e);
-        }
-    }
-
-    private void baseDirectory(MavenExecutionRequest request) {
-        if (request.getBaseDirectory() == null && request.getPom() != null) {
-            request.setBaseDirectory(request.getPom().getAbsoluteFile().getParentFile());
-        }
-    }
-
-    /*if_not[MAVEN4]*/
-
-    @Override
-    @Deprecated
-    public MavenExecutionRequest populateFromSettings(MavenExecutionRequest request, Settings settings)
-            throws MavenExecutionRequestPopulationException {
-        if (settings == null) {
-            return request;
-        }
-
-        request.setOffline(settings.isOffline());
-
-        request.setInteractiveMode(settings.isInteractiveMode());
-
-        request.setPluginGroups(settings.getPluginGroups());
-
-        request.setLocalRepositoryPath(settings.getLocalRepository());
-
-        for (Server server : settings.getServers()) {
-            server = server.clone();
-
-            request.addServer(server);
-        }
-
-        //  <proxies>
-        //    <proxy>
-        //      <active>true</active>
-        //      <protocol>http</protocol>
-        //      <host>proxy.somewhere.com</host>
-        //      <port>8080</port>
-        //      <username>proxyuser</username>
-        //      <password>somepassword</password>
-        //      <nonProxyHosts>www.google.com|*.somewhere.com</nonProxyHosts>
-        //    </proxy>
-        //  </proxies>
-
-        for (Proxy proxy : settings.getProxies()) {
-            if (!proxy.isActive()) {
-                continue;
-            }
-
-            proxy = proxy.clone();
-
-            request.addProxy(proxy);
-        }
-
-        // <mirrors>
-        //   <mirror>
-        //     <id>nexus</id>
-        //     <mirrorOf>*</mirrorOf>
-        //     <url>http://repository.sonatype.org/content/groups/public</url>
-        //   </mirror>
-        // </mirrors>
-
-        for (Mirror mirror : settings.getMirrors()) {
-            mirror = mirror.clone();
-
-            request.addMirror(mirror);
-        }
-
-        request.setActiveProfiles(settings.getActiveProfiles());
-
-        for (org.apache.maven.settings.Profile rawProfile : settings.getProfiles()) {
-            request.addProfile(SettingsUtils.convertFromSettingsProfile(rawProfile));
-
-            if (settings.getActiveProfiles().contains(rawProfile.getId())) {
-                List<Repository> remoteRepositories = rawProfile.getRepositories();
-                for (Repository remoteRepository : remoteRepositories) {
-                    try {
-                        request.addRemoteRepository(MavenRepositorySystem.buildArtifactRepository(remoteRepository));
-                    } catch (InvalidRepositoryException e) {
-                        // do nothing for now
-                    }
-                }
-
-                List<Repository> pluginRepositories = rawProfile.getPluginRepositories();
-                for (Repository pluginRepo : pluginRepositories) {
-                    try {
-                        request.addPluginArtifactRepository(MavenRepositorySystem.buildArtifactRepository(pluginRepo));
-                    } catch (InvalidRepositoryException e) {
-                        // do nothing for now
-                    }
-                }
-            }
-        }
-
-        return request;
-    }
-
-    /*end[MAVEN4]*/
-
-}
-<<<<<<<<DIVIDER>>>>>>>>
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-package org.apache.maven.graph;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.apache.maven.execution.ProjectDependencyGraph;
-import org.apache.maven.project.CycleDetectedException;
-import org.apache.maven.project.DuplicateProjectException;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.ProjectSorter;
-
-/**
- * Describes the interdependencies between projects in the reactor.
- *
- */
-public class DefaultProjectDependencyGraph implements ProjectDependencyGraph {
-
-    private final ProjectSorter sorter;
-
-    private final List<MavenProject> allProjects;
-
-    private final Map<MavenProject, Integer> order;
-
-    private final Map<String, MavenProject> projects;
-
-    /**
-     * Creates a new project dependency graph based on the specified projects.
-     *
-     * @param projects The projects to create the dependency graph with
-     * @throws DuplicateProjectException
-     * @throws CycleDetectedException
-     */
-    public DefaultProjectDependencyGraph(Collection<MavenProject> projects)
-            throws CycleDetectedException, DuplicateProjectException {
-        this(projects, projects);
-    }
-
-    /**
-     * Creates a new project dependency graph based on the specified projects.
-     *
-     * @param allProjects All collected projects.
-     * @param projects    The projects to create the dependency graph with.
-     * @throws DuplicateProjectException
-     * @throws CycleDetectedException
-     * @since 3.5.0
-     * @deprecated Use {@link #DefaultProjectDependencyGraph(Collection, Collection)} instead.
-     */
-    @Deprecated
-    public DefaultProjectDependencyGraph(List<MavenProject> allProjects, Collection<MavenProject> projects)
-            throws CycleDetectedException, DuplicateProjectException {
-        this((Collection<MavenProject>) allProjects, projects);
-    }
-
-    /**
-     * Creates a new project dependency graph based on the specified projects.
-     *
-     * @param allProjects All collected projects.
-     * @param projects    The projects to create the dependency graph with.
-     * @throws DuplicateProjectException
-     * @throws CycleDetectedException
-     * @since 4.0.0
-     */
-    public DefaultProjectDependencyGraph(Collection<MavenProject> allProjects, Collection<MavenProject> projects)
-            throws CycleDetectedException, DuplicateProjectException {
-        this.allProjects = Collections.unmodifiableList(new ArrayList<>(allProjects));
-        this.sorter = new ProjectSorter(projects);
-        this.order = new HashMap<>();
-        this.projects = new HashMap<>();
-        List<MavenProject> sorted = this.sorter.getSortedProjects();
-        for (int index = 0; index < sorted.size(); index++) {
-            MavenProject project = sorted.get(index);
-            String id = ProjectSorter.getId(project);
-            this.projects.put(id, project);
-            this.order.put(project, index);
-        }
-    }
-
-    /**
-     * @since 3.5.0
-     */
-    @Override
-    public List<MavenProject> getAllProjects() {
-        return this.allProjects;
-    }
-
-    @Override
-    public List<MavenProject> getSortedProjects() {
-        return new ArrayList<>(sorter.getSortedProjects());
-    }
-
-    @Override
-    public List<MavenProject> getDownstreamProjects(MavenProject project, boolean transitive) {
-        Objects.requireNonNull(project, "project cannot be null");
-
-        Set<String> projectIds = new HashSet<>();
-
-        getDownstreamProjects(ProjectSorter.getId(project), projectIds, transitive);
-
-        return getSortedProjects(projectIds);
-    }
-
-    private void getDownstreamProjects(String projectId, Set<String> projectIds, boolean transitive) {
-        for (String id : sorter.getDependents(projectId)) {
-            if (projectIds.add(id) && transitive) {
-                getDownstreamProjects(id, projectIds, transitive);
-            }
-        }
-    }
-
-    @Override
-    public List<MavenProject> getUpstreamProjects(MavenProject project, boolean transitive) {
-        Objects.requireNonNull(project, "project cannot be null");
-
-        Set<String> projectIds = new HashSet<>();
-
-        getUpstreamProjects(ProjectSorter.getId(project), projectIds, transitive);
-
-        return getSortedProjects(projectIds);
-    }
-
-    private void getUpstreamProjects(String projectId, Collection<String> projectIds, boolean transitive) {
-        for (String id : sorter.getDependencies(projectId)) {
-            if (projectIds.add(id) && transitive) {
-                getUpstreamProjects(id, projectIds, transitive);
-            }
-        }
-    }
-
-    private List<MavenProject> getSortedProjects(Set<String> projectIds) {
-        return projectIds.stream()
-                .map(projects::get)
-                .sorted(Comparator.comparingInt(order::get))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public String toString() {
-        return sorter.getSortedProjects().toString();
-    }
-}
-<<<<<<<<DIVIDER>>>>>>>>
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-package org.apache.maven.rtinfo.internal;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Objects;
-import java.util.Properties;
-
-import org.apache.maven.rtinfo.RuntimeInformation;
-import org.eclipse.aether.version.InvalidVersionSpecificationException;
-import org.eclipse.aether.version.Version;
-import org.eclipse.aether.version.VersionConstraint;
-import org.eclipse.aether.version.VersionScheme;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-/**
- * Provides information about the current Maven runtime.
- */
-@Named
-@Singleton
-public class DefaultRuntimeInformation implements RuntimeInformation {
-    private final Logger logger = LoggerFactory.getLogger(getClass());
-
-    private final VersionScheme versionScheme;
-
-    private final String mavenVersion;
-
-    @Inject
-    public DefaultRuntimeInformation(VersionScheme versionScheme) {
-        this.versionScheme = versionScheme;
-        this.mavenVersion = loadMavenVersion();
-    }
-
-    @Override
-    public String getMavenVersion() {
-        return mavenVersion;
-    }
-
-    private String loadMavenVersion() {
-        Properties props = new Properties();
-
-        String resource = "META-INF/maven/org.apache.maven/maven-core/pom.properties";
-
-        try (InputStream is = DefaultRuntimeInformation.class.getResourceAsStream("/" + resource)) {
-            if (is != null) {
-                props.load(is);
-            } else {
-                logger.warn("Could not locate " + resource + " on classpath, Maven runtime information not available");
-            }
-        } catch (IOException e) {
-            String msg = "Could not parse " + resource + ", Maven runtime information not available";
-            if (logger.isDebugEnabled()) {
-                logger.warn(msg, e);
-            } else {
-                logger.warn(msg);
-            }
-        }
-
-        String version = props.getProperty("version", "").trim();
-
-        if (!version.startsWith("${")) {
-            return version;
-        } else {
-            return "";
-        }
-    }
-
-    @Override
-    public boolean isMavenVersion(String versionRange) {
-        if (Objects.requireNonNull(versionRange, "versionRange cannot be null").isEmpty()) {
-            throw new IllegalArgumentException("versionRange cannot be empty");
-        }
-
-        VersionConstraint constraint;
-        try {
-            constraint = versionScheme.parseVersionConstraint(versionRange);
-        } catch (InvalidVersionSpecificationException e) {
-            throw new IllegalArgumentException(e.getMessage(), e);
-        }
-
-        Version current;
-        try {
-            String mavenVersion = getMavenVersion();
-            if (mavenVersion.isEmpty()) {
-                throw new IllegalArgumentException("Could not determine current Maven version");
-            }
-
-            current = versionScheme.parseVersion(mavenVersion);
-        } catch (InvalidVersionSpecificationException e) {
-            throw new IllegalStateException("Could not parse current Maven version: " + e.getMessage(), e);
-        }
-
-        if (constraint.getRange() == null) {
-            return constraint.getVersion().compareTo(current) <= 0;
-        }
-        return constraint.containsVersion(current);
-    }
-}
-<<<<<<<<DIVIDER>>>>>>>>
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-package org.apache.maven.api.feature;
-
-import java.util.Map;
-import java.util.Properties;
-
-import org.apache.maven.api.Constants;
-import org.apache.maven.api.annotations.Nullable;
-
-/**
- * Centralized class for Maven Core feature information.
- * Features configured are supposed to be final in a given maven session.
- *
- * @since 4.0.0
- */
-public final class Features {
-
-    private Features() {}
-
-    /**
-     * Check if the personality is "maven3".
-     */
-    public static boolean mavenMaven3Personality(@Nullable Map<String, ?> userProperties) {
-        return doGet(userProperties, Constants.MAVEN_MAVEN3_PERSONALITY, false);
-    }
-
-    /**
-     * Check if the consumer POM feature is active.
-     */
-    public static boolean consumerPom(@Nullable Map<String, ?> userProperties) {
-        return doGet(userProperties, Constants.MAVEN_CONSUMER_POM, !mavenMaven3Personality(userProperties));
-    }
-
-    /**
-     * Check if build POM deployment is enabled.
-     */
-    public static boolean deployBuildPom(@Nullable Map<String, ?> userProperties) {
-        return doGet(userProperties, Constants.MAVEN_DEPLOY_BUILD_POM, true);
-    }
-
-    private static boolean doGet(Properties userProperties, String key, boolean def) {
-        return doGet(userProperties != null ? userProperties.get(key) : null, def);
-    }
-
-    private static boolean doGet(Map<String, ?> userProperties, String key, boolean def) {
-        return doGet(userProperties != null ? userProperties.get(key) : null, def);
-    }
-
-    private static boolean doGet(Object val, boolean def) {
-        if (val instanceof Boolean bool) {
-            return bool;
-        } else if (val != null) {
-            return Boolean.parseBoolean(val.toString());
-        } else {
-            return def;
-        }
-    }
-}
-<<<<<<<<DIVIDER>>>>>>>>
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-package org.apache.maven.model;
-
-import java.util.stream.Collectors;
-
-/**
- * Class InputLocation.
- *
- * @version $Revision$ $Date$
- */
-@SuppressWarnings("all")
-public final class InputLocation implements java.io.Serializable, Cloneable, InputLocationTracker {
-
-    // --------------------------/
-    // - Class/Member Variables -/
-    // --------------------------/
-
-    /**
-     * The one-based line number. The value will be non-positive if
-     * unknown.
-     */
-    private int lineNumber = -1;
-
-    /**
-     * The one-based column number. The value will be non-positive
-     * if unknown.
-     */
-    private int columnNumber = -1;
-
-    /**
-     * Field source.
-     */
-    private InputSource source;
-
-    /**
-     * Field locations.
-     */
-    private java.util.Map<Object, InputLocation> locations;
-
-    /**
-     * Field location.
-     */
-    private InputLocation location;
-
-    /**
-     * Field importedFrom.
-     */
-    private InputLocation importedFrom;
-
-    // ----------------/
-    // - Constructors -/
-    // ----------------/
-
-    public InputLocation(org.apache.maven.api.model.InputLocation location) {
-        this.lineNumber = location.getLineNumber();
-        this.columnNumber = location.getColumnNumber();
-        this.source = location.getSource() != null ? new InputSource(location.getSource()) : null;
-        this.locations = location.getLocations().isEmpty()
-                ? null
-                : location.getLocations().entrySet().stream()
-                        .collect(Collectors.toMap(
-                                e -> e.getKey(),
-                                e -> e.getValue() == location ? this : new InputLocation(e.getValue())));
-        this.importedFrom = location.getImportedFrom() != null ? new InputLocation(location.getImportedFrom()) : null;
-    }
-
-    public InputLocation(int lineNumber, int columnNumber) {
-        this.lineNumber = lineNumber;
-        this.columnNumber = columnNumber;
-    } // -- org.apache.maven.model.InputLocation(int, int)
-
-    public InputLocation(int lineNumber, int columnNumber, InputSource source) {
-        this.lineNumber = lineNumber;
-        this.columnNumber = columnNumber;
-        this.source = source;
-    } // -- org.apache.maven.model.InputLocation(int, int, InputSource)
-
-    // -----------/
-    // - Methods -/
-    // -----------/
-
-    /**
-     * Method clone.
-     *
-     * @return InputLocation
-     */
-    public InputLocation clone() {
-        try {
-            InputLocation copy = (InputLocation) super.clone();
-
-            if (copy.locations != null) {
-                copy.locations = new java.util.LinkedHashMap(copy.locations);
-            }
-
-            return copy;
-        } catch (Exception ex) {
-            throw (RuntimeException)
-                    new UnsupportedOperationException(getClass().getName() + " does not support clone()").initCause(ex);
-        }
-    } // -- InputLocation clone()
-
-    /**
-     * Get the one-based column number. The value will be
-     * non-positive if unknown.
-     *
-     * @return int
-     */
-    public int getColumnNumber() {
-        return this.columnNumber;
-    } // -- int getColumnNumber()
-
-    /**
-     * Get the one-based line number. The value will be
-     * non-positive if unknown.
-     *
-     * @return int
-     */
-    public int getLineNumber() {
-        return this.lineNumber;
-    } // -- int getLineNumber()
-
-    /**
-     *
-     *
-     * @param key
-     * @return InputLocation
-     */
-    @Override
-    public InputLocation getLocation(Object key) {
-        if (key instanceof String string) {
-            switch (string) {
-                case "": {
-                    return this.location;
-                }
-                default: {
-                    return getOtherLocation(key);
-                }
-            }
-        } else {
-            return getOtherLocation(key);
-        }
-    } // -- InputLocation getLocation( Object )
-
-    /**
-     *
-     *
-     * @return Map
-     */
-    public java.util.Map<Object, InputLocation> getLocations() {
-        return locations;
-    } // -- java.util.Map<Object, InputLocation> getLocations()
-
-    /**
-     *
-     *
-     * @param key
-     * @param location
-     */
-    @Override
-    public void setLocation(Object key, InputLocation location) {
-        if (key instanceof String string) {
-            switch (string) {
-                case "": {
-                    this.location = location;
-                    return;
-                }
-                default: {
-                    setOtherLocation(key, location);
-                    return;
-                }
-            }
-        } else {
-            setOtherLocation(key, location);
-        }
-    } // -- void setLocation( Object, InputLocation )
-
-    /**
-     *
-     *
-     * @param key
-     * @param location
-     */
-    public void setOtherLocation(Object key, InputLocation location) {
-        if (location != null) {
-            if (this.locations == null) {
-                this.locations = new java.util.LinkedHashMap<>();
-            }
-            this.locations.put(key, location);
-        }
-    } // -- void setOtherLocation( Object, InputLocation )
-
-    /**
-     *
-     *
-     * @param key
-     * @return InputLocation
-     */
-    private InputLocation getOtherLocation(Object key) {
-        return (locations != null) ? locations.get(key) : null;
-    } // -- InputLocation getOtherLocation( Object )
-
-    /**
-     * Get the source field.
-     *
-     * @return InputSource
-     */
-    public InputSource getSource() {
-        return this.source;
-    } // -- InputSource getSource()
-
-    /**
-     * Gets the parent InputLocation where this InputLocation may have been imported from.
-     * Can return {@code null}.
-     *
-     * @return InputLocation
-     * @since 4.0.0
-     */
-    public InputLocation getImportedFrom() {
-        return importedFrom;
-    }
-
-    /**
-     * Set the imported from location.
-     *
-     * @param importedFrom
-     */
-    public void setImportedFrom(InputLocation importedFrom) {
-        this.importedFrom = importedFrom;
-    }
-
-    /**
-     * Method merge.
-     *
-     * @param target
-     * @param sourceDominant
-     * @param source
-     * @return InputLocation
-     */
-    public static InputLocation merge(InputLocation target, InputLocation source, boolean sourceDominant) {
-        if (source == null) {
-            return target;
-        } else if (target == null) {
-            return source;
-        }
-
-        InputLocation result = new InputLocation(target.getLineNumber(), target.getColumnNumber(), target.getSource());
-
-        java.util.Map<Object, InputLocation> locations;
-        java.util.Map<Object, InputLocation> sourceLocations = source.getLocations();
-        java.util.Map<Object, InputLocation> targetLocations = target.getLocations();
-        if (sourceLocations == null) {
-            locations = targetLocations;
-        } else if (targetLocations == null) {
-            locations = sourceLocations;
-        } else {
-            locations = new java.util.LinkedHashMap();
-            locations.putAll(sourceDominant ? targetLocations : sourceLocations);
-            locations.putAll(sourceDominant ? sourceLocations : targetLocations);
-        }
-        result.setLocations(locations);
-
-        return result;
-    } // -- InputLocation merge( InputLocation, InputLocation, boolean )
-
-    /**
-     * Method merge.
-     *
-     * @param target
-     * @param indices
-     * @param source
-     * @return InputLocation
-     */
-    public static InputLocation merge(
-            InputLocation target, InputLocation source, java.util.Collection<Integer> indices) {
-        if (source == null) {
-            return target;
-        } else if (target == null) {
-            return source;
-        }
-
-        InputLocation result = new InputLocation(target.getLineNumber(), target.getColumnNumber(), target.getSource());
-
-        java.util.Map<Object, InputLocation> locations;
-        java.util.Map<Object, InputLocation> sourceLocations = source.getLocations();
-        java.util.Map<Object, InputLocation> targetLocations = target.getLocations();
-        if (sourceLocations == null) {
-            locations = targetLocations;
-        } else if (targetLocations == null) {
-            locations = sourceLocations;
-        } else {
-            locations = new java.util.LinkedHashMap<>();
-            for (java.util.Iterator<Integer> it = indices.iterator(); it.hasNext(); ) {
-                InputLocation location;
-                Integer index = it.next();
-                if (index.intValue() < 0) {
-                    location = sourceLocations.get(Integer.valueOf(~index.intValue()));
-                } else {
-                    location = targetLocations.get(index);
-                }
-                locations.put(Integer.valueOf(locations.size()), location);
-            }
-        }
-        result.setLocations(locations);
-
-        return result;
-    } // -- InputLocation merge( InputLocation, InputLocation, java.util.Collection )
-
-    /**
-     *
-     *
-     * @param locations
-     */
-    public void setLocations(java.util.Map<Object, InputLocation> locations) {
-        this.locations = locations;
-    } // -- void setLocations( java.util.Map )
-
-    public org.apache.maven.api.model.InputLocation toApiLocation() {
-        if (locations != null && locations.values().contains(this)) {
-            if (locations.size() == 1 && locations.values().iterator().next() == this) {
-                return new org.apache.maven.api.model.InputLocation(
-                        lineNumber,
-                        columnNumber,
-                        source != null ? source.toApiSource() : null,
-                        locations.keySet().iterator().next());
-            } else {
-                return new org.apache.maven.api.model.InputLocation(
-                        lineNumber, columnNumber, source != null ? source.toApiSource() : null);
-            }
-        } else {
-            return new org.apache.maven.api.model.InputLocation(
-                    lineNumber,
-                    columnNumber,
-                    source != null ? source.toApiSource() : null,
-                    locations != null
-                            ? locations.entrySet().stream().collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()
-                                    .toApiLocation()))
-                            : null);
-        }
-    }
-
-    // -----------------/
-    // - Inner Classes -/
-    // -----------------/
-
-    /**
-     * Class StringFormatter.
-     *
-     * @version $Revision$ $Date$
-     */
-    public abstract static class StringFormatter {
-
-        // -----------/
-        // - Methods -/
-        // -----------/
+    public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
+            implements org.apache.logging.log4j.core.util.Builder<CassandraAppender> {
 
         /**
-         * Method toString.
-         *
-         * @param location
-         * @return String
+         * List of Cassandra node contact points. Addresses without a port (or port set to 0) will use the default
+         * Cassandra port (9042).
          */
-        public abstract String toString(InputLocation location);
-    }
+        @PluginElement("ContactPoints")
+        @Required(message = "No Cassandra servers provided")
+        private SocketAddress[] contactPoints = new SocketAddress[] {SocketAddress.getLoopback()};
 
-    @Override
-    public String toString() {
-        return getLineNumber() + " : " + getColumnNumber() + ", " + getSource();
+        /**
+         * List of column mappings to convert a LogEvent into a database row.
+         */
+        @PluginElement("Columns")
+        @Required(message = "No Cassandra columns provided")
+        private ColumnMapping[] columns;
+
+        @PluginBuilderAttribute
+        private boolean useTls;
+
+        @PluginBuilderAttribute
+        @Required(message = "No cluster name provided")
+        private String clusterName;
+
+        @PluginBuilderAttribute
+        @Required(message = "No keyspace provided")
+        private String keyspace;
+
+        @PluginBuilderAttribute
+        @Required(message = "No table name provided")
+        private String table;
+
+        @PluginBuilderAttribute
+        private String username;
+
+        @PluginBuilderAttribute(sensitive = true)
+        private String password;
+
+        /**
+         * Override the default TimestampGenerator with one based on the configured {@link Clock}.
+         */
+        @PluginBuilderAttribute
+        private boolean useClockForTimestampGenerator;
+
+        /**
+         * Number of LogEvents to buffer before writing. Can be used with or without batch statements.
+         */
+        @PluginBuilderAttribute
+        private int bufferSize;
+
+        /**
+         * Whether or not to use batch statements when inserting records.
+         */
+        @PluginBuilderAttribute
+        private boolean batched;
+
+        /**
+         * If batch statements are enabled, use this type of batch statement.
+         */
+        @PluginBuilderAttribute
+        private BatchStatement.Type batchType = BatchStatement.Type.LOGGED;
+
+        public B setContactPoints(final SocketAddress... contactPoints) {
+            this.contactPoints = contactPoints;
+            return asBuilder();
+        }
+
+        public B setColumns(final ColumnMapping... columns) {
+            this.columns = columns;
+            return asBuilder();
+        }
+
+        public B setUseTls(final boolean useTls) {
+            this.useTls = useTls;
+            return asBuilder();
+        }
+
+        public B setClusterName(final String clusterName) {
+            this.clusterName = clusterName;
+            return asBuilder();
+        }
+
+        public B setKeyspace(final String keyspace) {
+            this.keyspace = keyspace;
+            return asBuilder();
+        }
+
+        public B setTable(final String table) {
+            this.table = table;
+            return asBuilder();
+        }
+
+        public B setUsername(final String username) {
+            this.username = username;
+            return asBuilder();
+        }
+
+        public B setPassword(final String password) {
+            this.password = password;
+            return asBuilder();
+        }
+
+        public B setUseClockForTimestampGenerator(final boolean useClockForTimestampGenerator) {
+            this.useClockForTimestampGenerator = useClockForTimestampGenerator;
+            return asBuilder();
+        }
+
+        public B setBufferSize(final int bufferSize) {
+            this.bufferSize = bufferSize;
+            return asBuilder();
+        }
+
+        public B setBatched(final boolean batched) {
+            this.batched = batched;
+            return asBuilder();
+        }
+
+        public B setBatchType(final BatchStatement.Type batchType) {
+            this.batchType = batchType;
+            return asBuilder();
+        }
+
+        @Override
+        public CassandraAppender build() {
+            final CassandraManager manager = CassandraManager.getManager(
+                    getName(),
+                    contactPoints,
+                    columns,
+                    useTls,
+                    clusterName,
+                    keyspace,
+                    table,
+                    username,
+                    password,
+                    useClockForTimestampGenerator,
+                    bufferSize,
+                    batched,
+                    batchType);
+            return new CassandraAppender(getName(), getFilter(), isIgnoreExceptions(), null, manager);
+        }
     }
 }
 <<<<<<<<DIVIDER>>>>>>>>
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to you under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-package org.apache.maven.model;
+package org.apache.logging.log4j.core.appender.rolling.action;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 /**
- * Class InputSource.
- *
- * @version $Revision$ $Date$
+ * A group of Actions to be executed in sequence.
  */
-@SuppressWarnings("all")
-public class InputSource implements java.io.Serializable, Cloneable {
-
-    // --------------------------/
-    // - Class/Member Variables -/
-    // --------------------------/
+public class CompositeAction extends AbstractAction {
 
     /**
-     *
-     *
-     *             The identifier of the POM in the format {@code
-     * <groupId>:<artifactId>:<version>}.
-     *
-     *
+     * Actions to perform.
      */
-    private String modelId;
+    private final Action[] actions;
 
     /**
-     *
-     *
-     *             The path/URL of the POM or {@code null} if
-     * unknown.
-     *
-     *
+     * Stop on error.
      */
-    private String location;
+    private final boolean stopOnError;
 
     /**
+     * Construct a new composite action.
      *
-     *
-     *             The location of the POM from which this POM was
-     * imported from or {@code null} if unknown.
+     * @param actions     list of actions, may not be null.
+     * @param stopOnError if true, stop on the first false return value or exception.
      */
-    private InputLocation importedFrom;
-
-    // ----------------/
-    // - Constructors -/
-    // ----------------/
-
-    public InputSource() {}
-
-    public InputSource(org.apache.maven.api.model.InputSource source) {
-        this.modelId = source.getModelId();
-        this.location = source.getLocation();
-        this.importedFrom = source.getImportedFrom() != null ? new InputLocation(source.getImportedFrom()) : null;
+    public CompositeAction(final List<Action> actions, final boolean stopOnError) {
+        this.actions = new Action[actions.size()];
+        actions.toArray(this.actions);
+        this.stopOnError = stopOnError;
     }
 
-    // -----------/
-    // - Methods -/
-    // -----------/
-
     /**
-     * Method clone.
-     *
-     * @return InputSource
+     * {@inheritDoc}
      */
-    public InputSource clone() {
+    @Override
+    public void run() {
         try {
-            InputSource copy = (InputSource) super.clone();
-
-            return copy;
-        } catch (Exception ex) {
-            throw (RuntimeException)
-                    new UnsupportedOperationException(getClass().getName() + " does not support clone()").initCause(ex);
+            execute();
+        } catch (final IOException ex) {
+            LOGGER.warn("Exception during file rollover.", ex);
         }
-    } // -- InputSource clone()
-
-    /**
-     * Get the path/URL of the POM or {@code null} if unknown.
-     *
-     * @return String
-     */
-    public String getLocation() {
-        return this.location;
-    } // -- String getLocation()
-
-    /**
-     * Get the identifier of the POM in the format {@code
-     * <groupId>:<artifactId>:<version>}.
-     *
-     * @return String
-     */
-    public String getModelId() {
-        return this.modelId;
-    } // -- String getModelId()
-
-    /**
-     * Set the path/URL of the POM or {@code null} if unknown.
-     *
-     * @param location
-     */
-    public void setLocation(String location) {
-        this.location = location;
-    } // -- void setLocation( String )
-
-    /**
-     * Set the identifier of the POM in the format {@code
-     * <groupId>:<artifactId>:<version>}.
-     *
-     * @param modelId
-     */
-    public void setModelId(String modelId) {
-        this.modelId = modelId;
-    } // -- void setModelId( String )
-
-    /**
-     * Get the location of the POM from which this POM was
-     *
-     * @return
-     */
-    public InputLocation getImportedFrom() {
-        return importedFrom;
     }
 
     /**
-     * Set the location of the POM from which this POM was imported from.
+     * Execute sequence of actions.
      *
-     * @param importedFrom
+     * @return true if all actions were successful.
+     * @throws IOException on IO error.
      */
-    public void setImportedFrom(InputLocation importedFrom) {
-        this.importedFrom = importedFrom;
+    @Override
+    public boolean execute() throws IOException {
+        if (stopOnError) {
+            for (final Action action : actions) {
+                if (!action.execute()) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        boolean status = true;
+        IOException exception = null;
+
+        for (final Action action : actions) {
+            try {
+                status &= action.execute();
+            } catch (final IOException ex) {
+                status = false;
+
+                if (exception == null) {
+                    exception = ex;
+                }
+            }
+        }
+
+        if (exception != null) {
+            throw exception;
+        }
+
+        return status;
     }
 
     @Override
     public String toString() {
-        return getModelId() + " " + getLocation();
+        return CompositeAction.class.getSimpleName() + Arrays.toString(actions);
     }
 
-    public org.apache.maven.api.model.InputSource toApiSource() {
-        return new org.apache.maven.api.model.InputSource(modelId, location);
+    public Action[] getActions() {
+        return actions;
+    }
+
+    public boolean isStopOnError() {
+        return stopOnError;
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to you under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.logging.log4j;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.slf4j.MDC;
+
+/**
+ *
+ */
+@Tag("PerformanceTests")
+class FilterPerformanceComparison {
+
+    private final Logger logger = LogManager.getLogger(FilterPerformanceComparison.class.getName());
+    private final org.slf4j.Logger logbacklogger = org.slf4j.LoggerFactory.getLogger(FilterPerformanceComparison.class);
+
+    // How many times should we try to log:
+    private static final int COUNT = 10000000;
+    private static final int THREADED_COUNT = 100000;
+    private static final int WARMUP = 1000;
+
+    private static final String CONFIG = "log4j2-perf-filter.xml";
+    private static final String LOGBACK_CONFIG = "logback-perf-filter.xml";
+
+    private static final String LOGBACK_CONF = "logback.configurationFile";
+
+    @BeforeAll
+    static void setupClass() {
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
+        System.setProperty(LOGBACK_CONF, LOGBACK_CONFIG);
+    }
+
+    @AfterAll
+    static void cleanupClass() {
+        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
+        System.clearProperty(LOGBACK_CONF);
+    }
+
+    @AfterEach
+    void after() {
+        ThreadContext.clearAll();
+    }
+
+    @Test
+    void testPerformanceEmptyContext() throws Exception {
+        testPerformance(Collections.emptyMap());
+    }
+
+    @Test
+    void testPerformanceNonEmptyContext() throws Exception {
+        testPerformance(createNonEmptyContextData());
+    }
+
+    private Map<String, String> createNonEmptyContextData() {
+        final Map<String, String> context = new HashMap<>();
+        context.put("user0", "Apache");
+        context.put("user1", "Apache");
+        return context;
+    }
+
+    private static void putContextData(final Map<String, String> contextData) {
+        ThreadContext.putAll(contextData);
+        for (final Map.Entry<String, String> entry : contextData.entrySet()) {
+            MDC.put(entry.getKey(), entry.getValue());
+        }
+    }
+
+    private void testPerformance(final Map<String, String> contextData) {
+        putContextData(contextData);
+        Target.LOGBACK.timedLoop(logger, logbacklogger, WARMUP);
+        Target.LOG4J2.timedLoop(logger, logbacklogger, WARMUP);
+
+        System.out.println(
+                "Single-threaded Log4j 2.0, " + (contextData.isEmpty() ? "EMPTY context" : "NON-EMPTY context"));
+
+        final long result3 = Target.LOG4J2.timedLoop(logger, logbacklogger, COUNT);
+        System.out.println(
+                "Single-threaded Logback, " + (contextData.isEmpty() ? "EMPTY context" : "NON-EMPTY context"));
+
+        final long result2 = Target.LOGBACK.timedLoop(logger, logbacklogger, COUNT);
+
+        System.out.println("###############################################");
+        System.out.println("Logback: " + result2);
+        System.out.println("Log4j 2.0: " + result3);
+        System.out.println("###############################################");
+    }
+
+    @Test
+    void testThreadsEmptyContext() throws Exception {
+        testThreads(Collections.emptyMap());
+    }
+
+    @Test
+    void testThreadsNonEmptyContext() throws Exception {
+        testThreads(createNonEmptyContextData());
+    }
+
+    private void testThreads(final Map<String, String> contextData) throws Exception {
+        System.out.println("Testing multithreading");
+        final int threadedCount = COUNT; // THREADED_COUNT * threadCount < COUNT ? COUNT / threadCount : THREADED_COUNT;
+        final int[] threadCounts = new int[] {1, 2, 5, 10, 20, 50};
+        for (final int threadCount : threadCounts) {
+            System.out.println("Testing " + threadCount + " threads, "
+                    + (contextData.isEmpty() ? "EMPTY context" : "NON-EMPTY context"));
+            final Worker[] workers = new Worker[threadCount];
+            final long[] results = new long[threadCount];
+            for (int i = 0; i < threadCount; ++i) {
+                workers[i] = new Worker(Target.LOG4J2, threadedCount, results, i, contextData);
+            }
+            for (int i = 0; i < threadCount; ++i) {
+                workers[i].start();
+            }
+            long total = 0;
+            for (int i = 0; i < threadCount; ++i) {
+                workers[i].join();
+                total += results[i];
+            }
+            final long result3 = total / threadCount;
+            total = 0;
+            for (int i = 0; i < threadCount; ++i) {
+                workers[i] = new Worker(Target.LOGBACK, threadedCount, results, i, contextData);
+            }
+            for (int i = 0; i < threadCount; ++i) {
+                workers[i].start();
+            }
+            for (int i = 0; i < threadCount; ++i) {
+                workers[i].join();
+                total += results[i];
+            }
+            final long result2 = total / threadCount;
+            System.out.println("###############################################");
+            System.out.println("Logback: " + result2);
+            System.out.println("Log4j 2.0: " + result3);
+            System.out.println("###############################################");
+        }
+    }
+
+    private enum Target {
+        LOGBACK {
+            @Override
+            long timedLoop(final Logger logger, final org.slf4j.Logger logbacklogger, final int loop) {
+                final Integer j = Integer.valueOf(2);
+                final long start = System.nanoTime();
+                for (int i = 0; i < loop; i++) {
+                    logbacklogger.debug("SEE IF THIS IS LOGGED {}.", j);
+                }
+                return (System.nanoTime() - start) / loop;
+            }
+        },
+
+        LOG4J2 {
+            @Override
+            long timedLoop(final Logger logger, final org.slf4j.Logger logbacklogger, final int loop) {
+                final Integer j = Integer.valueOf(2);
+                final long start = System.nanoTime();
+                for (int i = 0; i < loop; i++) {
+                    logger.debug("SEE IF THIS IS LOGGED {}.", j);
+                }
+                return (System.nanoTime() - start) / loop;
+            }
+        };
+
+        abstract long timedLoop(final Logger logger, final org.slf4j.Logger logbacklogger, final int loop);
+    }
+
+    private class Worker extends Thread {
+
+        private final Target target;
+        private final int count;
+        private final long[] results;
+        private final int index;
+        private final Map<String, String> contextData;
+
+        public Worker(
+                final Target target,
+                final int count,
+                final long[] results,
+                final int index,
+                final Map<String, String> contextData) {
+            this.target = target;
+            this.count = count;
+            this.results = results;
+            this.index = index;
+            this.contextData = contextData;
+        }
+
+        @Override
+        public void run() {
+            putContextData(contextData);
+            results[index] = target.timedLoop(logger, logbacklogger, count);
+        }
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to you under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.logging.slf4j;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
+import org.apache.logging.log4j.BridgeAware;
+import org.apache.logging.log4j.CloseableThreadContext;
+import org.apache.logging.log4j.CloseableThreadContext.Instance;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogBuilder;
+import org.apache.logging.log4j.Logger;
+import org.slf4j.Marker;
+import org.slf4j.spi.CallerBoundaryAware;
+import org.slf4j.spi.LoggingEventBuilder;
+
+public class Log4jEventBuilder implements LoggingEventBuilder, CallerBoundaryAware {
+
+    private static final String FQCN = Log4jEventBuilder.class.getName();
+
+    private final Log4jMarkerFactory markerFactory;
+    private final Logger logger;
+    private final List<Object> arguments = new ArrayList<>();
+    private String message = null;
+    private org.apache.logging.log4j.Marker marker = null;
+    private Throwable throwable = null;
+    private Map<String, String> keyValuePairs = null;
+    private final Level level;
+    private String fqcn = FQCN;
+
+    public Log4jEventBuilder(final Log4jMarkerFactory markerFactory, final Logger logger, final Level level) {
+        this.markerFactory = markerFactory;
+        this.logger = logger;
+        this.level = level;
+    }
+
+    @Override
+    public LoggingEventBuilder setCause(final Throwable cause) {
+        this.throwable = cause;
+        return this;
+    }
+
+    @Override
+    public LoggingEventBuilder addMarker(final Marker marker) {
+        this.marker = markerFactory.getLog4jMarker(marker);
+        return this;
+    }
+
+    @Override
+    public LoggingEventBuilder addArgument(final Object p) {
+        arguments.add(p);
+        return this;
+    }
+
+    @Override
+    public LoggingEventBuilder addArgument(final Supplier<?> objectSupplier) {
+        arguments.add(objectSupplier.get());
+        return this;
+    }
+
+    @Override
+    public LoggingEventBuilder addKeyValue(final String key, final Object value) {
+        if (keyValuePairs == null) {
+            keyValuePairs = new HashMap<>();
+        }
+        keyValuePairs.put(key, String.valueOf(value));
+        return this;
+    }
+
+    @Override
+    public LoggingEventBuilder addKeyValue(final String key, final Supplier<Object> valueSupplier) {
+        if (keyValuePairs == null) {
+            keyValuePairs = new HashMap<>();
+        }
+        keyValuePairs.put(key, String.valueOf(valueSupplier.get()));
+        return this;
+    }
+
+    @Override
+    public LoggingEventBuilder setMessage(final String message) {
+        this.message = message;
+        return this;
+    }
+
+    @Override
+    public LoggingEventBuilder setMessage(final Supplier<String> messageSupplier) {
+        this.message = messageSupplier.get();
+        return this;
+    }
+
+    @Override
+    public void log() {
+        final LogBuilder logBuilder = logger.atLevel(level).withMarker(marker).withThrowable(throwable);
+        if (logBuilder instanceof BridgeAware) {
+            ((BridgeAware) logBuilder).setEntryPoint(fqcn);
+        }
+        if (keyValuePairs == null || keyValuePairs.isEmpty()) {
+            logBuilder.log(message, arguments.toArray());
+        } else {
+            try (final Instance c = CloseableThreadContext.putAll(keyValuePairs)) {
+                logBuilder.log(message, arguments.toArray());
+            }
+        }
+    }
+
+    @Override
+    public void log(final String message) {
+        setMessage(message);
+        log();
+    }
+
+    @Override
+    public void log(final String message, final Object arg) {
+        setMessage(message);
+        addArgument(arg);
+        log();
+    }
+
+    @Override
+    public void log(final String message, final Object arg0, final Object arg1) {
+        setMessage(message);
+        addArgument(arg0);
+        addArgument(arg1);
+        log();
+    }
+
+    @Override
+    public void log(final String message, final Object... args) {
+        setMessage(message);
+        for (final Object arg : args) {
+            addArgument(arg);
+        }
+        log();
+    }
+
+    @Override
+    public void log(final Supplier<String> messageSupplier) {
+        setMessage(messageSupplier);
+        log();
+    }
+
+    @Override
+    public void setCallerBoundary(String fqcn) {
+        this.fqcn = fqcn;
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to you under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.logging.log4j.spi;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import org.apache.logging.log4j.ThreadContext.ContextStack;
+import org.apache.logging.log4j.util.StringBuilderFormattable;
+
+/**
+ * TODO
+ */
+public class MutableThreadContextStack implements ThreadContextStack, StringBuilderFormattable {
+
+    private static final long serialVersionUID = 50505011L;
+
+    /**
+     * The underlying list (never null).
+     */
+    private final List<String> list;
+
+    private boolean frozen;
+
+    /**
+     * Constructs an empty MutableThreadContextStack.
+     */
+    public MutableThreadContextStack() {
+        this(new ArrayList<String>());
+    }
+
+    /**
+     * Constructs a new instance.
+     * @param list Initial elements to be stored in this stack implementation.
+     */
+    public MutableThreadContextStack(final List<String> list) {
+        this.list = new ArrayList<>(list);
+    }
+
+    private MutableThreadContextStack(final MutableThreadContextStack stack) {
+        this.list = new ArrayList<>(stack.list);
+    }
+
+    private void checkInvariants() {
+        if (frozen) {
+            throw new UnsupportedOperationException("context stack has been frozen");
+        }
+    }
+
+    @Override
+    public String pop() {
+        checkInvariants();
+        if (list.isEmpty()) {
+            return null;
+        }
+        final int last = list.size() - 1;
+        final String result = list.remove(last);
+        return result;
+    }
+
+    @Override
+    public String peek() {
+        if (list.isEmpty()) {
+            return null;
+        }
+        final int last = list.size() - 1;
+        return list.get(last);
+    }
+
+    @Override
+    public void push(final String message) {
+        checkInvariants();
+        list.add(message);
+    }
+
+    @Override
+    public int getDepth() {
+        return list.size();
+    }
+
+    @Override
+    public List<String> asList() {
+        return list;
+    }
+
+    @Override
+    public void trim(final int depth) {
+        checkInvariants();
+        if (depth < 0) {
+            throw new IllegalArgumentException("Maximum stack depth cannot be negative");
+        }
+        if (list == null) {
+            return;
+        }
+        final List<String> copy = new ArrayList<>(list.size());
+        final int count = Math.min(depth, list.size());
+        for (int i = 0; i < count; i++) {
+            copy.add(list.get(i));
+        }
+        list.clear();
+        list.addAll(copy);
+    }
+
+    @Override
+    public ThreadContextStack copy() {
+        return new MutableThreadContextStack(this);
+    }
+
+    @Override
+    public void clear() {
+        checkInvariants();
+        list.clear();
+    }
+
+    @Override
+    public int size() {
+        return list.size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return list.isEmpty();
+    }
+
+    @Override
+    public boolean contains(final Object o) {
+        return list.contains(o);
+    }
+
+    @Override
+    public Iterator<String> iterator() {
+        return list.iterator();
+    }
+
+    @Override
+    public Object[] toArray() {
+        return list.toArray();
+    }
+
+    @Override
+    public <T> T[] toArray(final T[] ts) {
+        return list.toArray(ts);
+    }
+
+    @Override
+    public boolean add(final String s) {
+        checkInvariants();
+        return list.add(s);
+    }
+
+    @Override
+    public boolean remove(final Object o) {
+        checkInvariants();
+        return list.remove(o);
+    }
+
+    @Override
+    public boolean containsAll(final Collection<?> objects) {
+        return list.containsAll(objects);
+    }
+
+    @Override
+    public boolean addAll(final Collection<? extends String> strings) {
+        checkInvariants();
+        return list.addAll(strings);
+    }
+
+    @Override
+    public boolean removeAll(final Collection<?> objects) {
+        checkInvariants();
+        return list.removeAll(objects);
+    }
+
+    @Override
+    public boolean retainAll(final Collection<?> objects) {
+        checkInvariants();
+        return list.retainAll(objects);
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(list);
+    }
+
+    @Override
+    public void formatTo(final StringBuilder buffer) {
+        buffer.append('[');
+        for (int i = 0; i < list.size(); i++) {
+            if (i > 0) {
+                buffer.append(',').append(' ');
+            }
+            buffer.append(list.get(i));
+        }
+        buffer.append(']');
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 + Objects.hashCode(list);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof ThreadContextStack)) {
+            return false;
+        }
+        final ThreadContextStack other = (ThreadContextStack) obj;
+        final List<String> otherAsList = other.asList();
+        return Objects.equals(this.list, otherAsList);
+    }
+
+    @Override
+    public ContextStack getImmutableStackOrNull() {
+        return copy();
+    }
+
+    /**
+     * "Freezes" this context stack so it becomes immutable: all mutator methods will throw an exception from now on.
+     */
+    public void freeze() {
+        frozen = true;
+    }
+
+    /**
+     * Returns whether this context stack is frozen.
+     * @return whether this context stack is frozen.
+     */
+    public boolean isFrozen() {
+        return frozen;
+    }
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to you under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.logging.log4j.core.config;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.Supplier;
+
+/**
+ * Interface for objects that know how to ensure delivery of log events to the appropriate appenders, even during and
+ * after the configuration has been modified while the system is actively used.
+ */
+public interface ReliabilityStrategy {
+
+    /**
+     * Logs an event.
+     *
+     * @param reconfigured supplies the next LoggerConfig if the strategy's LoggerConfig is no longer active
+     * @param loggerName The name of the Logger.
+     * @param fqcn The fully qualified class name of the caller.
+     * @param marker A Marker or null if none is present.
+     * @param level The event Level.
+     * @param data The Message.
+     * @param t A Throwable or null.
+     */
+    void log(
+            Supplier<LoggerConfig> reconfigured,
+            String loggerName,
+            String fqcn,
+            Marker marker,
+            Level level,
+            Message data,
+            Throwable t);
+
+    /**
+     * Logs an event.
+     *
+     * @param reconfigured supplies the next LoggerConfig if the strategy's LoggerConfig is no longer active
+     * @param event The log event.
+     */
+    void log(Supplier<LoggerConfig> reconfigured, LogEvent event);
+
+    /**
+     * For internal use by the ReliabilityStrategy; returns the LoggerConfig to use.
+     *
+     * @param next supplies the next LoggerConfig if the strategy's LoggerConfig is no longer active
+     * @return the currently active LoggerConfig
+     */
+    LoggerConfig getActiveLoggerConfig(Supplier<LoggerConfig> next);
+
+    /**
+     * Called after a log event was logged.
+     */
+    void afterLogEvent();
+
+    /**
+     * Called before all appenders are stopped.
+     */
+    void beforeStopAppenders();
+
+    /**
+     * Called before the configuration is stopped.
+     *
+     * @param configuration the configuration that will be stopped
+     */
+    void beforeStopConfiguration(Configuration configuration);
+}
+<<<<<<<<DIVIDER>>>>>>>>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to you under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.logging.log4j.core.util;
+
+import java.time.Instant;
+import org.apache.logging.log4j.core.time.MutableInstant;
+import org.apache.logging.log4j.core.time.PreciseClock;
+
+/**
+ * Implementation of the {@code Clock} interface that returns the system time.
+ */
+public final class SystemClock implements Clock, PreciseClock {
+
+    /**
+     * Returns the system time.
+     * @return the result of calling {@code System.currentTimeMillis()}
+     */
+    @Override
+    public long currentTimeMillis() {
+        return System.currentTimeMillis();
+    }
+
+    @Override
+    public void init(final MutableInstant mutableInstant) {
+        final Instant instant = java.time.Clock.systemUTC().instant();
+        mutableInstant.initFromEpochSecond(instant.getEpochSecond(), instant.getNano());
     }
 }

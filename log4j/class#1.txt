@@ -1,92 +1,181 @@
-package ident$1.ident$2.ident$3.ident$4;
-import java.ident$7.ident$8;
-import java.ident$7.ident$9;
-import java.ident$7.ident$10;
-import java.ident$7.ident$11;
-import java.ident$7.ident$12;
-import java.ident$7.ident$13;
-import java.ident$7.ident$14;
-import java.ident$7.ident$15;
-import java.ident$7.ident$16;
-import java.ident$7.ident$17;
-import java.ident$7.ident$18.ident$19;
-import ident$1.ident$2.ident$3.ident$20.ident$21;
-import ident$1.ident$2.ident$3.ident$22.ident$23;
-import ident$1.ident$2.ident$3.ident$22.ident$24;
-import ident$1.ident$2.ident$3.ident$22.ident$25;
-import ident$1.ident$2.ident$3.ident$22.ident$26;
-public class ident$29 implements ident$21 {
-private final ident$26 ident$33;
-private final ident$14<ident$25> ident$34;
-private final ident$15<ident$25, Integer> ident$36;
-private final ident$15<String, ident$25> ident$38;
-public ident$29(ident$9<ident$25> ident$38)
-throws ident$23, ident$24 {
-this(ident$38, ident$38);
+package ident$1.ident$2.ident$3.ident$4.ident$5;
+import java.ident$8.ident$9;
+import java.ident$8.ident$10;
+import java.ident$8.ident$11;
+import java.ident$8.ident$12;
+import java.ident$8.ident$13;
+import ident$1.ident$2.ident$3.ident$4.ident$14.ident$15;
+import ident$1.ident$2.ident$3.ident$4.ident$8.ident$16;
+public class ident$19 implements ident$21, ident$16 {
+private static final long ident$26 = 50505011ident$27;
+private final ident$12<String> ident$29;
+private boolean ident$31;
+public ident$19() {
+this(new ident$9<String>());
 }
-@Deprecated
-public ident$29(ident$14<ident$25> ident$34, ident$9<ident$25> ident$38)
-throws ident$23, ident$24 {
-this((ident$9<ident$25>) ident$34, ident$38);
+public ident$19(final ident$12<String> ident$29) {
+this.ident$29 = new ident$9<>(ident$29);
 }
-public ident$29(ident$9<ident$25> ident$34, ident$9<ident$25> ident$38)
-throws ident$23, ident$24 {
-this.ident$34 = ident$10.ident$42(new ident$8<>(ident$34));
-this.ident$33 = new ident$26(ident$38);
-this.ident$36 = new ident$12<>();
-this.ident$38 = new ident$12<>();
-ident$14<ident$25> ident$44 = this.ident$33.ident$45();
-for (int ident$48 = 0; ident$48 < ident$44.ident$49(); ident$48++) {
-ident$25 ident$22 = ident$44.ident$50(ident$48);
-String ident$51 = ident$26.ident$52(ident$22);
-this.ident$38.ident$53(ident$51, ident$22);
-this.ident$36.ident$53(ident$22, ident$48);
+private ident$19(final ident$19 ident$34) {
+this.ident$29 = new ident$9<>(ident$34.ident$29);
+}
+private void ident$36() {
+if (ident$31) {
+throw new UnsupportedOperationException("literal$0");
 }
 }
 @Override
-public ident$14<ident$25> ident$55() {
-return this.ident$34;
+public String ident$41() {
+ident$36();
+if (ident$29.ident$42()) {
+return null;
+}
+final int ident$46 = ident$29.ident$47() - 1;
+final String ident$48 = ident$29.ident$49(ident$46);
+return ident$48;
 }
 @Override
-public ident$14<ident$25> ident$45() {
-return new ident$8<>(ident$33.ident$45());
+public String ident$50() {
+if (ident$29.ident$42()) {
+return null;
+}
+final int ident$46 = ident$29.ident$47() - 1;
+return ident$29.ident$51(ident$46);
 }
 @Override
-public ident$14<ident$25> ident$57(ident$25 ident$22, boolean transitive) {
-ident$16.ident$60(ident$22, "literal$0");
-ident$17<String> ident$61 = new ident$13<>();
-ident$57(ident$26.ident$52(ident$22), ident$61, transitive);
-return ident$45(ident$61);
-}
-private void ident$57(String ident$63, ident$17<String> ident$61, boolean transitive) {
-for (String ident$51 : ident$33.ident$64(ident$63)) {
-if (ident$61.ident$66(ident$51) && transitive) {
-ident$57(ident$51, ident$61, transitive);
-}
-}
+public void ident$52(final String ident$53) {
+ident$36();
+ident$29.ident$54(ident$53);
 }
 @Override
-public ident$14<ident$25> ident$67(ident$25 ident$22, boolean transitive) {
-ident$16.ident$60(ident$22, "literal$0");
-ident$17<String> ident$61 = new ident$13<>();
-ident$67(ident$26.ident$52(ident$22), ident$61, transitive);
-return ident$45(ident$61);
-}
-private void ident$67(String ident$63, ident$9<String> ident$61, boolean transitive) {
-for (String ident$51 : ident$33.ident$68(ident$63)) {
-if (ident$61.ident$66(ident$51) && transitive) {
-ident$67(ident$51, ident$61, transitive);
-}
-}
-}
-private ident$14<ident$25> ident$45(ident$17<String> ident$61) {
-return ident$61.ident$18()
-.ident$69(ident$38::ident$50)
-.ident$44(ident$11.ident$70(ident$36::ident$50))
-.ident$71(ident$19.ident$72());
+public int ident$55() {
+return ident$29.ident$47();
 }
 @Override
-public String ident$73() {
-return ident$33.ident$45().ident$73();
+public ident$12<String> ident$56() {
+return ident$29;
+}
+@Override
+public void ident$57(final int ident$58) {
+ident$36();
+if (ident$58 < 0) {
+throw new IllegalArgumentException("literal$1");
+}
+if (ident$29 == null) {
+return;
+}
+final ident$12<String> ident$60 = new ident$9<>(ident$29.ident$47());
+final int ident$61 = Math.ident$63(ident$58, ident$29.ident$47());
+for (int ident$65 = 0; ident$65 < ident$61; ident$65++) {
+ident$60.ident$54(ident$29.ident$51(ident$65));
+}
+ident$29.ident$66();
+ident$29.ident$67(ident$60);
+}
+@Override
+public ident$21 ident$60() {
+return new ident$19(this);
+}
+@Override
+public void ident$66() {
+ident$36();
+ident$29.ident$66();
+}
+@Override
+public int ident$47() {
+return ident$29.ident$47();
+}
+@Override
+public boolean ident$42() {
+return ident$29.ident$42();
+}
+@Override
+public boolean ident$68(final Object ident$70) {
+return ident$29.ident$68(ident$70);
+}
+@Override
+public ident$11<String> ident$71() {
+return ident$29.ident$71();
+}
+@Override
+public Object[] ident$72() {
+return ident$29.ident$72();
+}
+@Override
+public <ident$73> ident$73[] ident$72(final ident$73[] ident$74) {
+return ident$29.ident$72(ident$74);
+}
+@Override
+public boolean ident$54(final String ident$75) {
+ident$36();
+return ident$29.ident$54(ident$75);
+}
+@Override
+public boolean ident$49(final Object ident$70) {
+ident$36();
+return ident$29.ident$49(ident$70);
+}
+@Override
+public boolean ident$76(final ident$10<?> ident$77) {
+return ident$29.ident$76(ident$77);
+}
+@Override
+public boolean ident$67(final ident$10<? extends String> ident$79) {
+ident$36();
+return ident$29.ident$67(ident$79);
+}
+@Override
+public boolean ident$80(final ident$10<?> ident$77) {
+ident$36();
+return ident$29.ident$80(ident$77);
+}
+@Override
+public boolean ident$81(final ident$10<?> ident$77) {
+ident$36();
+return ident$29.ident$81(ident$77);
+}
+@Override
+public String ident$82() {
+return String.ident$83(ident$29);
+}
+@Override
+public void ident$84(final StringBuilder ident$86) {
+ident$86.ident$87('char-literal$2');
+for (int ident$65 = 0; ident$65 < ident$29.ident$47(); ident$65++) {
+if (ident$65 > 0) {
+ident$86.ident$87('char-literal$3').ident$87('char-literal$4');
+}
+ident$86.ident$87(ident$29.ident$51(ident$65));
+}
+ident$86.ident$87('char-literal$5');
+}
+@Override
+public int ident$88() {
+return 31 + ident$13.ident$88(ident$29);
+}
+@Override
+public boolean ident$89(final Object ident$90) {
+if (this == ident$90) {
+return ident$91;
+}
+if (ident$90 == null) {
+return ident$92;
+}
+if (!(ident$90 instanceof ident$21)) {
+return ident$92;
+}
+final ident$21 ident$94 = (ident$21) ident$90;
+final ident$12<String> ident$95 = ident$94.ident$56();
+return ident$13.ident$89(this.ident$29, ident$95);
+}
+@Override
+public ident$15 ident$96() {
+return ident$60();
+}
+public void ident$97() {
+ident$31 = ident$91;
+}
+public boolean ident$98() {
+return ident$31;
 }
 }

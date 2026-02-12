@@ -1,47 +1,21 @@
-package ident$1.ident$2.ident$3.ident$4;
-@SuppressWarnings("literal$0")
-public class ident$8 implements java.ident$11.ident$12, Cloneable {
-private String ident$16;
-private String ident$17;
-private ident$18 ident$19;
-public ident$8() {}
-public ident$8(ident$1.ident$2.ident$3.ident$20.ident$4.ident$8 ident$21) {
-this.ident$16 = ident$21.ident$23();
-this.ident$17 = ident$21.ident$24();
-this.ident$19 = ident$21.ident$25() != null ? new ident$18(ident$21.ident$25()) : null;
-}
-public ident$8 ident$28() {
-try {
-ident$8 ident$30 = (ident$8) super.ident$28();
-return ident$30;
-} catch (Exception ident$35) {
-throw (RuntimeException)
-new UnsupportedOperationException(ident$39().ident$40() + "literal$1").ident$41(ident$35);
-}
-}
-public String ident$24() {
-return this.ident$17;
-}
-public String ident$23() {
-return this.ident$16;
-}
-public void ident$43(String ident$17) {
-this.ident$17 = ident$17;
-}
-public void ident$44(String ident$16) {
-this.ident$16 = ident$16;
-}
-public ident$18 ident$25() {
-return ident$19;
-}
-public void ident$45(ident$18 ident$19) {
-this.ident$19 = ident$19;
-}
-@Override
-public String ident$47() {
-return ident$23() + "literal$2" + ident$24();
-}
-public ident$1.ident$2.ident$3.ident$20.ident$4.ident$8 ident$48() {
-return new ident$1.ident$2.ident$3.ident$20.ident$4.ident$8(ident$16, ident$17);
-}
+package ident$1.ident$2.ident$3.ident$4.ident$5.ident$6;
+import ident$1.ident$2.ident$3.ident$4.ident$8;
+import ident$1.ident$2.ident$3.ident$4.ident$9;
+import ident$1.ident$2.ident$3.ident$4.ident$5.ident$10;
+import ident$1.ident$2.ident$3.ident$4.ident$11.ident$12;
+import ident$1.ident$2.ident$3.ident$4.ident$13.ident$14;
+public interface ident$17 {
+void ident$19(
+ident$14<ident$20> ident$21,
+String ident$23,
+String ident$24,
+ident$9 ident$25,
+ident$8 ident$26,
+ident$12 ident$27,
+Throwable ident$29);
+void ident$19(ident$14<ident$20> ident$21, ident$10 ident$30);
+ident$20 ident$31(ident$14<ident$20> ident$32);
+void ident$33();
+void ident$34();
+void ident$35(ident$36 ident$37);
 }

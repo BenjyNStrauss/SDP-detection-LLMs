@@ -1,73 +1,15 @@
-package ident$1.ident$2.ident$3.ident$4;
-import java.ident$7.ident$8;
+package ident$1.ident$2.ident$3.ident$4.ident$5.ident$6;
 import java.ident$9.ident$10;
-import java.ident$9.ident$11;
-import java.ident$9.ident$12.ident$13;
-import ident$1.ident$2.ident$3.ident$4.ident$14.ident$15;
-import ident$1.ident$2.ident$3.ident$4.ident$16.ident$17;
-import ident$1.ident$2.ident$3.ident$4.ident$18.ident$19;
-import ident$1.ident$2.ident$3.ident$4.ident$20.ident$21.ident$22;
-import ident$1.ident$2.ident$3.ident$4.ident$23.ident$24;
-import ident$1.ident$2.ident$3.ident$4.ident$23.ident$25;
-import ident$1.ident$2.ident$3.ident$4.ident$23.ident$26;
-public interface ident$29 extends Comparable<ident$29> {
-@Deprecated(ident$33 = "literal$0")
-String ident$35 = "literal$1";
-@Deprecated(ident$33 = "literal$0")
-String ident$36 = "literal$2";
-String ident$37 = "literal$3";
-ident$13 ident$38 = ident$13.ident$39("literal$4");
-String ident$40 = "literal$5";
-String ident$41 = "literal$6";
-String ident$42 = "literal$7";
-String ident$43 = "literal$8";
-String ident$44 = "literal$9";
-String ident$45 = "literal$10";
-String ident$46 = "literal$11";
-String ident$47 = "literal$12";
-String ident$48();
-String ident$49();
-String ident$50();
-void ident$52(String ident$53);
-String ident$54();
-String ident$55();
-String ident$56();
-boolean ident$58();
-ident$8 ident$59();
-void ident$60(ident$8 ident$61);
-String ident$62();
-void ident$63(String ident$64);
-String ident$65();
-String ident$66();
-void ident$67(ident$17 ident$16);
-ident$10<ident$17> ident$68();
-void ident$69(ident$19 ident$70);
-ident$19 ident$71();
-void ident$72(String ident$53, ident$19 ident$73);
-String ident$74();
-void ident$75(String ident$76);
-ident$22 ident$77();
-void ident$78(ident$22 ident$79);
-ident$15 ident$80();
-ident$11<String> ident$81();
-void ident$82(ident$11<String> ident$83);
-void ident$84(String ident$85);
-ident$26 ident$86();
-void ident$87(ident$26 ident$88);
-void ident$89(String ident$53);
-void ident$90(String ident$91);
-void ident$92(String ident$93);
-boolean ident$94();
-void ident$95(boolean ident$96);
-boolean ident$97();
-void ident$98(String ident$53);
-void ident$99(ident$15 ident$14);
-boolean ident$100();
-void ident$101(boolean ident$102);
-ident$11<ident$24> ident$103();
-void ident$104(ident$11<ident$24> ident$105);
-boolean ident$106();
-void ident$107(boolean ident$108);
-ident$24 ident$109() throws ident$25;
-boolean ident$111() throws ident$25;
+import ident$1.ident$2.ident$3.ident$4.ident$5.ident$9.ident$11;
+import ident$1.ident$2.ident$3.ident$4.ident$5.ident$9.ident$12;
+public final class ident$16 implements ident$18, ident$12 {
+@Override
+public long ident$21() {
+return System.ident$21();
+}
+@Override
+public void ident$25(final ident$11 ident$26) {
+final ident$10 ident$27 = java.ident$9.ident$18.ident$28().ident$27();
+ident$26.ident$29(ident$27.ident$30(), ident$27.ident$31());
+}
 }

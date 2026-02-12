@@ -1,13 +1,4 @@
 package ident$1.ident$2.ident$3.ident$4;
-import ident$1.ident$2.ident$3.ident$6.ident$7;
-import ident$1.ident$8.ident$9.ident$10.ident$11.ident$12;
-public class ident$15 extends Exception {
-private final ident$7 ident$4;
-public ident$15(ident$7 ident$4, ident$12 ident$20) {
-super("literal$0" + ident$4.ident$22());
-this.ident$4 = ident$4;
-}
-public ident$7 ident$24() {
-return ident$4;
-}
+public interface ident$7 {
+void ident$9(final String ident$12);
 }

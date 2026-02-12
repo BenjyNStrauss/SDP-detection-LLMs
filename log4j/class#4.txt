@@ -1,137 +1,167 @@
 package ident$1.ident$2.ident$3.ident$4;
-import javax.ident$7.ident$8;
-import javax.ident$7.ident$9;
-import javax.ident$7.ident$10;
-import java.ident$12.ident$13;
-import java.ident$14.ident$15;
-import java.ident$14.ident$16;
-import java.ident$14.ident$17;
-import java.ident$14.ident$18;
-import ident$1.ident$2.ident$3.ident$19.ident$20;
-import ident$1.ident$2.ident$3.ident$21.ident$22;
-import ident$1.ident$2.ident$3.ident$21.ident$23.ident$24;
-import ident$1.ident$2.ident$3.ident$25.ident$26;
-import ident$1.ident$2.ident$3.ident$27.ident$28;
-import ident$1.ident$2.ident$3.ident$27.ident$29;
-import ident$1.ident$2.ident$3.ident$27.ident$30;
-import ident$1.ident$2.ident$3.ident$27.ident$31;
-import ident$1.ident$2.ident$3.ident$27.ident$32;
-import ident$1.ident$2.ident$3.ident$27.ident$33;
-import ident$1.ident$2.ident$3.ident$34.ident$35.ident$36;
-import ident$1.ident$2.ident$3.ident$34.ident$35.ident$37;
-@ident$9
-@ident$10
-public class ident$40 implements ident$42 {
-private final ident$26 ident$45;
-@ident$8
-public ident$40(ident$26 ident$45) {
-this.ident$45 = ident$45;
+import java.ident$7.ident$8;
+import java.ident$7.ident$9;
+import java.ident$7.ident$10;
+import ident$1.ident$2.ident$3.ident$4.ident$11.ident$12.ident$13;
+import ident$1.ident$14.ident$15.ident$16.ident$17;
+import ident$1.ident$14.ident$15.ident$16.ident$18;
+import ident$1.ident$14.ident$15.ident$16.ident$19;
+import ident$1.ident$14.ident$15.ident$16.ident$20;
+import ident$1.ident$14.ident$15.ident$16.ident$21;
+import ident$1.ident$22.ident$23;
+@ident$20("literal$0")
+class ident$25 {
+private final ident$28 ident$29 = ident$30.ident$31(ident$25.class.ident$32());
+private final ident$1.ident$22.ident$28 ident$33 = ident$1.ident$22.ident$34.ident$31(ident$25.class);
+private static final int ident$37 = 10000000;
+private static final int ident$38 = 100000;
+private static final int ident$39 = 1000;
+private static final String ident$41 = "literal$1";
+private static final String ident$42 = "literal$2";
+private static final String ident$43 = "literal$3";
+@ident$19
+static void ident$45() {
+System.ident$47(ident$13.ident$48, ident$41);
+System.ident$47(ident$43, ident$42);
+}
+@ident$17
+static void ident$49() {
+System.ident$50(ident$13.ident$48);
+System.ident$50(ident$43);
+}
+@ident$18
+void ident$51() {
+ident$52.ident$53();
+}
+@ident$21
+void ident$54() throws Exception {
+ident$57(ident$8.ident$58());
+}
+@ident$21
+void ident$59() throws Exception {
+ident$57(ident$60());
+}
+private ident$10<String, String> ident$60() {
+final ident$10<String, String> ident$61 = new ident$9<>();
+ident$61.ident$63("literal$4", "literal$5");
+ident$61.ident$63("literal$6", "literal$5");
+return ident$61;
+}
+private static void ident$65(final ident$10<String, String> ident$66) {
+ident$52.ident$67(ident$66);
+for (final ident$10.ident$69<String, String> ident$70 : ident$66.ident$71()) {
+ident$23.ident$63(ident$70.ident$72(), ident$70.ident$73());
+}
+}
+private void ident$57(final ident$10<String, String> ident$66) {
+ident$65(ident$66);
+ident$74.ident$75.ident$76(ident$29, ident$33, ident$39);
+ident$74.ident$77.ident$76(ident$29, ident$33, ident$39);
+System.ident$78.ident$79(
+"literal$7" + (ident$66.ident$80() ? "literal$8" : "literal$9"));
+final long ident$82 = ident$74.ident$77.ident$76(ident$29, ident$33, ident$37);
+System.ident$78.ident$79(
+"literal$10" + (ident$66.ident$80() ? "literal$8" : "literal$9"));
+final long ident$82 = ident$74.ident$75.ident$76(ident$29, ident$33, ident$37);
+System.ident$78.ident$79("literal$11");
+System.ident$78.ident$79("literal$12" + ident$82);
+System.ident$78.ident$79("literal$13" + ident$82);
+System.ident$78.ident$79("literal$11");
+}
+@ident$21
+void ident$83() throws Exception {
+ident$84(ident$8.ident$58());
+}
+@ident$21
+void ident$85() throws Exception {
+ident$84(ident$60());
+}
+private void ident$84(final ident$10<String, String> ident$66) throws Exception {
+System.ident$78.ident$79("literal$14");
+final int ident$86 = ident$37;
+final int[] ident$87 = new int[] {1, 2, 5, 10, 20, 50};
+for (final int ident$88 : ident$87) {
+System.ident$78.ident$79("literal$15" + ident$88 + "literal$16"
++ (ident$66.ident$80() ? "literal$8" : "literal$9"));
+final ident$89[] ident$90 = new ident$89[ident$88];
+final long[] ident$91 = new long[ident$88];
+for (int ident$92 = 0; ident$92 < ident$88; ++ident$92) {
+ident$90[ident$92] = new ident$89(ident$74.ident$77, ident$86, ident$91, ident$92, ident$66);
+}
+for (int ident$92 = 0; ident$92 < ident$88; ++ident$92) {
+ident$90[ident$92].ident$93();
+}
+long ident$94 = 0;
+for (int ident$92 = 0; ident$92 < ident$88; ++ident$92) {
+ident$90[ident$92].ident$95();
+ident$94 += ident$91[ident$92];
+}
+final long ident$82 = ident$94 ident$88;
+ident$94 = 0;
+for (int ident$92 = 0; ident$92 < ident$88; ++ident$92) {
+ident$90[ident$92] = new ident$89(ident$74.ident$75, ident$86, ident$91, ident$92, ident$66);
+}
+for (int ident$92 = 0; ident$92 < ident$88; ++ident$92) {
+ident$90[ident$92].ident$93();
+}
+for (int ident$92 = 0; ident$92 < ident$88; ++ident$92) {
+ident$90[ident$92].ident$95();
+ident$94 += ident$91[ident$92];
+}
+final long ident$82 = ident$94 ident$88;
+System.ident$78.ident$79("literal$11");
+System.ident$78.ident$79("literal$12" + ident$82);
+System.ident$78.ident$79("literal$13" + ident$82);
+System.ident$78.ident$79("literal$11");
+}
+}
+private enum ident$74 {
+ident$75 {
+@Override
+long ident$76(final ident$28 ident$29, final ident$1.ident$22.ident$28 ident$33, final int ident$98) {
+final Integer ident$100 = Integer.ident$101(2);
+final long ident$93 = System.ident$102();
+for (int ident$92 = 0; ident$92 < ident$98; ident$92++) {
+ident$33.ident$103("literal$17", ident$100);
+}
+return (System.ident$102() - ident$93) ident$98;
+}
+},
+ident$77 {
+@Override
+long ident$76(final ident$28 ident$29, final ident$1.ident$22.ident$28 ident$33, final int ident$98) {
+final Integer ident$100 = Integer.ident$101(2);
+final long ident$93 = System.ident$102();
+for (int ident$92 = 0; ident$92 < ident$98; ident$92++) {
+ident$29.ident$103("literal$17", ident$100);
+}
+return (System.ident$102() - ident$93) ident$98;
+}
+};
+abstract long ident$76(final ident$28 ident$29, final ident$1.ident$22.ident$28 ident$33, final int ident$98);
+}
+private class ident$89 extends Thread {
+private final ident$74 ident$107;
+private final int ident$108;
+private final long[] ident$91;
+private final int ident$109;
+private final ident$10<String, String> ident$66;
+public ident$89(
+final ident$74 ident$107,
+final int ident$108,
+final long[] ident$91,
+final int ident$109,
+final ident$10<String, String> ident$66) {
+this.ident$107 = ident$107;
+this.ident$108 = ident$108;
+this.ident$91 = ident$91;
+this.ident$109 = ident$109;
+this.ident$66 = ident$66;
 }
 @Override
-public ident$48 ident$49(ident$48 ident$50, ident$36 ident$51)
-throws ident$53 {
-if (ident$51 != null) {
-ident$18<String, ident$17<ident$37>> ident$57 = new ident$16<>(2);
-for (ident$37 ident$35 : ident$51.ident$60()) {
-if (!ident$57.ident$61(ident$35.ident$62())) {
-ident$57.ident$63(ident$35.ident$62(), new ident$15<>());
+public void ident$112() {
+ident$65(ident$66);
+ident$91[ident$109] = ident$107.ident$76(ident$29, ident$33, ident$108);
 }
-ident$57.ident$64(ident$35.ident$62()).ident$65(ident$35);
-}
-ident$50.ident$66(ident$57);
-}
-return ident$50;
-}
-@Override
-public ident$48 ident$68(ident$48 ident$50)
-throws ident$53 {
-ident$69(ident$50);
-ident$70(ident$50);
-ident$71(ident$50);
-return ident$50;
-}
-private void ident$71(ident$48 ident$50) {
-ident$50.ident$73("literal$0");
-ident$50.ident$73("literal$1");
-}
-private void ident$70(ident$48 ident$50) throws ident$53 {
-if (ident$50.ident$74() == null) {
-ident$50.ident$75(ident$76(ident$50));
-}
-if (ident$50.ident$77() == null) {
-ident$50.ident$78(new ident$13(ident$50.ident$74().ident$79()).ident$80());
-}
-}
-private ident$24 ident$76(ident$48 ident$50)
-throws ident$53 {
-String ident$81 = null;
-if (ident$50.ident$77() != null) {
-ident$81 = ident$50.ident$77().ident$82();
-}
-if (ident$81 == null || ident$81.ident$83()) {
-String ident$84 = ident$50.ident$85().ident$86(ident$20.ident$87);
-if (ident$84 == null) {
-ident$84 = ident$50.ident$88().ident$86("literal$2") + ident$13.ident$89 + "literal$3";
-}
-ident$81 = new ident$13(ident$84, "literal$4").ident$82();
-}
-try {
-return ident$45.ident$76(new ident$13(ident$81));
-} catch (Exception ident$93) {
-throw new ident$53("literal$5", ident$93);
-}
-}
-private void ident$69(ident$48 ident$50) {
-if (ident$50.ident$95() == null && ident$50.ident$96() != null) {
-ident$50.ident$97(ident$50.ident$96().ident$80().ident$98());
-}
-}
-@Override
-@Deprecated
-public ident$48 ident$100(ident$48 ident$50, ident$32 ident$27)
-throws ident$53 {
-if (ident$27 == null) {
-return ident$50;
-}
-ident$50.ident$101(ident$27.ident$102());
-ident$50.ident$103(ident$27.ident$104());
-ident$50.ident$105(ident$27.ident$106());
-ident$50.ident$78(ident$27.ident$74());
-for (ident$31 ident$107 : ident$27.ident$108()) {
-ident$107 = ident$107.ident$109();
-ident$50.ident$110(ident$107);
-}
-for (ident$29 ident$111 : ident$27.ident$112()) {
-if (!ident$111.ident$113()) {
-continue;
-}
-ident$111 = ident$111.ident$109();
-ident$50.ident$115(ident$111);
-}
-for (ident$28 ident$116 : ident$27.ident$117()) {
-ident$116 = ident$116.ident$109();
-ident$50.ident$118(ident$116);
-}
-ident$50.ident$119(ident$27.ident$120());
-for (ident$1.ident$2.ident$3.ident$27.ident$121 ident$122 : ident$27.ident$123()) {
-ident$50.ident$124(ident$33.ident$125(ident$122));
-if (ident$27.ident$120().ident$126(ident$122.ident$127())) {
-ident$17<ident$30> ident$128 = ident$122.ident$129();
-for (ident$30 ident$130 : ident$128) {
-try {
-ident$50.ident$131(ident$26.ident$132(ident$130));
-} catch (ident$22 ident$93) {
-}
-}
-ident$17<ident$30> ident$133 = ident$122.ident$134();
-for (ident$30 ident$135 : ident$133) {
-try {
-ident$50.ident$136(ident$26.ident$132(ident$135));
-} catch (ident$22 ident$93) {
-}
-}
-}
-}
-return ident$50;
 }
 }
