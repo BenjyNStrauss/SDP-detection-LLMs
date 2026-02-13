@@ -1,0 +1,58 @@
+SDP Patterns:
+
+[ 1] Abstract Factory
+[ 2] Adapter
+[ 3] Aggregator
+[ 4] Assembler
+[ 5] Bridge
+[ 6] Builder
+[ 7] Bulkhead
+[ 8] Chain of Responsibility
+[ 9] Command
+[10] Composite
+[11] Data Access Object
+[12] Data Transfer Object
+[13] Double-Checked Locking
+[14] Decorator
+[15] Delegation
+[16] Dependency Injection
+[17] Facade
+[18] Factory Method
+[19] Fluent Interface
+[20] Flyweight
+[21] Gateway
+[22] Identity Map
+[23] Interpreter
+[24] Iterator
+[25] Lazy Initialization
+[26] Marker Interface
+[27] Master-Slave
+[28] Mediator
+[29] Memento
+[30] Monitor
+[31] Monostate
+[32] Multiton
+[33] Null Object
+[34] Object Pool
+[35] Observer
+[36] Pipeline
+[37] Plugin
+[38] Producer-Consumer
+[39] Prototype
+[40] Proxy
+[41] RAII (Resource Authorization is Initialization?)
+[42] Registry
+[43] Repository
+[44] Resource Pool
+[45] Service Layer
+[46] Service Locator
+[47] Service Provider Interface
+[48] Singleton
+[49] Specification
+[50] State
+[51] Strategy
+[52] Template Method
+[53] Thread Pool
+[54] Throttler
+[55] Value Object
+[56] Visitor
