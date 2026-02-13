@@ -19,7 +19,8 @@ To use the parser:
 
 Place files in a directory "analysis" before running.  If bugs occur, please email benjynstrauss@gmail.com with the stack trace.
 
-**To File Reviews:**
+# To File Reviews:
+
 (1) Choose a file to review
 (2) Select which Pattern(s) the file fits from list-of-patterns.txt
 (3) Email your selections to benjynstrauss@gmail.com **(do NOT upload to the repo!)**
