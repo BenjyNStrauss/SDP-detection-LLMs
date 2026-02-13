@@ -25,6 +25,8 @@ Place files in a directory "analysis" before running.  If bugs occur, please ema
 
 (2) Select which Pattern(s) the file fits from list-of-patterns.txt
 
+(2a) You can also mention the confidence in your assesment and the correctness of the pattern
+
 (3) Email your selections to benjynstrauss@gmail.com **(do NOT upload to the repo!)**
 
 (4) Repeat as desired
