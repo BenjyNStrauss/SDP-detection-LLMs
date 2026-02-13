@@ -23,7 +23,7 @@ Place files in a directory "analysis" before running.  If bugs occur, please ema
 
 (1) Choose a file to review
 
-(2) Select which Pattern(s) the file fits from list-of-patterns.txt
+(2) Select which Pattern(s) the file fits from list-of-patterns.txt (alternatively, you could add something new)
 
 (2a) You can also mention the confidence in your assesment and the correctness of the pattern
 
