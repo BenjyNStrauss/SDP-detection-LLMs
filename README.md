@@ -22,9 +22,14 @@ Place files in a directory "analysis" before running.  If bugs occur, please ema
 # To File Reviews:
 
 (1) Choose a file to review
+
 (2) Select which Pattern(s) the file fits from list-of-patterns.txt
+
 (3) Email your selections to benjynstrauss@gmail.com **(do NOT upload to the repo!)**
+
 (4) Repeat as desired
 
+
 (Don't worry about duplicate reviews with other reviewers, more is always better)
+
 Files like "class#0.txt" are anonymized versions of other files – they do not need reviews.
