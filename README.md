@@ -19,7 +19,7 @@ To use the parser:
 
 Place files in a directory "analysis" before running.  If bugs occur, please email benjynstrauss@gmail.com with the stack trace.
 
-# To File Reviews:
+# To File Reviewers:
 
 (1) Choose a file to review
 
