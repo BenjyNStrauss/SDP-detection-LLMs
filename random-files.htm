@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script>
+   const files = [
+    "hadoop/DiskValidatorFactory.java",
+    "hadoop/ExternalCall.java",
+    "hadoop/GangliaMetricVisitor.java",
+    "hadoop/LeaseRecoverable.java",
+    "hadoop/ProtobufHelper.java",
+    "hadoop/RefreshRegistry.java",
+    "hadoop/SnapshotCommands.java",
+    "jena/CollectionFactory.java",
+    "jena/Graph.java",
+    "jena/LangTagX.java",
+    "jena/LocatorURL.java",
+    "jena/ModelListenerAdapter.java",
+    "jena/RDFS.java",
+    "jena/ReasonerVocabulary.java",
+    "jena/SchemaDVFactory.java",
+    "jena/TypeMapper.java",
+    "jena/ValidatedInfo.java",
+    "kafka/AssignmentsHelper.java",
+    "kafka/BoundedList.java",
+    "kafka/DelayedOperation.java",
+    "kafka/DescribeTopicPartitionsRequestHandler.java",
+    "kafka/EventQueue.java",
+    "kafka/LoggingFaultHandler.java",
+    "kafka/LogManagerBuilder.java",
+    "kafka/PendingRemoteFetches.java",
+    "kafka/QuotaFactory.java",
+    "kafka/SharePartitionCache.java",
+    "log4j/ArrayBlockingQueueFactory.java",
+    "log4j/AsyncWaitStrategyFactory.java",
+    "log4j/BridgeAware.java",
+    "log4j/CassandraAppender.java",
+    "log4j/CompositeAction.java",
+    "log4j/FilterPerformanceComparison.java",
+    "log4j/Log4jEventBuilder.java",
+    "log4j/MutableThreadContextStack.java",
+    "log4j/ReliabilityStrategy.java",
+    "log4j/SystemClock.java",
+    "maven/Artifact.java",
+    "maven/BuildFailure.java",
+    "maven/CoreExportsProvider.java",
+    "maven/CycleDetectedInPluginGraphException.java",
+    "maven/DefaultMavenExecutionRequestPopulator.java",
+    "maven/DefaultProjectDependencyGraph.java",
+    "maven/DefaultRuntimeInformation.java",
+    "maven/Features.java",
+    "maven/InputLocation.java",
+    "maven/InputSource.java",
+    "nifi/AbstractSecretBasedParameterValueProvider.java",
+    "nifi/BulletinFactory.java",
+    "nifi/FlowFileSupplier.java",
+    "nifi/MockComponentLog.java",
+    "nifi/MockStateMap.java",
+    "nifi/NarUnpackLock.java",
+    "nifi/ParameterOverride.java",
+    "nifi/ReflectionUtils.java",
+    "nifi/SharedSessionState.java",
+    "nifi/StatelessDataflow.java",
+    "pdfbox/ContentStreamWriter.java",
+    "pdfbox/COSInteger.java",
+    "pdfbox/CryptFilter.java",
+    "pdfbox/FilterFactory.java",
+    "pdfbox/PDDocumentInformation.java",
+    "pdfbox/PDFXRefStream.java",
+    "pdfbox/PDLab.java",
+    "pdfbox/PDXObject.java",
+    "pdfbox/ResourceCache.java",
+    "pdfbox/ResourceCacheFactory.java"
+];
+    
+function shuffle(array) {
+    const arr = [...array]; // copy so we don’t modify original
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+  function showRandom() {
+    const shuffled = shuffle(files);
+
+    const list = document.getElementById("list");
+    list.innerHTML = "";
+
+    shuffled.forEach(file => {
+    const a = document.createElement("a");
+    a.href = file;
+    a.textContent = file;
+    a.target = "_blank"; // open in new tab
+    a.rel = "noopener noreferrer";
+    const li = document.createElement("li");
+	li.appendChild(a);
+	list.appendChild(li);
+    });
+  }
+
+  </script>
+</head>
+<body>
+
+<p>Note: not all the .txt files have been renamed to .java
+<ol id="list"></ol>
+
+<script>
+window.onload = showRandom;
+</script>
+</body>
+</html>
