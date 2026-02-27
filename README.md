@@ -1,23 +1,4 @@
 # SDP-detection-LLMs
-Dataset used in Paper (includes anonymized files)
-
-Please ignore past versions of the repository.  They do not have useful information.
-
-Contained within are the 100 classes, enums, and interfaces analyzed.
-
-To use the Java Anonymizer:
-
-(0) Copy JavaAnonymizerStandalone into your project, change the package declaration
-
-(1) When creating the object, provide it with a list of Strings that you don't want anonymized
-
-(2) Split code into a format where each line is a string and run it through anonymizer
-
-Output will be in the same format as the input.
-
-**To use the parser:** 
-
-Same rough instructions as above. Place files in a directory "analysis" before running.  If bugs occur, please email benjynstrauss@gmail.com with the stack trace.
 
 # To File Reviewers:
 
@@ -40,3 +21,24 @@ Feel free to reach me at benjynstrauss@gmail.com if you have any questions – 
 Files like "class#0.txt" are anonymized versions of other files – they do not need reviews.
 
 Thank you!
+
+# To Paper Reviewers
+Dataset used in Paper (includes anonymized files)
+
+Please ignore past versions of the repository.  They do not have useful information.
+
+Contained within are the 100 classes, enums, and interfaces analyzed.
+
+To use the Java Anonymizer:
+
+(0) Copy JavaAnonymizerStandalone into your project, change the package declaration
+
+(1) When creating the object, provide it with a list of Strings that you don't want anonymized
+
+(2) Split code into a format where each line is a string and run it through anonymizer
+
+Output will be in the same format as the input.
+
+**To use the parser:** 
+
+Same rough instructions as above. Place files in a directory "analysis" before running.  If bugs occur, please email benjynstrauss@gmail.com with the stack trace.
