@@ -10,7 +10,7 @@
 
 3. Repeat as desired
  
--3a. ou may use the script to select random files, but this is not necessary.
+- 3a. ou may use the script to select random files, but this is not necessary.
 
 4. Email your selections to benjynstrauss@gmail.com **(do not upload to the repo!)**
 
