@@ -4,7 +4,9 @@
 
 1. Choose a .java file to review from one of the subfolders (not the anoymizer or the parser)
 
-2. Select which Pattern(s) the file fits from list-of-patterns.txt (alternatively, you could add a new pattern
+- 1a. You do not need to go in order; feel free to skip a file if you aren't comfortable reviewing it.
+
+2. Select which Pattern(s) the file fits from list-of-patterns.txt (alternatively, you could add a new pattern)
 
 - 2a. If possible, please add your confidence (%) in your assesment of the pattern and the % correctness (how correctly is the pattern implemented in the file)
 
@@ -29,7 +31,7 @@ Please ignore past versions of the repository.  They do not have useful informat
 
 Contained within are the 100 classes, enums, and interfaces analyzed.
 
-To use the Java Anonymizer:
+## To use the Java Anonymizer:
 
 0. Copy JavaAnonymizerStandalone into your project, change the package declaration
 
@@ -39,6 +41,6 @@ To use the Java Anonymizer:
 
 Output will be in the same format as the input.
 
-**To use the parser:** 
+## To use the parser:
 
 Same rough instructions as above. Place files in a directory "analysis" before running.  If bugs occur, please email benjynstrauss@gmail.com with the stack trace.
