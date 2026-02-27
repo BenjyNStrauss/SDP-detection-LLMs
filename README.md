@@ -29,10 +29,14 @@ Same rough instructions as above. Place files in a directory "analysis" before r
 
 (3) Repeat as desired
 
-(4) Email your selections to benjynstrauss@gmail.com **(do NOT upload to the repo!)**
+(3a) You may use the script to select random files, but this is not necessary.
+
+(4) Email your selections to benjynstrauss@gmail.com **(do not upload to the repo!)**
 
 Feel free to reach me at benjynstrauss@gmail.com if you have any questions – thanks!
 
 (Don't worry about duplicate reviews with other reviewers, more reviews are always better)
 
 Files like "class#0.txt" are anonymized versions of other files – they do not need reviews.
+
+Thank you!
