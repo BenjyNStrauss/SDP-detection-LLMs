@@ -10,7 +10,9 @@
     </ol>
   </li>
   <li>Repeat as desired</li>
-     <li>You may use the script to select random files, but this is not necessary.</li>
+     <ol type="A">
+       <li>You may use the script to select random files, but this is not necessary.</li>
+    </ol>
   <li>Email your selections to benjynstrauss@gmail.com <b>(do not upload to the repo!)</b></li>
 </ol>
 
@@ -31,11 +33,11 @@ Contained within are the 100 classes, enums, and interfaces analyzed.
 
 To use the Java Anonymizer:
 
-(0) Copy JavaAnonymizerStandalone into your project, change the package declaration
+0. Copy JavaAnonymizerStandalone into your project, change the package declaration
 
-(1) When creating the object, provide it with a list of Strings that you don't want anonymized
+1. When creating the object, provide it with a list of Strings that you don't want anonymized
 
-(2) Split code into a format where each line is a string and run it through anonymizer
+2. Split code into a format where each line is a string and run it through anonymizer
 
 Output will be in the same format as the input.
 
