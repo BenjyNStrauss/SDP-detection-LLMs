@@ -25,7 +25,7 @@ Same rough instructions as above. Place files in a directory "analysis" before r
 
 (2) Select which Pattern(s) the file fits from list-of-patterns.txt (alternatively, you could add a new pattern)
 
-(2a) If possible, please add your confidence (%) in your assesment of the pattern and the % correctness of the pattern
+(2a) If possible, please add your confidence (%) in your assesment of the pattern and the % correctness (how correctly is the pattern implemented in the file)
 
 (3) Repeat as desired
 
