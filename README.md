@@ -2,17 +2,17 @@
 
 # To File Reviewers:
 
-1. Choose a .java file to review from one of the subfolders (not the anoymizer or the parser)
-
-2. Select which Pattern(s) the file fits from list-of-patterns.txt (alternatively, you could add a new pattern)
-
-2a. If possible, please add your confidence (%) in your assesment of the pattern and the % correctness (how correctly is the pattern implemented in the file)
-
-3. Repeat as desired
-
-3a. You may use the script to select random files, but this is not necessary.
-
-4. Email your selections to benjynstrauss@gmail.com **(do not upload to the repo!)**
+<ol>
+  <li> Choose a .java file to review from one of the subfolders (not the anoymizer or the parser)
+  <li> Select which Pattern(s) the file fits from list-of-patterns.txt (alternatively, you could add a new pattern
+    <ol type="A">
+      <li>If possible, please add your confidence (%) in your assesment of the pattern and the % correctness (how correctly is the pattern implemented in the file)</li>
+    </ol>
+  </li>
+  <li>Repeat as desired</li>
+     <li>You may use the script to select random files, but this is not necessary.</li>
+  <li>Email your selections to benjynstrauss@gmail.com <b>(do not upload to the repo!)</b></li>
+</ol>
 
 Feel free to reach me at benjynstrauss@gmail.com if you have any questions.
 
