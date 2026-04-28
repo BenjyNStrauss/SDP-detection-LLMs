@@ -5,6 +5,8 @@
 1. Choose a .java file to review from one of the subfolders (not the anoymizer or the parser)
 
 - 1a. You do not need to go in order; feel free to skip a file if you aren't comfortable reviewing it.
+- 1b. The cramfile is all the files together, you can ignore it.
+- 1c. A file with the name class#0.txt is the anonymized version of another class.
 
 2. Select which Pattern(s) the file fits from list-of-patterns.txt (alternatively, you could add a new pattern)
 
