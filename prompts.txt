@@ -1,0 +1,11 @@
+Prompts used for asking the LLMs:
+
+Gemini: Raw Files: ``Please analyze each of the attached 10 files and provide a table for each file of the top 5 design patterns they implement, along with your percent confidence in the detection and the percent correctness of the patterns.''
+
+Gemini: Anonymized: ``Please analyze each of the attached 10 anonymized java files to the best of your ability and provide a table for each file of the top 5 design patterns they implement, along with your percent confidence in the detection and the percent correctness of the patterns.''
+
+Claude needed a slight wording adjustment to understand what it was supposed to do.
+
+Claude: ``Please analyze each of the attached 10 files and provide one table for each file of the top 5 design patterns implemented in that file, along with your percent confidence in the detection and the percent correctness of the patterns.''
+
+{Microsoft Copilot, ChatGPT, and Perplexity:} ``The attached file contains ten java classes, separated by the line: ``\texttt{<<<<<<<<DIVIDER>>>>>>>>}'' Please analyze each of those 10 classes independently.  For each class, please provide one table with the top 5 design patterns implemented by that file, along with your percent confidence in the detection and the percent correctness of the patterns.''
