@@ -48,7 +48,7 @@ SDP Patterns:
 [44] Resource Pool - crawford2003j2ee
 [45] Service Layer - PoEAA,tanneru9applications
 [46] Service Locator - crawford2003j2ee, alur2003corej2ee
-[47] Service Provider Interface - https://en.wikipedia.org/wiki/Service_provider_interface
+[47] Service Provider Interface - wikipedia2
 [48] Singleton - GoF
 [49] Specification - wikipedia
 [50] State - GoF
@@ -152,6 +152,15 @@ SDP Patterns:
   organization = {Wikipedia, The Free Encyclopedia}
 }
 
+@online{wikipedia2,
+  author       = {{Wikipedia contributors}},
+  title        = {Service Provider Interface},
+  howpublished = {Wikipedia, The Free Encyclopedia},
+  year         = {2025},
+  url          = {https://en.wikipedia.org/wiki/Service_provider_interface},
+  organization = {Wikipedia, The Free Encyclopedia}
+}
+
 @book{crawford2003j2ee,
   author    = {Crawford, William and Kaplan, Jonathan},
   title     = {{J2EE} Design Patterns},
@@ -187,26 +196,3 @@ SDP Patterns:
   address   = {Upper Saddle River, NJ},
   year      = {2002}
 }
-
----------------------------------------------------------------------------------------------------------------------
-Latex Table:
-
-\begin{table}
-\centering
-\begin{tabular}{ | C{3.5cm} | C{3.5cm} |}
-    \hline
-    Source & Patterns \\ \hline
-    \textit{Design Patterns: Elements of Reusable Object-Oriented Software}\cite{GoF} & Abstract Factory, Adapter, Bridge, Builder, Chain of Responsibility, Command, Composite, Decorator, Facade, Factory Method,  Flyweight, Interpreter, Iterator, Mediator, Memento, Observer, Prototype, Proxy, Singleton, State, Strategy, Template Method, Visitor \\ \hline
-    \textit Wikipedia\cite{wiki-sdp} & Delegation, Fluent Interface, Interpreter, Lazy Initialization, Marker Interface, Multiton, Null Object, Object Pool, RAII, Specification, Thread Pool \\ \hline
-    \textit{Pattern-Oriented Software Architecture Vol1\&2}\cite{POSA1}\cite{POSA2} & Double-Checked Locking, Master-Slave, Monitor \\ \hline
-    \textit{Patterns of Enterprise Application Architecture}\cite{PoEAA} & Assembler, Data Transfer Object, Gateway, Identity Map, Plugin, Registry, Repository, Service Layer, Value Object \\ \hline
-    \textit{Inversion of Control Containers and the Dependency Injection pattern}\cite{dependency-injection} & Dependency Injection \\ \hline
-    \textit{Design patterns for component-oriented software development}\cite{aggregator-sdp} & Aggregator \\ \hline
-    \textit{Producer --- Consumer Pattern}\cite{sdp-producer-consumer} & Producer-Consumer \\ \hline
-    \textit{Microservices Design Patterns for Cloud Architecture}\cite{ieee-bulkhead} & Bulkhead \\ \hline
-    \textit{Applications of J2EE Design Patterns in Modern Microservices Development}\cite{tanneru9applications} & Data Access Object, Service Layer \\ \hline
-    \hline
-\end{tabular}
-\caption{Software Design Patterns}
-\label{sdp-source}
-\end{table}
