@@ -9,3 +9,7 @@ Claude needed a slight wording adjustment to understand what it was supposed to 
 Claude: ``Please analyze each of the attached 10 files and provide one table for each file of the top 5 design patterns implemented in that file, along with your percent confidence in the detection and the percent correctness of the patterns.''
 
 {Microsoft Copilot, ChatGPT, and Perplexity:} ``The attached file contains ten java classes, separated by the line: ``\texttt{<<<<<<<<DIVIDER>>>>>>>>}'' Please analyze each of those 10 classes independently.  For each class, please provide one table with the top 5 design patterns implemented by that file, along with your percent confidence in the detection and the percent correctness of the patterns.''
+
+Redo Prompt: ``Does the attached file implement a software design pattern, if so which one?  Please provide a table the top 5 patterns, along with your percent confidence in the detection and the percent correctness of the patterns.''
+
+(Yes, we realize we forgot the word 'of', however it still worked)
