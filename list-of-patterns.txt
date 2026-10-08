@@ -1,58 +1,177 @@
 SDP Patterns:
 
-[ 1] Abstract Factory
-[ 2] Adapter
-[ 3] Aggregator
-[ 4] Assembler
-[ 5] Bridge
-[ 6] Builder
-[ 7] Bulkhead
-[ 8] Chain of Responsibility
-[ 9] Command
-[10] Composite
-[11] Data Access Object
-[12] Data Transfer Object
-[13] Double-Checked Locking
-[14] Decorator
-[15] Delegation
-[16] Dependency Injection
-[17] Facade
-[18] Factory Method
-[19] Fluent Interface
-[20] Flyweight
-[21] Gateway
-[22] Identity Map
-[23] Interpreter
-[24] Iterator
-[25] Lazy Initialization
-[26] Marker Interface
-[27] Master-Slave
-[28] Mediator
-[29] Memento
-[30] Monitor
+[Number] Pattern - Source (full citations at the bottom)
+
+[ 1] Abstract Factory - GoF
+[ 2] Adapter - GoF
+[ 3] Aggregator - aggregator
+[ 4] Assembler - PoEAA
+[ 5] Bridge - GoF
+[ 6] Builder - GoF
+[ 7] Bulkhead - ieee-bulkhead
+[ 8] Chain of Responsibility - GoF
+[ 9] Command - GoF
+[10] Composite - GoF
+[11] Data Access Object - tanneru9applications
+[12] Data Transfer Object - PoEAA
+[13] Double-Checked Locking - POSA1/POSA2
+[14] Decorator - GoF
+[15] Delegation - wikipedia
+[16] Dependency Injection - dependency-injection
+[17] Facade - GoF
+[18] Factory Method - GoF
+[19] Fluent Interface - Wikipedia
+[20] Flyweight - GoF
+[21] Gateway - PoEAA
+[22] Identity Map - PoEAA
+[23] Interpreter - GoF, Wikipedia
+[24] Iterator - GoF
+[25] Lazy Initialization - Wikipedia
+[26] Marker Interface - Wikipedia
+[27] Master-Slave - POSA1/POSA2
+[28] Mediator - GoF
+[29] Memento - GoF
+[30] Monitor - POSA1/POSA2
 [31] Monostate
-[32] Multiton
-[33] Null Object
-[34] Object Pool
-[35] Observer
+[32] Multiton - Wikipedia
+[33] Null Object - Wikipedia
+[34] Object Pool - Wikipedia
+[35] Observer - GoF
 [36] Pipeline
-[37] Plugin
-[38] Producer-Consumer
-[39] Prototype
-[40] Proxy
-[41] RAII (Resource Authorization is Initialization?)
-[42] Registry
-[43] Repository
+[37] Plugin - PoEAA
+[38] Producer-Consumer - producer-consumer
+[39] Prototype - GoF
+[40] Proxy - GoF
+[41] RAII (Resource Authorization is Initialization) - Wikipedia
+[42] Registry - PoEAA
+[43] Repository - PoEAA
 [44] Resource Pool
-[45] Service Layer
+[45] Service Layer - PoEAA,tanneru9applications
 [46] Service Locator
 [47] Service Provider Interface
-[48] Singleton
-[49] Specification
-[50] State
-[51] Strategy
-[52] Template Method
-[53] Thread Pool
+[48] Singleton - GoF
+[49] Specification - Wikipedia
+[50] State - GoF
+[51] Strategy - GoF
+[52] Template Method - GoF
+[53] Thread Pool - Wikipedia
 [54] Throttler
-[55] Value Object
-[56] Visitor
+[55] Value Object - PoEAA
+[56] Visitor - GoF
+
+@book{GoF,
+    title = {Design Patterns: Elements of Reusable Object-Oriented Software},
+    author = {Erich Gamma and Richard Helm and Ralph Johnson and John Vlissides},
+    year = {1994},
+    publisher = {Addison-Wesley},
+    isbn = {0-201-63361-2}
+}
+
+@book{POSA1,
+  author    = {Frank Buschmann and Regine Meunier and Hans Rohnert and Peter Sommerlad and Michael Stal},
+  title     = {Pattern-Oriented Software Architecture, Volume 1: A System of Patterns},
+  year      = {1996},
+  isbn = {0471958697},
+  publisher = {Wiley Publishing},
+  address   = {Chichester, UK}
+}
+
+@book{POSA2,
+  author    = {Douglas C. Schmidt and Michael Stal and Hans Rohnert and Frank Buschmann},
+  title     = {Pattern-Oriented Software Architecture, Volume 2: Patterns for Concurrent and Networked Objects},
+  year      = {2000},
+  publisher = {Wiley Publishing},
+  address   = {Chichester, UK}
+}
+
+@book{PoEAA,
+  title     = {Patterns of Enterprise Application Architecture},
+  author    = {Fowler, Martin and Rice, David and Foemmel, Matthew and Hieatt, Edward and Mee, Robert and Stafford, Randy},
+  year      = {2002},
+  publisher = {Addison-Wesley},
+  address   = {Boston, MA}
+}
+
+@misc{dependency-injection,
+  author = {Fowler, Martin},
+  title = {Inversion of Control Containers and the Dependency Injection pattern},
+  year = {2004},
+  url = {https://martinfowler.com/articles/injection.html},
+  urldate = {2025-08-31},
+  organization = {MartinFowler.com}
+}
+
+@INPROCEEDINGS{aggregator-sdp,
+  author={Rege, K.},
+  booktitle={Proceedings 25th EUROMICRO Conference. Informatics: Theory and Practice for the New Millennium}, 
+  title={Design patterns for component-oriented software development}, 
+  year={1999},
+  volume={2},
+  number={},
+  pages={220-228 vol.2},
+  keywords={Programming;Contracts;Encapsulation;Production facilities;Software design;Vocabulary;Design engineering;Circuit synthesis;Manufacturing;Concrete},
+  doi={10.1109/EURMIC.1999.794784}
+}
+
+@article{tanneru9applications,
+  title={Applications of J2EE Design Patterns in Modern Microservices Development},
+  author={Tanneru, Bhargavi},
+  journal={Legacy},
+  year = 2021,
+  volume={9},
+  number={6}
+}
+
+@article{ieee-bulkhead,
+  author = {Shekhar, Gaurav},
+  title = {Microservices Design Patterns for Cloud Architecture},
+  date = {2024-09-24},
+  year = 2024,
+  journal = {IEEE Chicago Section},
+  url = {https://ieeechicago.org/microservices-design-patterns-for-cloud-architecture/},
+  urldate = {2025-08-31},
+  publisher = {IEEE Chicago Section},
+}
+
+@article{sdp-producer-consumer,
+  author  = {Singhal, Ashish},
+  title   = {Producer Consumer Pattern},
+  journal = {DataPy.ai (Medium)},
+  year    = {2019},
+  month   = dec,
+  day     = {22},
+  url     = {https://medium.com/datapy-ai/producer-consumer-pattern-c9605f73d004}
+}
+
+
+---------------------------------------------------------------------------------------------------------------------
+Latex Table:
+
+\begin{table}
+\centering
+\begin{tabular}{ | C{3.5cm} | C{3.5cm} |}
+    \hline
+    Source & Patterns \\ \hline
+    \textit{Design Patterns: Elements of Reusable Object-Oriented Software}\cite{GoF} & Abstract Factory, Adapter, Bridge, Builder, Chain of Responsibility, Command, Composite, Decorator, Facade, Factory Method,  Flyweight, Interpreter, Iterator, Mediator, Memento, Observer, Prototype, Proxy, Singleton, State, Strategy, Template Method, Visitor \\ \hline
+    \textit Wikipedia\cite{wiki-sdp} & Delegation, Fluent Interface, Interpreter, Lazy Initialization, Marker Interface, Multiton, Null Object, Object Pool, RAII, Specification, Thread Pool \\ \hline
+    \textit{Pattern-Oriented Software Architecture Vol1\&2}\cite{POSA1}\cite{POSA2} & Double-Checked Locking, Master-Slave, Monitor \\ \hline
+    \textit{Patterns of Enterprise Application Architecture}\cite{PoEAA} & Assembler, Data Transfer Object, Gateway, Identity Map, Plugin, Registry, Repository, Service Layer, Value Object \\ \hline
+    \textit{Inversion of Control Containers and the Dependency Injection pattern}\cite{dependency-injection} & Dependency Injection \\ \hline
+    \textit{Design patterns for component-oriented software development}\cite{aggregator-sdp} & Aggregator \\ \hline
+    \textit{Producer --- Consumer Pattern}\cite{sdp-producer-consumer} & Producer-Consumer \\ \hline
+    \textit{Microservices Design Patterns for Cloud Architecture}\cite{ieee-bulkhead} & Bulkhead \\ \hline
+    \textit{Applications of J2EE Design Patterns in Modern Microservices Development}\cite{tanneru9applications} & Data Access Object, Service Layer \\ \hline
+    \hline
+\end{tabular}
+\caption{Software Design Patterns}
+\label{sdp-source}
+\end{table}
+
+@online{wikipedia,
+  author = {{Wikipedia contributors}},
+  title = "Software design pattern",
+  url = "https://en.wikipedia.org/wiki/Software_design_pattern",
+  urldate = {2025-08-31},
+  year = {2025},
+  organization = {Wikipedia, The Free Encyclopedia}
+}
