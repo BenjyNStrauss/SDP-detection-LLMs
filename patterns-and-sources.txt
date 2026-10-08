@@ -1,0 +1,21 @@
+Latex:
+
+\begin{table}
+\centering
+\begin{tabular}{ | C{3.5cm} | C{3.5cm} |}
+    \hline
+    Source & Patterns \\ \hline
+    \textit{Design Patterns: Elements of Reusable Object-Oriented Software}\cite{GoF} & Abstract Factory, Adapter, Bridge, Builder, Chain of Responsibility, Command, Composite, Decorator, Facade, Factory Method,  Flyweight, Interpreter, Iterator, Mediator, Memento, Observer, Prototype, Proxy, Singleton, State, Strategy, Template Method, Visitor \\ \hline
+    \textit Wikipedia\cite{wiki-sdp} & Delegation, Fluent Interface, Interpreter, Lazy Initialization, Marker Interface, Multiton, Null Object, Object Pool, RAII, Specification, Thread Pool \\ \hline
+    \textit{Pattern-Oriented Software Architecture Vol1\&2}\cite{POSA1}\cite{POSA2} & Double-Checked Locking, Master-Slave, Monitor \\ \hline
+    \textit{Patterns of Enterprise Application Architecture}\cite{PoEAA} & Assembler, Data Transfer Object, Gateway, Identity Map, Plugin, Registry, Repository, Service Layer, Value Object \\ \hline
+    \textit{Inversion of Control Containers and the Dependency Injection pattern}\cite{dependency-injection} & Dependency Injection \\ \hline
+    \textit{Design patterns for component-oriented software development}\cite{aggregator-sdp} & Aggregator \\ \hline
+    \textit{Producer --- Consumer Pattern}\cite{sdp-producer-consumer} & Producer-Consumer \\ \hline
+    \textit{Microservices Design Patterns for Cloud Architecture}\cite{ieee-bulkhead} & Bulkhead \\ \hline
+    \textit{Applications of J2EE Design Patterns in Modern Microservices Development}\cite{tanneru9applications} & Data Access Object, Service Layer \\ \hline
+    \hline
+\end{tabular}
+\caption{Software Design Patterns}
+\label{sdp-source}
+\end{table}
