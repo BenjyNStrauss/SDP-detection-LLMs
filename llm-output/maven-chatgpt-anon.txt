@@ -1,0 +1,143 @@
+Below are 10 independent analyses (in the order the classes appear in your file). For each class I list the top 5 design-pattern candidates, with (1) my confidence that the pattern is present and (2) how closely the implementation matches the textbook version (“pattern correctness”). Source: your uploaded file.&#x20;
+
+### Class 1 (package …ident\$4.ident\$5, `ident$19 implements ident$11<ident$21>`)
+
+This class is a tiny provider that holds a single `exports` instance, is annotation-driven, and returns it from a `get`/factory-like method—classic provider/factory shape.&#x20;
+
+| Pattern                                             | Detection confidence | Pattern correctness |
+| --------------------------------------------------- | -------------------: | ------------------: |
+| Factory Method (provider returning `ident$21`)      |                  90% |                 85% |
+| Dependency Injection (constructor + annotations)    |                  90% |                 90% |
+| Wrapper / Adapter (normalizing input to `ident$21`) |                  60% |                 55% |
+| Singleton (annotations suggest lifecycle scoping)   |                  40% |                 40% |
+| Builder (chained construction via helper)           |                  25% |                 20% |
+
+---
+
+### Class 2 (package …ident\$4, `ident$29 implements ident$21`)
+
+Builds indices and maps, exposes views, and performs transitive traversal over a dependency graph (dependents/dependencies). Acts as a façade over a graph + caches.&#x20;
+
+| Pattern                                          | Detection confidence | Pattern correctness |
+| ------------------------------------------------ | -------------------: | ------------------: |
+| Facade (unified API over graph + stores)         |                  80% |                 75% |
+| Iterator (returns ordered/lazy views)            |                  65% |                 60% |
+| Repository / Gateway (lookup by key, mapping)    |                  60% |                 55% |
+| Cache / Flyweight-like indexing (maps for reuse) |                  55% |                 50% |
+| Adapter (string keys ↔ domain objects)           |                  45% |                 40% |
+
+---
+
+### Class 3 (package …ident\$4, `ident$15 extends Exception`)
+
+A domain-specific exception that captures contextual object `ident$7`. Not a classic GoF pattern; closest recognized patterns are exception specializations.&#x20;
+
+| Pattern                                         | Detection confidence | Pattern correctness |
+| ----------------------------------------------- | -------------------: | ------------------: |
+| Special Case / Domain Exception                 |                  85% |                 85% |
+| Information Holder (DTO-like error context)     |                  60% |                 60% |
+| Adapter (wraps domain state into message)       |                  30% |                 25% |
+| Template Method (in error hierarchy usage)      |                  20% |                 15% |
+| Chain of Responsibility (propagation via throw) |                  15% |                 10% |
+
+---
+
+### Class 4 (package …ident\$4, `ident$13 extends ident$15`)
+
+Adds multiple constructors and a stored `Throwable` cause; chiefly an enriched exception wrapper.&#x20;
+
+| Pattern                                               | Detection confidence | Pattern correctness |
+| ----------------------------------------------------- | -------------------: | ------------------: |
+| Decorator (extends base exception’s data)             |                  55% |                 45% |
+| Adapter (normalizes time/inputs into base error)      |                  55% |                 50% |
+| Special Case / Domain Exception                       |                  80% |                 80% |
+| Chain of Responsibility (exception chaining)          |                  30% |                 25% |
+| Factory Method (multiple overloads constructing self) |                  25% |                 20% |
+
+---
+
+### Class 5 (package …ident\$4, `ident$40 implements ident$42`)
+
+Takes a dependency via DI, fills in defaults, aggregates metadata into maps, and applies a sequence of steps to a target object—very “director/applier” around a builder-like target.&#x20;
+
+| Pattern                                                      | Detection confidence | Pattern correctness |
+| ------------------------------------------------------------ | -------------------: | ------------------: |
+| Builder (acts like a Director configuring `ident$48`)        |                  75% |                 70% |
+| Template Method (fixed sequence: validate → fill → finalize) |                  70% |                 65% |
+| Facade (orchestrates lower-level services)                   |                  60% |                 55% |
+| Strategy (plugs behavior via injected `ident$26`)            |                  45% |                 40% |
+| Factory Method (creates defaults/resources)                  |                  40% |                 35% |
+
+---
+
+### Class 6 (package …ident\$4.ident\$5, `ident$32 implements ident$19`)
+
+Loads version info from a resource, logs, and validates compatibility using an injected service. Looks like a policy/validator service built with DI.&#x20;
+
+| Pattern                                               | Detection confidence | Pattern correctness |
+| ----------------------------------------------------- | -------------------: | ------------------: |
+| Strategy (pluggable version/comparison policy)        |                  70% |                 65% |
+| Template Method (fixed steps: load → parse → compare) |                  65% |                 60% |
+| Dependency Injection                                  |                  85% |                 85% |
+| Facade (wraps resource + parser + comparer)           |                  45% |                 40% |
+| Singleton (annotations/lifecycle hints)               |                  35% |                 35% |
+
+---
+
+### Class 7 (package …ident\$4, `ident$29` interface)
+
+A very broad interface (constants + many getters/setters + `Comparable`)—an abstraction for a complex product/config object; typical “product” in Abstract Factory/Builder ecosystems.&#x20;
+
+| Pattern                                           | Detection confidence | Pattern correctness |
+| ------------------------------------------------- | -------------------: | ------------------: |
+| Abstract Product (for Abstract Factory)           |                  70% |                 65% |
+| Builder Target (fluent setters on a complex type) |                  65% |                 60% |
+| Facade (unifies many concerns in one API)         |                  45% |                 35% |
+| Strategy (if implementations swap behavior)       |                  35% |                 30% |
+| Template Method (if default impls supply steps)   |                  25% |                 20% |
+
+---
+
+### Class 8 (package …ident\$4, `ident$8 implements …, Cloneable`)
+
+Small value object with copy-constructor from another type, `clone()`, and a converter back—classic Prototype/Adapter/DTO combo.&#x20;
+
+| Pattern                                                  | Detection confidence | Pattern correctness |
+| -------------------------------------------------------- | -------------------: | ------------------: |
+| Prototype (implements `clone()` for copies)              |                  90% |                 85% |
+| Adapter (convert to/from external type via `ident$48()`) |                  75% |                 70% |
+| Data Transfer Object (simple mutable data)               |                  80% |                 80% |
+| Builder (copy/with-style construction)                   |                  35% |                 30% |
+| Flyweight (lightweight, shareable value)                 |                  25% |                 20% |
+
+---
+
+### Class 9 (package …ident\$4, `ident$14 final … Cloneable`)
+
+Tree-like node with child map, deep clone, merging utilities, and conversion to/from another representation—strong Composite + Prototype vibes, with Adapter utilities.&#x20;
+
+| Pattern                                               | Detection confidence | Pattern correctness |
+| ----------------------------------------------------- | -------------------: | ------------------: |
+| Composite (node with children map, merge/combine)     |                  85% |                 80% |
+| Prototype (deep cloning of structure)                 |                  85% |                 80% |
+| Adapter (to external type via `ident$103()` and ctor) |                  70% |                 65% |
+| Builder (static `ident$81` combiners)                 |                  55% |                 50% |
+| Flyweight (optional shared child mappings)            |                  35% |                 30% |
+
+---
+
+### Class 10 (package …ident\$4.ident\$5, `ident$17` utility)
+
+Static helpers reading flags from maps with defaults—configuration façade/adapters around heterogeneous input.&#x20;
+
+| Pattern                                                   | Detection confidence | Pattern correctness |
+| --------------------------------------------------------- | -------------------: | ------------------: |
+| Facade (simple API over config map)                       |                  65% |                 60% |
+| Adapter (coercing `Object`→`boolean`/defaults)            |                  60% |                 55% |
+| Utility / Helper (not GoF, but architectural)             |                  90% |                 90% |
+| Strategy (if callers choose which key/flag to check)      |                  30% |                 25% |
+| Template Method (shared private `ident$25` over variants) |                  30% |                 30% |
+
+---
+
+If you’d like, I can also output this as a CSV or spreadsheet for each class, or tighten/adjust the labels (e.g., prefer only GoF patterns, or include enterprise patterns like Repository/DTO).

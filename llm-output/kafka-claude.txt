@@ -1,0 +1,117 @@
+># Design Patterns Analysis for 10 Java Files
+
+## 1. AssignmentsHelper.txt
+
+| Design Pattern | Confidence | Correctness | Description |
+|---|---|---|---|
+| Static Factory | 95% | 90% | Static methods `buildRequestData()` and `buildResponseData()` create complex objects |
+| Builder/Factory | 85% | 80% | Methods construct complex nested data structures with fluent-like building |
+| Template Method | 80% | 75% | `normalize()` methods follow similar structure for both request/response |
+| Data Transfer Object | 90% | 85% | Works extensively with request/response data objects |
+| Utility/Helper | 95% | 90% | Pure utility class with static methods for data transformation |
+
+## 2. BoundedList.txt
+
+| Design Pattern | Confidence | Correctness | Description |
+|---|---|---|---|
+| Decorator | 95% | 90% | Wraps an underlying List and adds bounds checking behavior |
+| Proxy | 85% | 80% | Acts as a proxy to underlying list with additional validation |
+| Static Factory | 90% | 85% | `newArrayBacked()` methods provide controlled object creation |
+| Template Method | 75% | 70% | Consistent validation pattern across add operations |
+| Wrapper | 90% | 85% | Wraps ArrayList functionality with size constraints |
+
+## 3. DelayedOperation.txt
+
+| Design Pattern | Confidence | Correctness | Description |
+|---|---|---|---|
+| Template Method | 95% | 90% | Abstract class with `onComplete()`, `onExpiration()`, `tryComplete()` hooks |
+| Strategy | 80% | 75% | Different completion strategies via abstract methods |
+| Double-Checked Locking | 90% | 85% | Thread-safe completion checking with volatile field and locks |
+| Observer | 70% | 65% | Timer-based notification system for expiration |
+| State | 75% | 70% | Manages completion state transitions |
+
+## 4. DescribeTopicPartitionsRequestHandler.txt
+
+| Design Pattern | Confidence | Correctness | Description |
+|---|---|---|---|
+| Command | 85% | 80% | `handleDescribeTopicPartitionsRequest()` encapsulates request processing |
+| Builder | 80% | 75% | `describeTopicPartitionsResponseTopic()` method builds response objects |
+| Dependency Injection | 90% | 85% | Constructor takes dependencies (metadataCache, authHelper, config) |
+| Chain of Responsibility | 75% | 70% | Authorization and metadata processing pipeline |
+| Factory Method | 70% | 65% | Response object creation through helper methods |
+
+## 5. EventQueue.txt
+
+| Design Pattern | Confidence | Correctness | Description |
+|---|---|---|---|
+| Command | 95% | 90% | `Event` interface encapsulates actions with `run()` method |
+| Strategy | 85% | 80% | Different deadline calculation strategies via UnaryOperator functions |
+| Template Method | 80% | 75% | Default implementations for `prepend()`, `append()`, etc. |
+| Null Object | 90% | 85% | `VoidEvent.INSTANCE` and `NoDeadlineFunction.INSTANCE` |
+| Observer | 75% | 70% | Event notification and handling system |
+
+## 6. LoggingFaultHandler.txt
+
+| Design Pattern | Confidence | Correctness | Description |
+|---|---|---|---|
+| Strategy | 95% | 90% | Implements FaultHandler interface with specific logging strategy |
+| Template Method | 80% | 75% | Standard fault handling pattern with logging and action execution |
+| Command | 85% | 80% | Encapsulates fault handling action as Runnable |
+| Decorator | 70% | 65% | Adds logging behavior to fault handling |
+| Chain of Responsibility | 65% | 60% | Part of fault handling chain (implied by interface) |
+
+## 7. LogManagerBuilder.txt
+
+| Design Pattern | Confidence | Correctness | Description |
+|---|---|---|---|
+| Builder | 98% | 95% | Classic builder pattern with fluent interface and `build()` method |
+| Fluent Interface | 95% | 90% | Method chaining with setter methods returning builder instance |
+| Factory | 80% | 75% | `build()` method creates LogManager instance |
+| Parameter Object | 85% | 80% | Encapsulates multiple construction parameters |
+| Validation | 80% | 75% | Validates required parameters in `build()` method |
+
+## 8. PendingRemoteFetches.txt
+
+| Design Pattern | Confidence | Correctness | Description |
+|---|---|---|---|
+| Composite | 85% | 80% | Manages collection of RemoteFetch objects as a unit |
+| Data Transfer Object | 90% | 85% | Encapsulates related fetch data and metadata |
+| Future/Promise | 90% | 85% | Uses CompletableFuture for asynchronous operations |
+| Observer | 80% | 75% | `invokeCallbackOnCompletion()` provides notification mechanism |
+| Record/Value Object | 95% | 90% | `RemoteFetch` is an immutable record type |
+
+## 9. QuotaFactory.txt
+
+| Design Pattern | Confidence | Correctness | Description |
+|---|---|---|---|
+| Factory | 95% | 90% | `instantiate()` method creates complete quota management system |
+| Null Object | 90% | 85% | `UNBOUNDED_QUOTA` provides no-op implementation |
+| Facade | 85% | 80% | `QuotaManagers` provides unified interface to quota subsystems |
+| Dependency Injection | 80% | 75% | Factory methods accept configuration and dependencies |
+| Composite | 75% | 70% | `QuotaManagers` composes multiple quota manager types |
+
+## 10. SharePartitionCache.txt
+
+| Design Pattern | Confidence | Correctness | Description |
+|---|---|---|---|
+| Cache/Proxy | 95% | 90% | Primary caching functionality for SharePartition objects |
+| Facade | 85% | 80% | Provides unified interface to underlying concurrent maps |
+| Template Method | 80% | 75% | Consistent patterns across `get()`, `remove()`, `computeIfAbsent()` |
+| Synchronized Collection | 90% | 85% | Thread-safe operations with synchronized methods |
+| Factory/Registry | 80% | 75% | `computeIfAbsent()` creates objects on demand and registers them |
+
+>## Summary Notes
+
+**Confidence**: Represents how certain I am that the pattern is actually implemented in the code.
+
+**Correctness**: Represents how well the implementation follows the canonical definition of the design pattern.
+
+**Common Patterns Observed**:
+- **Builder Pattern**: Very common in configuration/setup classes
+- **Factory/Static Factory**: Prevalent for object creation
+- **Template Method**: Common in abstract classes and interface implementations  
+- **Strategy**: Used for pluggable behavior
+- **Facade/Wrapper**: Common for simplifying complex subsystems
+- **Null Object**: Used to avoid null checks
+- **Command**: Encapsulation of operations and requests
+- **Observer/Callback**: Asynchronous notification patterns

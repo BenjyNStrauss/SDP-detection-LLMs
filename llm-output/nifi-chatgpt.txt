@@ -1,0 +1,103 @@
+Here’s a pattern-focused read of each of the 10 Java classes you attached. For each file, I list the five most plausible design patterns present (or intentionally used), with (1) my confidence I correctly detected the pattern in this file and (2) my confidence that the pattern is actually the right abstraction for what the code is doing (“pattern correctness”). Citations point to the specific file you provided.
+
+### 1) `AbstractSecretBasedParameterValueProvider` (stateless/parameter)&#x20;
+
+| Pattern                                                                                                          | Detection | Correctness |
+| ---------------------------------------------------------------------------------------------------------------- | --------: | ----------: |
+| Template Method (abstract hooks `getAdditionalSupportedPropertyDescriptors`, `additionalInit`, `getSecretValue`) |       95% |         90% |
+| Strategy (pluggable `Validator` for properties)                                                                  |       90% |         85% |
+| Builder (use of `PropertyDescriptor.Builder`)                                                                    |       85% |         80% |
+| Mapping/Registry (context→secret map)                                                                            |       80% |         75% |
+| Null-Handling/Fallback (default secret fallback path)                                                            |       75% |         70% |
+
+### 2) `BulletinFactory` (reporting)&#x20;
+
+| Pattern                                              | Detection | Correctness |
+| ---------------------------------------------------- | --------: | ----------: |
+| Factory Method (multiple `createBulletin` overloads) |       98% |         95% |
+| Static Factory (utility-style class)                 |       95% |         90% |
+| Method Overloading (construction variants)           |       95% |         90% |
+| Test Double usage (creates `MockBulletin`)           |       80% |         75% |
+| Sequencer/ID Generator (monotonic `AtomicLong`)      |       75% |         65% |
+
+### 3) `FlowFileSupplier` (stateless/flow)&#x20;
+
+| Pattern                                         | Detection | Correctness |
+| ----------------------------------------------- | --------: | ----------: |
+| Supplier (functional-provision interface)       |       95% |         95% |
+| Strategy (behavior supplied by implementations) |       90% |         85% |
+| Provider Interface (SPI-style boundary)         |       85% |         85% |
+| Null Object avoidance (`Optional<FlowFile>`)    |       80% |         80% |
+| Interface Segregation (narrow contract)         |       75% |         70% |
+
+### 4) `MockComponentLog` (util)&#x20;
+
+| Pattern                                               | Detection | Correctness |
+| ----------------------------------------------------- | --------: | ----------: |
+| Adapter (bridges `ComponentLog` to SLF4J `Logger`)    |       95% |         90% |
+| Decorator (adds formatting, captures args/throwables) |       90% |         90% |
+| Proxy (controls access, augments calls)               |       85% |         80% |
+| Test Double (Mock logger for testing)                 |       95% |         95% |
+| Facade (simplifies logging usage for components)      |       75% |         70% |
+
+### 5) `MockStateMap` (state)&#x20;
+
+| Pattern                                            | Detection | Correctness |
+| -------------------------------------------------- | --------: | ----------: |
+| Adapter (implements `StateMap` over a `Map`)       |       95% |         90% |
+| Test Double (Mock for state interactions)          |       95% |         95% |
+| Immutable View (returns `unmodifiableMap`)         |       90% |         90% |
+| Value Object (small, identity by contents+version) |       80% |         75% |
+| Null Object via `Optional.empty()` for version     |       75% |         70% |
+
+### 6) `NarUnpackLock` (stateless/engine)&#x20;
+
+| Pattern                                            | Detection | Correctness |
+| -------------------------------------------------- | --------: | ----------: |
+| Singleton (single shared `Lock` instance)          |       90% |         85% |
+| Facade (simple static `lock/tryLock/unlock` API)   |       90% |         85% |
+| Monitor Object / Mutex (synchronization primitive) |       95% |         90% |
+| Utility Class (static methods, no state exposure)  |       85% |         80% |
+| Logging Decorator (logs acquisition/release)       |       70% |         65% |
+
+### 7) `ParameterOverride` (stateless/config)&#x20;
+
+| Pattern                                        | Detection | Correctness |
+| ---------------------------------------------- | --------: | ----------: |
+| Immutable Value Object (final fields, getters) |       95% |         95% |
+| Data Transfer Object (DTO)                     |       90% |         90% |
+| Overloaded Constructors (telescoping init)     |       85% |         80% |
+| Information Hiding (redacted `toString`)       |       90% |         90% |
+| Parameter Object (bundles related fields)      |       85% |         85% |
+
+### 8) `ReflectionUtils` (util)&#x20;
+
+| Pattern                                                | Detection | Correctness |
+| ------------------------------------------------------ | --------: | ----------: |
+| Reflection-based Dispatcher (invoke annotated methods) |       95% |         95% |
+| Command Invocation (methods-as-commands)               |       85% |         80% |
+| Template Method (strict vs. quiet invocation variants) |       80% |         75% |
+| Utility Class (static helpers)                         |       90% |         90% |
+| Validator (argument type/arity checks)                 |       80% |         75% |
+
+### 9) `SharedSessionState` (util)&#x20;
+
+| Pattern                                                | Detection | Correctness |
+| ------------------------------------------------------ | --------: | ----------: |
+| Facade (coordinates queue, provenance, counters)       |       90% |         90% |
+| Mediator (coordinates processor-session collaborators) |       85% |         80% |
+| Repository (stores provenance events list)             |       85% |         80% |
+| Registry/Counter Map (thread-safe counters)            |       80% |         75% |
+| ID Generator (delegates to shared generator)           |       75% |         70% |
+
+### 10) `StatelessDataflow` (stateless/flow)&#x20;
+
+| Pattern                                                     | Detection | Correctness |
+| ----------------------------------------------------------- | --------: | ----------: |
+| Facade (high-level flow control surface)                    |       95% |         90% |
+| Strategy (implementations define behavior)                  |       90% |         85% |
+| Template Method (default `trigger()` delegates to overload) |       85% |         85% |
+| Command (returns `DataflowTrigger` handle to execute/wait)  |       85% |         80% |
+| Service Interface / SPI (initialization, lifecycle)         |       85% |         85% |
+
+If you’d like, I can convert these into a spreadsheet or add brief justifications per pattern with code-line callouts.

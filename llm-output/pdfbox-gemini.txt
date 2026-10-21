@@ -1,0 +1,111 @@
+### **ContentStreamWriter.txt**
+
+| Design Pattern | Confidence (%) | Correctness (%) |
+| :--- | :--- | :--- |
+| **Strategy** | 90% | 85% |
+| **Builder** | 80% | 75% |
+| **Decorator** | 60% | 65% |
+| **Command** | 50% | 60% |
+| **Interpreter** | 45% | 55% |
+
+\<br\>
+
+### **COSInteger.txt**
+
+| Design Pattern | Confidence (%) | Correctness (%) |
+| :--- | :--- | :--- |
+| **Flyweight** | 95% | 95% |
+| **Singleton** | 70% | 80% |
+| **Value Object** | 95% | 95% |
+| **Immutable Object** | 90% | 90% |
+| **Object Pool** | 60% | 70% |
+
+\<br\>
+
+### **CryptFilter.txt**
+
+This file content is too brief to accurately determine the top 5 design patterns implemented. The provided code snippet only contains license and package information, which is insufficient for analysis.
+
+\<br\>
+
+### **FilterFactory.txt**
+
+| Design Pattern | Confidence (%) | Correctness (%) |
+| :--- | :--- | :--- |
+| **Factory Method** | 95% | 90% |
+| **Singleton** | 85% | 85% |
+| **Simple Factory** | 90% | 90% |
+| **Strategy** | 70% | 75% |
+| **Facade** | 60% | 65% |
+
+\<br\>
+
+### **PDDocumentInformation.txt**
+
+| Design Pattern | Confidence (%) | Correctness (%) |
+| :--- | :--- | :--- |
+| **Adapter** | 95% | 90% |
+| **Proxy** | 85% | 85% |
+| **Data Access Object (DAO)** | 70% | 75% |
+| **Fluent Interface** | 50% | 60% |
+| **Builder** | 40% | 50% |
+
+\<br\>
+
+### **PDFXRefStream.txt**
+
+| Design Pattern | Confidence (%) | Correctness (%) |
+| :--- | :--- | :--- |
+| **Builder** | 85% | 80% |
+| **Facade** | 75% | 70% |
+| **Composite** | 65% | 70% |
+| **State** | 55% | 60% |
+| **Memento** | 50% | 55% |
+
+\<br\>
+
+### **PDLab.txt**
+
+| Design Pattern | Confidence (%) | Correctness (%) |
+| :--- | :--- | :--- |
+| **Template Method** | 90% | 90% |
+| **Strategy** | 85% | 80% |
+| **Adapter** | 75% | 75% |
+| **Facade** | 60% | 65% |
+| **Decorator** | 55% | 60% |
+
+\<br\>
+
+### **PDXObject.txt**
+
+| Design Pattern | Confidence (%) | Correctness (%) |
+| :--- | :--- | :--- |
+| **Factory Method** | 95% | 90% |
+| **Composite** | 80% | 85% |
+| **Simple Factory** | 90% | 90% |
+| **Abstract Factory** | 70% | 75% |
+| **Visitor** | 50% | 60% |
+
+\<br\>
+
+### **ResourceCache.txt**
+
+| Design Pattern | Confidence (%) | Correctness (%) |
+| :--- | :--- | :--- |
+| **Interface** | 100% | 100% |
+| **Proxy** | 80% | 85% |
+| **Decorator** | 70% | 75% |
+| **Facade** | 60% | 65% |
+| **Cache-Aside** | 90% | 90% |
+
+\<br\>
+
+### **ResourceCacheFactory.txt**
+
+| Design Pattern | Confidence (%) | Correctness (%) |
+| :--- | :--- | :--- |
+| **Factory Method** | 95% | 90% |
+| **Simple Factory** | 90% | 90% |
+| **Singleton** | 85% | 85% |
+| **Abstract Factory** | 75% | 80% |
+| **Facade** | 60% | 70% |

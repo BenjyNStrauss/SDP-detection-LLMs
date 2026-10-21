@@ -1,0 +1,143 @@
+Got it—here are ten independent, best-effort pattern reads for each class chunk in your file. I use short tables so you can skim, and I note confidence (how sure I am it’s *that* pattern) vs. correctness (how cleanly the code seems to implement it).
+
+### Class 1 — `ident$36` (fluent setters + `ident$91()` “build”)
+
+This class is a classic configuration holder with many `return this;` setters and a single validation + construction method.&#x20;
+
+| Pattern (Top 5)                     | Why it looks like that                                                                                                 | Confidence | Correctness |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ---------: | ----------: |
+| Builder                             | Fluent `ident$XX(...) { this.x = x; return this; }` and terminal `ident$91()` constructing `ident$6` after null checks |        95% |         90% |
+| Fluent Interface                    | Chained configuration calls returning `this`                                                                           |        95% |         95% |
+| Telescoping-Constructor Alternative | Avoids huge ctor by setters then build                                                                                 |        80% |         85% |
+| Validation before Build             | Guard clauses throw specific RuntimeExceptions pre-build                                                               |        75% |         85% |
+| Parameter Object                    | Packs many related settings passed into `ident$6`                                                                      |        65% |         70% |
+
+---
+
+### Class 2 — `ident$32` (factory + aggregator with inner `ident$49`)
+
+Static fabricators (`ident$68`), anonymous defaults, and an inner holder class orchestrating several collaborators.&#x20;
+
+| Pattern             | Why                                                       | Confidence | Correctness |
+| ------------------- | --------------------------------------------------------- | ---------: | ----------: |
+| Factory Method      | `ident$68(...)` builds and wires several domain objects   |        90% |         85% |
+| Facade              | Presents a simplified creation entry point over many deps |        80% |         80% |
+| DTO / Value Object  | Inner `ident$49` groups related components with getters   |        85% |         90% |
+| Null Object         | Static `ident$36` with no-op methods returning falsy      |        70% |         80% |
+| Lazy Initialization | Helpers create pieces only as needed (`ident$75`, etc.)   |        60% |         70% |
+
+---
+
+### Class 3 — `ident$43` (coordination/service orchestration)
+
+Takes inputs, filters, validates, builds results, calls collaborators, collects errors—reads like an application service.&#x20;
+
+| Pattern                     | Why                                                       | Confidence | Correctness |
+| --------------------------- | --------------------------------------------------------- | ---------: | ----------: |
+| Service Layer               | Central orchestration across repo/query utilities         |        85% |         80% |
+| Strategy (predicate/lookup) | Passes lambdas/strategies into collaborators              |        70% |         75% |
+| Template Method (light)     | Validates, then executes a repeated “search & build” flow |        60% |         70% |
+| Builder (ad-hoc)            | Helper `ident$84(...)` assembles `ident$19` stepwise      |        65% |         70% |
+| Pipeline/Chain of Ops       | Maps/filters/collects candidates before final call        |        60% |         65% |
+
+---
+
+### Class 4 — `ident$22` (thread-safe caches & registries)
+
+Synchronized access to two maps, optional lookups, mutation via functions, and size/emptiness queries.&#x20;
+
+| Pattern                | Why                                                       | Confidence | Correctness |
+| ---------------------- | --------------------------------------------------------- | ---------: | ----------: |
+| Repository             | Stores/returns domain items keyed by ids                  |        80% |         80% |
+| Cache                  | Synchronized maps + presence checks + eviction conditions |        85% |         85% |
+| Identity Map           | Keeps single instance per key                             |        70% |         75% |
+| Null Object / Optional | Returns optional-like `ident$15` wrappers                 |        65% |         75% |
+| Thread Safety Wrapper  | Synchronization around all public mutations               |        75% |         80% |
+
+---
+
+### Class 5 — `ident$28` (batch/aggregate over `ident$31` record)
+
+Iterates a collection of “units” and coordinates completions; record `ident$31` bundles related fields.&#x20;
+
+| Pattern              | Why                                                               | Confidence | Correctness |
+| -------------------- | ----------------------------------------------------------------- | ---------: | ----------: |
+| Iterator / Composite | Treats a set of operations uniformly (`ident$32` over `ident$31`) |        70% |         75% |
+| Command (as data)    | `ident$31` record encapsulates what to do/with what               |        70% |         70% |
+| Mediator             | Centralizes completion/notification (`ident$45(...)`)             |        65% |         70% |
+| Value Object         | Record holds immutable, related state                             |        85% |         90% |
+| Facade (light)       | Provides one method to kick off many sub-ops                      |        55% |         65% |
+
+---
+
+### Class 6 — `ident$17<T>` (bounded collection wrapper)
+
+Wraps another `ident$13<T>`, enforces capacity with exceptions; delegates most methods. That’s a textbook Decorator/Proxy.&#x20;
+
+| Pattern        | Why                                                     | Confidence | Correctness |
+| -------------- | ------------------------------------------------------- | ---------: | ----------: |
+| Decorator      | Same interface, adds size-limit behavior                |        95% |         90% |
+| Proxy          | Controls access/constraints to underlying container     |        80% |         80% |
+| Guard Clause   | Throws on overflow conditions                           |        70% |         85% |
+| Factory Method | Static `ident$26(...)` constructors choose backing impl |        65% |         75% |
+| Adapter (weak) | Normalizes backing list types behind common iface       |        50% |         60% |
+
+---
+
+### Class 7 — `ident$12` (error policy with logging + `Runnable`)
+
+Implements an error-handling interface, logs, invokes a callback `Runnable`, returns a wrapped exception. That’s Strategy for error handling, with Command for the callback.&#x20;
+
+| Pattern                      | Why                                                          | Confidence | Correctness |
+| ---------------------------- | ------------------------------------------------------------ | ---------: | ----------: |
+| Strategy                     | Pluggable error policy via `ident$14` implementation         |        85% |         85% |
+| Command                      | `Runnable` callback executed on error                        |        85% |         90% |
+| Adapter                      | Converts logging + callback into a `RuntimeException` output |        60% |         70% |
+| Template Method (very light) | Fixed flow: log → run callback → wrap                        |        55% |         65% |
+| Null Object (logging path)   | Tolerates null throwable, still performs action              |        45% |         60% |
+
+---
+
+### Class 8 — abstract `ident$17` (lifecycle controller)
+
+Maintains a `volatile` started flag, synchronized critical sections, and abstract hooks (`ident$43`, `ident$37`, `ident$44`)—a classic Template Method / Lifecycle pattern.&#x20;
+
+| Pattern                           | Why                                               | Confidence | Correctness |
+| --------------------------------- | ------------------------------------------------- | ---------: | ----------: |
+| Template Method                   | Abstract hooks invoked in a fixed start/stop flow |        95% |         90% |
+| State (internal)                  | Boolean `ident$22` governs behavior paths         |        70% |         75% |
+| Guarded Suspension                | Locks/guards around state transitions             |        65% |         80% |
+| Hook Method                       | Subclasses implement `ident$43/ident$37/ident$44` |        85% |         90% |
+| Double-checked start (controlled) | Checks `ident$22` inside lock before starting     |        55% |         70% |
+
+---
+
+### Class 9 — interface `ident$13` with nested helpers
+
+Defines an AutoCloseable-like contract with nested transformer classes (`ident$26/38/43/50`) and default convenience methods—screams Strategy + Template Method for scoped execution.&#x20;
+
+| Pattern         | Why                                                             | Confidence | Correctness |
+| --------------- | --------------------------------------------------------------- | ---------: | ----------: |
+| Strategy        | Inner classes implement pluggable policies (`ident$26/38/43`)   |        90% |         90% |
+| Template Method | Default methods orchestrate steps around a user action          |        85% |         85% |
+| Command         | `ident$16` is a command block with success/failure hooks        |        80% |         85% |
+| Factory Method  | Static singletons like `ident$26.ident$30`, `ident$50.ident$30` |        65% |         80% |
+| Policy Object   | Encapsulated policy for timing/limits etc.                      |        70% |         80% |
+
+---
+
+### Class 10 — `ident$23` (static graph builders/normalizers)
+
+Multiple static methods assemble complex object graphs (`ident$9`, `ident$10`) from maps, then “normalize/clean” them—Builder/Assembler/Factory vibes, with a sprinkle of Flyweight-ish sharing.&#x20;
+
+| Pattern              | Why                                                   | Confidence | Correctness |
+| -------------------- | ----------------------------------------------------- | ---------: | ----------: |
+| Builder (procedural) | Stepwise construction of nested structures            |        85% |         80% |
+| Factory              | Static `ident$25/64/75` manufacture configured graphs |        90% |         85% |
+| Assembler            | Wires many parts from key/value collections           |        80% |         80% |
+| Flyweight (light)    | Reuses per-key components via maps to avoid dups      |        60% |         65% |
+| Normalizer           | `ident$75(...)` traverses to canonicalize/clean       |        70% |         75% |
+
+---
+
+If you want, I can also drop this into a CSV or spreadsheet (one row per pattern) so you can sort/filter by confidence or by class.

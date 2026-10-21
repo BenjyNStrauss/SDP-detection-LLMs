@@ -1,0 +1,119 @@
+## org.apache.pdfbox.cos.COSInteger
+
+| Pattern              | Detection Confidence (%) | Correctness (%) |
+|----------------------|--------------------------|-----------------|
+| Flyweight            | 95                       | 95              |
+| Static Factory       | 90                       | 90              |
+| Immutable Object     | 85                       | 80              |
+| Singleton (constants)| 80                       | 75              |
+| Value Object         | 70                       | 70              |
+
+---
+
+## org.apache.pdfbox.pdfwriter.ContentStreamWriter
+
+| Pattern           | Detection Confidence (%) | Correctness (%) |
+|-------------------|--------------------------|-----------------|
+| Visitor‐like      | 85                       | 80              |
+| Template Method   | 80                       | 75              |
+| Strategy          | 75                       | 70              |
+| Facade            | 65                       | 60              |
+| Command           | 60                       | 55              |
+
+---
+
+## org.apache.pdfbox.filter.CryptFilter
+
+| Pattern            | Detection Confidence (%) | Correctness (%) |
+|--------------------|--------------------------|-----------------|
+| Template Method    | 90                       | 90              |
+| Strategy           | 85                       | 85              |
+| Factory Method     | 75                       | 70              |
+| Null Object        | 70                       | 65              |
+| Proxy (delegation) | 60                       | 55              |
+
+---
+
+## org.apache.pdfbox.filter.FilterFactory
+
+| Pattern                | Detection Confidence (%) | Correctness (%) |
+|------------------------|--------------------------|-----------------|
+| Singleton              | 95                       | 95              |
+| Factory Method         | 95                       | 95              |
+| Registry               | 90                       | 90              |
+| Abstract Factory       | 80                       | 80              |
+| Lazy Initialization    | 75                       | 70              |
+
+---
+
+## org.apache.pdfbox.pdmodel.PDDocumentInformation
+
+| Pattern           | Detection Confidence (%) | Correctness (%) |
+|-------------------|--------------------------|-----------------|
+| Facade            | 85                       | 80              |
+| Builder‐style     | 80                       | 75              |
+| Adapter (wrapper) | 75                       | 70              |
+| Null Object       | 70                       | 60              |
+| Fluent Interface  | 65                       | 60              |
+
+---
+
+## org.apache.pdfbox.pdfparser.PDFXRefStream
+
+| Pattern            | Detection Confidence (%) | Correctness (%) |
+|--------------------|--------------------------|-----------------|
+| Builder            | 90                       | 85              |
+| Template Method    | 85                       | 80              |
+| Factory Method     | 80                       | 75              |
+| Iterator           | 75                       | 70              |
+| Strategy           | 70                       | 65              |
+
+---
+
+## org.apache.pdfbox.pdmodel.graphics.color.PDLab
+
+| Pattern            | Detection Confidence (%) | Correctness (%) |
+|--------------------|--------------------------|-----------------|
+| Template Method    | 90                       | 85              |
+| Strategy           | 85                       | 80              |
+| Factory Method     | 70                       | 65              |
+| Singleton (default)| 60                       | 50              |
+| Adapter            | 55                       | 45              |
+
+---
+
+## org.apache.pdfbox.pdmodel.graphics.PDXObject
+
+| Pattern            | Detection Confidence (%) | Correctness (%) |
+|--------------------|--------------------------|-----------------|
+| Factory Method     | 95                       | 95              |
+| Adapter            | 90                       | 90              |
+| Bridge             | 85                       | 80              |
+| Template Method    | 80                       | 75              |
+| Proxy              | 70                       | 65              |
+
+---
+
+## org.apache.pdfbox.pdmodel.ResourceCache
+
+| Pattern           | Detection Confidence (%) | Correctness (%) |
+|-------------------|--------------------------|-----------------|
+| Strategy          | 90                       | 85              |
+| Facade            | 80                       | 75              |
+| Repository        | 75                       | 70              |
+| Service Interface | 70                       | 60              |
+| Abstract Factory  | 65                       | 60              |
+
+---
+
+## org.apache.pdfbox.pdmodel.ResourceCacheFactory
+
+| Pattern               | Detection Confidence (%) | Correctness (%) |
+|-----------------------|--------------------------|-----------------|
+| Factory Method        | 95                       | 95              |
+| Singleton             | 90                       | 90              |
+| Strategy (pluggable)  | 85                       | 80              |
+| Null Object           | 80                       | 75              |
+| Dependency Injection  | 75                       | 70              |
+
+---

@@ -1,0 +1,105 @@
+Awesome — I split your file into the 10 Java classes (each block separated by `<<<<<<<<DIVIDER>>>>>>>>`) and analyzed them independently. Below are concise, per-class tables with the top 5 design-pattern signals I detected, plus (1) my confidence the pattern is present in that file and (2) how correct/idiomatic the implementation appears. All references point to your uploaded file.&#x20;
+
+# Class 1 — `ident$32`
+
+| Pattern                                                       | Detection confidence | Implementation correctness | Why it shows up                                                                                                    |
+| ------------------------------------------------------------- | -------------------: | -------------------------: | ------------------------------------------------------------------------------------------------------------------ |
+| Visitor (double-dispatch via `…ident$72(writer)` on elements) |                  85% |                        80% | Elements like `ident$21/24/27` expose `ident$72(ident$35)`; this writer class dispatches per element type.         |
+| Composite (tree/entry iteration)                              |                  80% |                        75% | Iterates container `ident$24` entries (`ident$85.ident$89()`) and recursively serializes members.                  |
+| Strategy (pluggable output via `ident$35` writer)             |                  60% |                        70% | All rendering funnels through `ident$35.ident$53(…)`, treating the writer as a strategy.                           |
+| Overloaded Dispatcher (type-switch)                           |                  90% |                        85% | Overloaded `ident$46(…)` plus `instanceof` branches per subtype. (Not a GoF name, but a common dispatch variant.)  |
+| Iterator                                                      |                  55% |                        70% | Loops over collections/entries to stream serialized bytes.                                                         |
+
+# Class 2 — `ident$16` (extends `ident$18`)
+
+| Pattern                             | Detection confidence | Implementation correctness | Why it shows up                                                                      |
+| ----------------------------------- | -------------------: | -------------------------: | ------------------------------------------------------------------------------------ |
+| Flyweight (numeric cache −100..256) |                  95% |                        95% | Static array cache `ident$24` and factory `ident$27(long)` return shared instances.  |
+| Factory Method (static creators)    |                  85% |                        90% | `ident$27(long)` and `ident$32(boolean)` centralize instance creation.               |
+| Value Object / Immutable            |                  80% |                        90% | Final fields, custom `equals/hashCode/toString`. (Not GoF, but relevant.)            |
+| Visitor (accept)                    |                  70% |                        75% | `ident$63(ident$64)` calls back into a visitor/handler.                              |
+| Singleton constants                 |                  55% |                        70% | Shared statics for common values (`ident$26/28/29/30`).                              |
+
+# Class 3 — `ident$18` (implements `ident$15`)
+
+| Pattern                                    | Detection confidence | Implementation correctness | Why it shows up                                                                    |
+| ------------------------------------------ | -------------------: | -------------------------: | ---------------------------------------------------------------------------------- |
+| Facade over property map                   |                  70% |                        70% | Wraps `ident$12` and exposes typed getters/setters by symbolic keys `ident$13.*`.  |
+| Builder/Fluent (setter style)              |                  55% |                        65% | Many `ident$XX(String)` mutators shaping a record before use.                      |
+| Strategy hook points (pluggable behaviors) |                  40% |                        60% | Stores callbacks/exceptions (`ident$59/62/65/67`).                                 |
+| Validation (Guard)                         |                  60% |                        70% | `ident$82(…)` enforces a small allowed-set of formats.                             |
+| Iterator (expose keys)                     |                  45% |                        60% | Builds `ident$9<String>` of keys via `ident$71()`.                                 |
+
+# Class 4 — `ident$7`
+
+| Pattern                                              | Detection confidence | Implementation correctness | Why it shows up                                                         |
+| ---------------------------------------------------- | -------------------: | -------------------------: | ----------------------------------------------------------------------- |
+| Service Locator                                      |                  95% |                        85% | Global static setter/getter around `ident$10` instance used elsewhere.  |
+| Singleton (holder of a single shared service)        |                  85% |                        80% | Static state + default init in static block.                            |
+| Abstract Factory (via located `ident$10.ident$22()`) |                  60% |                        70% | Returns `ident$20` from the located provider.                           |
+| Lazy Initialization                                  |                  55% |                        70% | Service may be replaced/set once and read later.                        |
+| Dependency Injection (manual)                        |                  40% |                        60% | External code injects `ident$10` via `ident$13(…)`.                     |
+
+# Class 5 — `ident$25` (interface)
+
+| Pattern                            | Detection confidence | Implementation correctness | Why it shows up                                                               |
+| ---------------------------------- | -------------------: | -------------------------: | ----------------------------------------------------------------------------- |
+| Abstract Factory                   |                  95% |                        90% | Many `ident$XX(ident$7)` creation methods returning different product types.  |
+| Factory Method                     |                  70% |                        80% | Family of “make one product”/“set product” methods.                           |
+| Builder (setter-style assembly)    |                  55% |                        65% | `ident$35(…, product)` set methods suggest staged assembly.                   |
+| Prototype (possible cloning hooks) |                  25% |                        50% | Multiple getters of same types hint at reusing prototypes. Weak signal.       |
+| Dependency Inversion               |                  40% |                        70% | Clients depend on this interface for families of objects.                     |
+
+# Class 6 — `ident$28` (implements `ident$16` in `…ident$5` pkg)
+
+| Pattern                                                | Detection confidence | Implementation correctness | Why it shows up                                                                                |
+| ------------------------------------------------------ | -------------------: | -------------------------: | ---------------------------------------------------------------------------------------------- |
+| Factory Method / Simple Factory                        |                  95% |                        90% | `ident$34(…)` inspects input and returns one of several concrete types (`ident$22/20/19/63`).  |
+| Adapter                                                |                  70% |                        75% | Wraps `ident$11` as `ident$17` for a uniform downstream API.                                   |
+| Template Method (protected constructors guiding setup) |                  55% |                        70% | Subclassable constructors enforce tag/value initialization.                                    |
+| Strategy (runtime choice among encoder variants)       |                  60% |                        70% | Chooses different behaviors based on tag/attributes.                                           |
+| Guard/Validator                                        |                  50% |                        70% | Throws on unsupported tag types with explicit messages.                                        |
+
+# Class 7 — `ident$24` (extends `ident$26` in `…ident$5.ident$6`)
+
+| Pattern                                     | Detection confidence | Implementation correctness | Why it shows up                                                               |
+| ------------------------------------------- | -------------------: | -------------------------: | ----------------------------------------------------------------------------- |
+| Strategy (color-space conversion algorithm) |                  85% |                        85% | Implements `ident$69(float[])` to convert values; swapped in via base type.   |
+| Template Method                             |                  70% |                        75% | Overrides several steps (`ident$35/37/71/69/84/85/89`) in a fixed framework.  |
+| Lazy Initialization (cached helper)         |                  80% |                        85% | `ident$29` computed once in `ident$89()` and invalidated when ranges change.  |
+| Factory Method                              |                  55% |                        70% | Creates a helper `ident$28(new float[]{…}, this)` on demand.                  |
+| Facade (range accessors)                    |                  40% |                        65% | `ident$51/53/101/103` wrap persistent range storage.                          |
+
+# Class 8 — `ident$30`
+
+| Pattern                               | Detection confidence | Implementation correctness | Why it shows up                                                                                      |
+| ------------------------------------- | -------------------: | -------------------------: | ---------------------------------------------------------------------------------------------------- |
+| Builder (assembling an output object) |                  85% |                        80% | Accumulates parts (`ident$33`), computes widths, writes payload, and returns configured `ident$24`.  |
+| Iterator                              |                  65% |                        75% | Iterates elements and ranges; custom run-length packing in `ident$53()`.                             |
+| Facade                                |                  60% |                        70% | Coordinates several subsystems (`ident$24`, streams, tag enums) into a simple `ident$42()`.          |
+| Strategy (callback injection)         |                  55% |                        65% | `ident$87(ident$20)` accepts a visitor/callback to set selected fields.                              |
+| Template Method (encode header/body)  |                  45% |                        60% | `ident$71(…)` lays out a fixed writing sequence for items.                                           |
+
+# Class 9 — `ident$18` (singleton registry)
+
+| Pattern                              | Detection confidence | Implementation correctness | Why it shows up                                                        |
+| ------------------------------------ | -------------------: | -------------------------: | ---------------------------------------------------------------------- |
+| Singleton                            |                  95% |                        95% | Private ctor + static `ident$20` instance.                             |
+| Service Locator / Registry           |                  90% |                        90% | Map from `ident$14` → `ident$23` handlers, lookup via `ident$63`.      |
+| Factory (returns handler by key)     |                  70% |                        80% | `ident$63(String/ident$14)` selects the concrete handler for a token.  |
+| Flyweight (shared handler instances) |                  55% |                        70% | Reuses pre-instantiated handler objects stored in the map.             |
+| Iterator (expose registry contents)  |                  45% |                        60% | `ident$73()` provides iterable view of handlers.                       |
+
+# Class 10 — `ident$16` (extends `ident$18`)
+
+| Pattern                                            | Detection confidence | Implementation correctness | Why it shows up                                                                                                    |
+| -------------------------------------------------- | -------------------: | -------------------------: | ------------------------------------------------------------------------------------------------------------------ |
+| Template Method                                    |                  85% |                        80% | Overrides `ident$22(…)` and `ident$44(…)` to enforce a precondition then delegate to default strategy `ident$38`.  |
+| Strategy (fallback handler)                        |                  70% |                        75% | Creates/uses `ident$38` strategy when metadata key is absent or default.                                           |
+| Guard/Validator                                    |                  65% |                        75% | Throws with specific message when disallowed metadata present.                                                     |
+| Chain of Responsibility (conditional pass-through) |                  45% |                        60% | If condition ok → forward work to another handler; else stop with error.                                           |
+| Null Object (weak signal)                          |                  25% |                        50% | Treats “missing value” as a normal branch handled by default behavior.                                             |
+
+---
+
+If you’d like, I can also deliver this as a spreadsheet or add inline quotes of the exact lines that triggered each detection for auditability.

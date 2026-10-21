@@ -1,0 +1,125 @@
+># Design Pattern Analysis
+
+---
+
+## org.apache.maven.artifact.Artifact
+
+| Pattern          | Detection Confidence | Correctness |
+|------------------|----------------------|-------------|
+| Interface        | 90%                  | 80%         |
+| Strategy         | 70%                  | 60%         |
+| Factory Method   | 60%                  | 50%         |
+| Adapter          | 30%                  | 30%         |
+| Decorator        | 20%                  | 30%         |
+
+---
+
+## org.apache.maven.execution.BuildFailure
+
+| Pattern            | Detection Confidence | Correctness |
+|--------------------|----------------------|-------------|
+| Inheritance        | 90%                  | 85%         |
+| Template Method    | 85%                  | 75%         |
+| Factory Method     | 60%                  | 50%         |
+| Null Object        | 40%                  | 30%         |
+| Fluent Interface   | 30%                  | 20%         |
+
+---
+
+## org.apache.maven.extension.internal.CoreExportsProvider
+
+| Pattern               | Detection Confidence | Correctness |
+|-----------------------|----------------------|-------------|
+| Provider (JSR-330)    | 95%                  | 95%         |
+| Singleton             | 90%                  | 90%         |
+| Factory Method        | 85%                  | 80%         |
+| Dependency Injection  | 95%                  | 95%         |
+| Adapter               | 60%                  | 50%         |
+
+---
+
+## org.apache.maven.plugin.CycleDetectedInPluginGraphException
+
+| Pattern            | Detection Confidence | Correctness |
+|--------------------|----------------------|-------------|
+| Custom Exception   | 90%                  | 90%         |
+| Adapter (Exception)| 70%                  | 65%         |
+| Decorator          | 60%                  | 55%         |
+| Facade (Wrapper)   | 50%                  | 45%         |
+| Framework Bridge   | 40%                  | 30%         |
+
+---
+
+## org.apache.maven.execution.DefaultMavenExecutionRequestPopulator
+
+| Pattern                  | Detection Confidence | Correctness |
+|--------------------------|----------------------|-------------|
+| Dependency Injection     | 90%                  | 90%         |
+| Template Method          | 80%                  | 75%         |
+| Factory Method           | 85%                  | 80%         |
+| Builder (Populator)      | 70%                  | 65%         |
+| Strategy (Populate APIs) | 75%                  | 70%         |
+
+---
+
+## org.apache.maven.graph.DefaultProjectDependencyGraph
+
+| Pattern          | Detection Confidence | Correctness |
+|------------------|----------------------|-------------|
+| Builder          | 80%                  | 75%         |
+| Composite        | 70%                  | 60%         |
+| Strategy         | 75%                  | 70%         |
+| Facade           | 60%                  | 55%         |
+| Iterator         | 65%                  | 60%         |
+
+---
+
+## org.apache.maven.rtinfo.internal.DefaultRuntimeInformation
+
+| Pattern               | Detection Confidence | Correctness |
+|-----------------------|----------------------|-------------|
+| Singleton             | 90%                  | 90%         |
+| Dependency Injection  | 95%                  | 95%         |
+| Factory Method        | 85%                  | 80%         |
+| Strategy (Versioning) | 75%                  | 70%         |
+| Lazy Initialization   | 70%                  | 65%         |
+
+---
+
+## org.apache.maven.api.feature.Features
+
+| Pattern               | Detection Confidence | Correctness |
+|-----------------------|----------------------|-------------|
+| Utility Class (Facade)| 90%                  | 90%         |
+| Facade                | 80%                  | 75%         |
+| Template Method       | 65%                  | 60%         |
+| Strategy (doGet)      | 60%                  | 55%         |
+| Singleton (static)    | 50%                  | 40%         |
+
+---
+
+## org.apache.maven.model.InputLocation
+
+| Pattern            | Detection Confidence | Correctness |
+|--------------------|----------------------|-------------|
+| Prototype          | 90%                  | 90%         |
+| Composite          | 80%                  | 75%         |
+| Builder (merge)    | 70%                  | 65%         |
+| Adapter (API ↔ Internal) | 60%           | 55%         |
+| Visitor (StringFormatter) | 65%           | 60%         |
+
+---
+
+## org.apache.maven.model.InputSource
+
+| Pattern               | Detection Confidence | Correctness |
+|-----------------------|----------------------|-------------|
+| Prototype             | 90%                  | 90%         |
+| Adapter (API ↔ Internal) | 80%               | 75%         |
+| Factory Method        | 85%                  | 80%         |
+| Decorator (clone)     | 50%                  | 45%         |
+| Facade                | 40%                  | 35%         |
+
+---
+
+Feel free to request deeper dives on any of these files or clarifications on specific pattern choices.

@@ -1,0 +1,132 @@
+Below are analyses and tables for each of the ten Java classes found in the attached text file. Each table lists the top 5 design patterns detected (if present), my percent confidence in each detection (how likely it is that the pattern appears), and the percent correctness (how accurately the code implements the pattern if present). If a class contains fewer than 5 recognizable patterns, only those found are listed.
+
+***
+
+## 1. Class: ident$19 (First class in file)
+
+| Design Pattern                   | Confidence (%) | Correctness (%) |
+|----------------------------------|---------------|-----------------|
+| Factory                         | 80            | 70              |
+| Dependency Injection (via constructor) | 90      | 90              |
+| Singleton (implicit)             | 40            | 30              |
+| Exporter/Provider                | 75            | 70              |
+| Data Holder/Value Object         | 60            | 55              |
+
+***
+
+## 2. Class: ident$29
+
+| Design Pattern                   | Confidence (%) | Correctness (%) |
+|----------------------------------|---------------|-----------------|
+| Adapter                         | 68            | 65              |
+| Facade                          | 55            | 50              |
+| Data Holder/Value Object         | 85            | 80              |
+| Iterator                        | 60            | 50              |
+| Template Method                  | 40            | 40              |
+
+***
+
+## 3. Class: ident$15 (Exception subclass)
+
+| Design Pattern                   | Confidence (%) | Correctness (%) |
+|----------------------------------|---------------|-----------------|
+| Custom Exception                 | 95            | 95              |
+| Data Holder/Value Object         | 80            | 75              |
+| —                                | —             | —               |
+| —                                | —             | —               |
+| —                                | —             | —               |
+
+***
+
+## 4. Class: ident$13 (Exception subclass, chaining Throwable)
+
+| Design Pattern                   | Confidence (%) | Correctness (%) |
+|----------------------------------|---------------|-----------------|
+| Custom Exception                 | 95            | 95              |
+| Exception Chaining               | 95            | 90              |
+| Data Holder/Value Object         | 80            | 75              |
+| —                                | —             | —               |
+| —                                | —             | —               |
+
+***
+
+## 5. Class: ident$40
+
+| Design Pattern                   | Confidence (%) | Correctness (%) |
+|----------------------------------|---------------|-----------------|
+| Strategy                        | 80            | 75              |
+| Command                         | 75            | 70              |
+| Template Method                  | 70            | 68              |
+| Exception Handling Pattern       | 85            | 80              |
+| Builder (partial or method chaining) | 50        | 50              |
+
+***
+
+## 6. Class: ident$32
+
+| Design Pattern                   | Confidence (%) | Correctness (%) |
+|----------------------------------|---------------|-----------------|
+| Facade                          | 70            | 65              |
+| Singleton (for ident$36)         | 45            | 35              |
+| Data Holder/Value Object         | 65            | 60              |
+| Exception Handling Pattern       | 85            | 80              |
+| —                                | —             | —               |
+
+***
+
+## 7. Interface: ident$29
+
+| Design Pattern                   | Confidence (%) | Correctness (%) |
+|----------------------------------|---------------|-----------------|
+| Interface/Contract               | 100           | 100             |
+| Template Method (for abstract methods) | 65      | 60              |
+| —                                | —             | —               |
+| —                                | —             | —               |
+| —                                | —             | —               |
+
+***
+
+## 8. Class: ident$8
+
+| Design Pattern                   | Confidence (%) | Correctness (%) |
+|----------------------------------|---------------|-----------------|
+| Data Holder/Value Object         | 95            | 90              |
+| Prototype (via clone)            | 80            | 70              |
+| Adapter (constructor overload)   | 60            | 55              |
+| —                                | —             | —               |
+| —                                | —             | —               |
+
+***
+
+## 9. Class: ident$14
+
+| Design Pattern                   | Confidence (%) | Correctness (%) |
+|----------------------------------|---------------|-----------------|
+| Data Holder/Value Object         | 90            | 90              |
+| Prototype (via clone)            | 80            | 75              |
+| Builder (via method chaining)    | 65            | 60              |
+| Adapter                         | 55            | 50              |
+| Composite (partial, nested objects) | 50         | 45              |
+
+***
+
+## 10. Class: ident$17 (utility/static class)
+
+| Design Pattern                   | Confidence (%) | Correctness (%) |
+|----------------------------------|---------------|-----------------|
+| Utility/Static Class             | 100           | 95              |
+| Strategy (on Boolean evaluation logic) | 60       | 55              |
+| —                                | —             | —               |
+| —                                | —             | —               |
+| —                                | —             | —               |
+
+***
+
+>### Notes on Methodology
+- Percent confidence estimates how sure I am on pattern presence. Percent correctness estimates how faithfully the code implements the pattern, given some obfuscation and missing context.
+- If a class mostly acts as a custom exception, data holder, or utility, fewer patterns are listed.
+- Obfuscated identifiers (like ident$X) and lack of context can reduce confidence and correctness, especially for patterns needing semantic meaning.
+
+Let me know if you'd like deeper reasoning for any pattern or class, or more tables for other metrics!
+
+[1](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/72739633/165f31e6-7fa0-400b-afdf-55cbc86324c4/cramfile-anon.txt)

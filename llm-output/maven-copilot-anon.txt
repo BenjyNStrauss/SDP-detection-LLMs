@@ -1,0 +1,122 @@
+-# Design Pattern Analysis
+
+## Class ident$19
+
+| Design Pattern            | Detection Confidence (%) | Correctness Confidence (%) |
+|---------------------------|--------------------------|----------------------------|
+| Factory Method            | 90                       | 85                         |
+| Adapter                   | 70                       | 60                         |
+| Proxy                     | 60                       | 50                         |
+| Dependency Injection      | 80                       | 75                         |
+| Wrapper                   | 50                       | 40                         |
+
+---
+
+## Class ident$29
+
+| Design Pattern            | Detection Confidence (%) | Correctness Confidence (%) |
+|---------------------------|--------------------------|----------------------------|
+| Builder                   | 90                       | 80                         |
+| Decorator                 | 70                       | 60                         |
+| Adapter                   | 60                       | 50                         |
+| Iterator                  | 80                       | 70                         |
+| Proxy                     | 50                       | 40                         |
+
+---
+
+## Class ident$15
+
+| Design Pattern            | Detection Confidence (%) | Correctness Confidence (%) |
+|---------------------------|--------------------------|----------------------------|
+| Adapter                   | 10                       | 5                          |
+| Factory Method            | 10                       | 5                          |
+| Singleton                 | 10                       | 5                          |
+| Decorator                 | 10                       | 5                          |
+| Strategy                  | 10                       | 5                          |
+
+---
+
+## Class ident$13
+
+| Design Pattern            | Detection Confidence (%) | Correctness Confidence (%) |
+|---------------------------|--------------------------|----------------------------|
+| Adapter                   | 10                       | 5                          |
+| Factory Method            | 10                       | 5                          |
+| Singleton                 | 10                       | 5                          |
+| Decorator                 | 10                       | 5                          |
+| Strategy                  | 10                       | 5                          |
+
+---
+
+## Class ident$40
+
+| Design Pattern            | Detection Confidence (%) | Correctness Confidence (%) |
+|---------------------------|--------------------------|----------------------------|
+| Visitor                   | 95                       | 90                         |
+| Template Method           | 80                       | 75                         |
+| Strategy                  | 60                       | 50                         |
+| Decorator                 | 60                       | 50                         |
+| Proxy                     | 50                       | 45                         |
+
+---
+
+## Class ident$32
+
+| Design Pattern            | Detection Confidence (%) | Correctness Confidence (%) |
+|---------------------------|--------------------------|----------------------------|
+| Lazy Initialization       | 85                       | 75                         |
+| Factory Method            | 80                       | 70                         |
+| Template Method           | 70                       | 60                         |
+| Strategy                  | 50                       | 45                         |
+| Builder                   | 40                       | 35                         |
+
+---
+
+## Interface ident$29
+
+| Design Pattern            | Detection Confidence (%) | Correctness Confidence (%) |
+|---------------------------|--------------------------|----------------------------|
+| Adapter                   | 10                       | 5                          |
+| Factory Method            | 10                       | 5                          |
+| Singleton                 | 10                       | 5                          |
+| Decorator                 | 10                       | 5                          |
+| Strategy                  | 10                       | 5                          |
+
+---
+
+## Class ident$8
+
+| Design Pattern            | Detection Confidence (%) | Correctness Confidence (%) |
+|---------------------------|--------------------------|----------------------------|
+| Prototype                 | 95                       | 90                         |
+| Factory Method            | 85                       | 75                         |
+| JavaBean                  | 80                       | 70                         |
+| Builder                   | 50                       | 40                         |
+| Adapter                   | 40                       | 30                         |
+
+---
+
+## Class ident$14
+
+| Design Pattern            | Detection Confidence (%) | Correctness Confidence (%) |
+|---------------------------|--------------------------|----------------------------|
+| Prototype                 | 95                       | 85                         |
+| Composite                 | 75                       | 65                         |
+| Factory Method            | 70                       | 60                         |
+| Builder                   | 60                       | 50                         |
+| Flyweight                 | 40                       | 30                         |
+
+---
+
+## Class ident$17
+
+| Design Pattern            | Detection Confidence (%) | Correctness Confidence (%) |
+|---------------------------|--------------------------|----------------------------|
+| Utility                   | 90                       | 85                         |
+| Singleton                 | 50                       | 40                         |
+| Strategy                  | 20                       | 10                         |
+| Facade                    | 30                       | 20                         |
+| Adapter                   | 10                       | 5                          |
+---
+
+If you’d like deeper justification for any of these detections or adjusted confidence thresholds, let me know and I can drill into the code further.

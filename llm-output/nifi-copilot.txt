@@ -1,0 +1,121 @@
+># Design Pattern Analysis
+
+## AbstractSecretBasedParameterValueProvider
+
+| Design Pattern               | Confidence | Correctness |
+| ---------------------------- | ---------- | ----------- |
+| Template Method              | 90%        | 95%         |
+| Strategy                     | 85%        | 90%         |
+| Builder                      | 95%        | 90%         |
+| Chain of Responsibility      | 70%        | 80%         |
+| Factory Method               | 75%        | 80%         |
+
+---
+
+## BulletinFactory
+
+| Design Pattern               | Confidence | Correctness |
+| ---------------------------- | ---------- | ----------- |
+| Factory Method               | 95%        | 95%         |
+| Method Overloading           | 90%        | 90%         |
+| Singleton (ID generator)     | 70%        | 60%         |
+| Facade                       | 60%        | 70%         |
+| Utility Class                | 60%        | 50%         |
+
+---
+
+## FlowFileSupplier
+
+| Design Pattern               | Confidence | Correctness |
+| ---------------------------- | ---------- | ----------- |
+| Strategy                     | 100%       | 95%         |
+| Functional Interface         | 90%        | 90%         |
+| Null Object (Optional usage) | 60%        | 70%         |
+| Adapter (minimal API)        | 50%        | 60%         |
+| Supplier                     | 80%        | 85%         |
+
+---
+
+## MockComponentLog
+
+| Design Pattern               | Confidence | Correctness |
+| ---------------------------- | ---------- | ----------- |
+| Adapter                      | 95%        | 95%         |
+| Proxy                        | 90%        | 85%         |
+| Decorator                    | 90%        | 90%         |
+| Facade                       | 70%        | 80%         |
+| Template Method              | 60%        | 65%         |
+
+---
+
+## MockStateMap
+
+| Design Pattern               | Confidence | Correctness |
+| ---------------------------- | ---------- | ----------- |
+| Adapter                      | 95%        | 95%         |
+| Null Object                  | 80%        | 85%         |
+| Immutable Object             | 60%        | 80%         |
+| Wrapper                      | 70%        | 75%         |
+| Factory Method               | 50%        | 50%         |
+
+---
+
+## NarUnpackLock
+
+| Design Pattern               | Confidence | Correctness |
+| ---------------------------- | ---------- | ----------- |
+| Singleton                    | 100%       | 100%        |
+| Facade                       | 70%        | 80%         |
+| Monostate                    | 60%        | 70%         |
+| Utility Class                | 60%        | 60%         |
+| Lock Object Wrapper          | 65%        | 75%         |
+
+---
+
+## ParameterOverride
+
+| Design Pattern               | Confidence | Correctness |
+| ---------------------------- | ---------- | ----------- |
+| Data Transfer Object (DTO)   | 100%       | 100%        |
+| Value Object                 | 90%        | 90%         |
+| Parameter Object             | 70%        | 80%         |
+| Immutable Object             | 95%        | 90%         |
+| Constructor Overloading      | 80%        | 90%         |
+
+---
+
+## ReflectionUtils
+
+| Design Pattern               | Confidence | Correctness |
+| ---------------------------- | ---------- | ----------- |
+| Utility Class                | 100%       | 100%        |
+| Facade                       | 80%        | 85%         |
+| Strategy                     | 70%        | 80%         |
+| Template Method              | 65%        | 70%         |
+| Visitor (method iteration)   | 60%        | 50%         |
+
+---
+
+## SharedSessionState
+
+| Design Pattern               | Confidence | Correctness |
+| ---------------------------- | ---------- | ----------- |
+| Facade                       | 95%        | 95%         |
+| Mediator                     | 70%        | 75%         |
+| Monostate                    | 60%        | 60%         |
+| Utility Class                | 60%        | 60%         |
+| Observer (event capture)     | 55%        | 50%         |
+
+---
+
+## StatelessDataflow
+
+| Design Pattern               | Confidence | Correctness |
+| ---------------------------- | ---------- | ----------- |
+| Template Method              | 95%        | 95%         |
+| Strategy                     | 80%        | 85%         |
+| Command                      | 70%        | 70%         |
+| Null Object (implicit context)| 60%       | 70%         |
+| Interface Adapter            | 80%        | 80%         |
+
+---

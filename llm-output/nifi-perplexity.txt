@@ -1,0 +1,179 @@
+Below are analyses for each of the ten Java classes found in your file, split and presented according to DIVIDER lines. For each class, you’ll find a table showing the top 5 design patterns detected (if present), along with percent confidence in their usage and percent correctness of the identification. Class names have been inferred from their content.
+
+***
+
+## 1. Class: AbstractSecretBasedParameterValueProvider
+
+| Design Pattern Name   | Confidence (%) | Correctness (%)              |
+|----------------------|:--------------:|:----------------------------:|
+| Template Method      | 95             | 90                           |
+| Strategy             | 80             | 80                           |
+| Factory Method       | 75             | 75                           |
+| Singleton            | 40             | 35                           |
+| Delegation           | 60             | 60                           |
+
+- **Template Method:** The abstract class provides a frame for subclasses, with abstract methods like `getAdditionalSupportedPropertyDescriptors`.[1]
+- **Strategy:** Subclasses can provide custom secret retrieval strategies.[1]
+- **Factory Method:** Abstract creation of property descriptors.[1]
+- **Singleton:** Only partial evidence, not explicit.[1]
+- **Delegation:** Property descriptor creation and mapping are delegated to methods.[1]
+
+***
+
+## 2. Class: BulletinFactory
+
+| Design Pattern Name   | Confidence (%) | Correctness (%)              |
+|----------------------|:--------------:|:----------------------------:|
+| Factory              | 97             | 95                           |
+| Static Factory Method| 90             | 85                           |
+| Singleton            | 30             | 25                           |
+| Builder              | 55             | 50                           |
+| Prototype            | 35             | 30                           |
+
+- **Factory:** Central creation point for `Bulletin` objects.
+- **Static Factory Method:** Uses static methods to create objects.
+- **Singleton:** Not explicit—class is not singleton.
+- **Builder:** Some parameters bundled in methods, but not fluent builder style.
+- **Prototype:** No object cloning, just creation.
+
+***
+
+## 3. Class: FlowFileSupplier
+
+| Design Pattern Name   | Confidence (%) | Correctness (%)              |
+|----------------------|:--------------:|:----------------------------:|
+| Supplier             | 100            | 100                          |
+| Interface Segregation| 80             | 80                           |
+| Adapter              | 30             | 25                           |
+| Null Object          | 40             | 35                           |
+| Strategy             | 30             | 25                           |
+
+- **Supplier:** Provides `FlowFile` objects on demand—core supplier/producer pattern.
+- **Interface Segregation:** Slim dedicated interface.
+- **Adapter, Null Object, Strategy:** Possible usages in implementations, not present in interface.
+
+***
+
+## 4. Class: MockComponentLog
+
+| Design Pattern Name   | Confidence (%) | Correctness (%)              |
+|----------------------|:--------------:|:----------------------------:|
+| Adapter              | 90             | 85                           |
+| Proxy                | 85             | 80                           |
+| Decorator            | 75             | 70                           |
+| Mock/Test Double     | 100            | 100                          |
+| Delegation           | 95             | 95                           |
+
+- **Adapter/Proxy:** Adapts SLF4J logging to NiFi’s interface.
+- **Decorator:** Adds extra context to logging.
+- **Mock/Test Double:** Explicitly a mock class for testing.
+- **Delegation:** Delegates log calls to underlying logger.
+
+***
+
+## 5. Class: MockStateMap
+
+| Design Pattern Name   | Confidence (%) | Correctness (%)              |
+|----------------------|:--------------:|:----------------------------:|
+| Mock/Test Double     | 100            | 100                          |
+| Adapter              | 80             | 75                           |
+| Immutable Object     | 60             | 55                           |
+| Value Object         | 70             | 70                           |
+| Factory              | 45             | 40                           |
+
+- **Mock/Test Double:** Clearly a mock for testing state maps.
+- **Adapter/Value Object/Immutable Object:** Wraps map behavior, mostly immutable usage.
+
+***
+
+## 6. Class: NarUnpackLock
+
+| Design Pattern Name   | Confidence (%) | Correctness (%)              |
+|----------------------|:--------------:|:----------------------------:|
+| Singleton            | 95             | 95                           |
+| Lock/Mutex           | 100            | 100                          |
+| Utility/Static Class | 90             | 90                           |
+| Facade               | 30             | 25                           |
+| State                | 40             | 35                           |
+
+- **Singleton:** Provides only one static lock for NAR unpacking globally in JVM.
+- **Lock/Mutex:** Implements locking for resource control.
+- **Utility/Static Class:** All methods are static.
+
+***
+
+## 7. Class: ParameterOverride
+
+| Design Pattern Name   | Confidence (%) | Correctness (%)              |
+|----------------------|:--------------:|:----------------------------:|
+| Value Object         | 95             | 95                           |
+| Immutable Object     | 95             | 95                           |
+| Data Transfer Object | 90             | 85                           |
+| Builder              | 35             | 30                           |
+| Factory              | 40             | 35                           |
+
+- **Value/Immutable Object:** Immutable fields, represents a parameter override as data.
+- **Data Transfer Object (DTO):** Used for passing parameter override data.
+
+***
+
+## 8. Class: ReflectionUtils
+
+| Design Pattern Name   | Confidence (%) | Correctness (%)              |
+|----------------------|:--------------:|:----------------------------:|
+| Reflection           | 100            | 100                          |
+| Utility/Static Class | 90             | 90                           |
+| Exception Shielding  | 60             | 55                           |
+| Singleton            | 25             | 20                           |
+| Adapter              | 35             | 30                           |
+
+- **Reflection:** Uses Java Reflection API for method invocations.
+- **Utility/Static:** Contains only static utility methods.
+- **Exception Shielding:** Some shielding and error logging.
+
+***
+
+## 9. Class: SharedSessionState
+
+| Design Pattern Name   | Confidence (%) | Correctness (%)              |
+|----------------------|:--------------:|:----------------------------:|
+| State                | 95             | 90                           |
+| Aggregator/Composite | 80             | 80                           |
+| Counter              | 100            | 100                          |
+| Delegation           | 90             | 90                           |
+| Facade               | 65             | 60                           |
+
+- **State:** Maintains shared state across mocked session objects.
+- **Aggregator/Composite:** Aggregates queues, events, counters, etc.
+- **Counter:** Manages counts via atomic longs.
+- **Delegation:** Delegates tasks to other classes and queues.
+
+***
+
+## 10. Class: StatelessDataflow (Interface)
+
+| Design Pattern Name   | Confidence (%) | Correctness (%)              |
+|----------------------|:--------------:|:----------------------------:|
+| Interface Segregation| 90             | 90                           |
+| Facade               | 65             | 65                           |
+| Command              | 45             | 40                           |
+| Template Method      | 55             | 45                           |
+| Strategy             | 50             | 45                           |
+
+- **Interface Segregation:** Each method targets a specific aspect of dataflow control.
+- **Facade:** Aggregates complex workflow control behind unified methods.
+- **Command/Template/Strategy:** Methods could implement these patterns in concrete classes.
+
+***
+
+>### Notes
+
+- Percent confidence: Relative likelihood based on strength of evidence in code.
+- Percent correctness: How accurately the code matches canonical implementations.
+- Not every class implements five patterns; if fewer than five are found, non-matching patterns are assigned lower confidence/correctness.
+- Many classes serve as mocks/testing aids; their patterns reflect that.
+- Design pattern detection is based on code structure and naming only, as comments and documentation may guide but not guarantee patterns.
+
+If you need a deeper breakdown, specific pattern examples, or a focused analysis on a particular class, let me know!
+
+[1](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/72739633/32bb476c-d196-411a-8f2d-f74ce0eacd71/cramfile.txt)

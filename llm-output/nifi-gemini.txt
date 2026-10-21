@@ -1,0 +1,131 @@
+Based on the analysis of the provided files, here are the top 5 design patterns identified in each, along with confidence and correctness percentages.
+
+***
+
+### **AbstractSecretBasedParameterValueProvider.txt**
+This file is an abstract class that provides a base for subclasses to implement specific behavior for retrieving secret values. This is a strong indicator of the **Template Method** pattern.
+
+| Design Pattern | Confidence (%) | Correctness (%) |
+| :--- | :--- | :--- |
+| Template Method | 95 | 95 |
+| Strategy | 85 | 90 |
+| Abstract Factory | 70 | 80 |
+| Builder | 60 | 75 |
+| Adapter | 50 | 65 |
+
+***
+
+### **BulletinFactory.txt**
+The class name `BulletinFactory` and the static `createBulletin` methods clearly implement a simplified version of the **Factory Method** pattern.
+
+| Design Pattern | Confidence (%) | Correctness (%) |
+| :--- | :--- | :--- |
+| Factory Method | 98 | 95 |
+| Singleton | 80 | 85 |
+| Utility Class | 90 | 95 |
+| Builder | 65 | 70 |
+| Strategy | 55 | 60 |
+
+***
+
+### **FlowFileSupplier.txt**
+This file defines a functional interface, which is a classic implementation of the **Strategy** pattern, allowing different algorithms to be encapsulated and passed to a context.
+
+| Design Pattern | Confidence (%) | Correctness (%) |
+| :--- | :--- | :--- |
+| Strategy | 98 | 98 |
+| Functional Programming | 95 | 95 |
+| Provider | 90 | 90 |
+| Interface Segregation Principle | 85 | 85 |
+| Command | 70 | 80 |
+
+***
+
+### **MockComponentLog.txt**
+The name and purpose of this class indicate a clear use of the **Mock Object** pattern, a specific type of **Test Double** for unit testing.
+
+| Design Pattern | Confidence (%) | Correctness (%) |
+| :--- | :--- | :--- |
+| Mock Object | 99 | 99 |
+| Adapter | 85 | 90 |
+| Proxy | 75 | 80 |
+| Decorator | 65 | 70 |
+| Composite | 50 | 55 |
+
+***
+
+### **MockStateMap.txt**
+Similar to `MockComponentLog`, this file is a mock implementation for testing, representing a concrete use of the **Mock Object** pattern.
+
+| Design Pattern | Confidence (%) | Correctness (%) |
+| :--- | :--- | :--- |
+| Mock Object | 99 | 99 |
+| Test Double | 95 | 95 |
+| Adapter | 80 | 85 |
+| Proxy | 70 | 75 |
+| Facade | 60 | 65 |
+
+***
+
+### **NarUnpackLock.txt**
+This class provides a synchronized block to manage access to a shared resource, a perfect example of a **Locking** or **Mutex** pattern.
+
+| Design Pattern | Confidence (%) | Correctness (%) |
+| :--- | :--- | :--- |
+| Locking / Mutex | 98 | 98 |
+| Resource Acquisition Is Initialization (RAII) | 90 | 90 |
+| Thread-Safe Singleton | 80 | 85 |
+| Monitor | 75 | 80 |
+| Observer | 50 | 55 |
+
+***
+
+### **ParameterOverride.txt**
+This class is a simple data holder with immutable fields, which is the core of the **Immutable Object** and **Value Object** patterns.
+
+| Design Pattern | Confidence (%) | Correctness (%) |
+| :--- | :--- | :--- |
+| Immutable Object | 98 | 98 |
+| Value Object | 95 | 95 |
+| Data Transfer Object (DTO) | 90 | 90 |
+| Builder | 70 | 75 |
+| Decorator | 55 | 60 |
+
+***
+
+### **ReflectionUtils.txt**
+This utility class simplifies the use of the complex Java Reflection API, which is the primary purpose of the **Facade** pattern.
+
+| Design Pattern | Confidence (%) | Correctness (%) |
+| :--- | :--- | :--- |
+| Facade | 95 | 95 |
+| Utility Class | 90 | 95 |
+| Command | 80 | 85 |
+| Strategy | 70 | 75 |
+| Adapter | 60 | 65 |
+
+***
+
+### **SharedSessionState.txt**
+This class manages shared, concurrent state using `ConcurrentHashMap` and `AtomicLong`, a clear implementation of the **Active Object** or **Monitor** concurrency pattern.
+
+| Design Pattern | Confidence (%) | Correctness (%) |
+| :--- | :--- | :--- |
+| Active Object / Monitor | 95 | 90 |
+| Shared Resource Manager | 90 | 95 |
+| State | 80 | 85 |
+| Singleton | 75 | 80 |
+| Memento | 65 | 70 |
+
+***
+
+### **StatelessDataflow.txt**
+This interface defines default methods and a template for behavior, making it a clear example of the **Template Method** pattern.
+
+| Design Pattern | Confidence (%) | Correctness (%) |
+| :--- | :--- | :--- |
+| Template Method | 98 | 98 |
+| Strategy | 90 | 95 |
+| Builder | 75 | 80 |
+| Command | 65 | 70 |
+| Factory Method | 60 | 65 |

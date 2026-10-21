@@ -1,0 +1,86 @@
+Here is an analysis of the design patterns implemented in each of the 10 provided files.
+
+***
+
+### ArrayBlockingQueueFactory.txt
+
+| Design Pattern | Percent Confidence | Percent Correctness |
+| :--- | :--- | :--- |
+| Factory Method | 95% | 90% |
+
+***
+
+### AsyncWaitStrategyFactory.txt
+
+| Design Pattern | Percent Confidence | Percent Correctness |
+| :--- | :--- | :--- |
+| Factory Method | 95% | 90% |
+
+***
+
+### BridgeAware.txt
+
+| Design Pattern | Percent Confidence | Percent Correctness |
+| :--- | :--- | :--- |
+| Bridge | 80% | 85% |
+
+***
+
+### CassandraAppender.txt
+
+| Design Pattern | Percent Confidence | Percent Correctness |
+| :--- | :--- | :--- |
+| Builder | 99% | 100% |
+| Strategy | 90% | 90% |
+| Decorator | 60% | 70% |
+
+***
+
+### CompositeAction.txt
+
+| Design Pattern | Percent Confidence | Percent Correctness |
+| :--- | :--- | :--- |
+| Composite | 99% | 100% |
+
+***
+
+### FilterPerformanceComparison.txt
+
+| Design Pattern | Percent Confidence | Percent Correctness |
+| :--- | :--- | :--- |
+| Strategy | 85% | 80% |
+| Singleton | 70% | 75% |
+
+***
+
+### Log4jEventBuilder.txt
+
+| Design Pattern | Percent Confidence | Percent Correctness |
+| :--- | :--- | :--- |
+| Builder | 99% | 100% |
+
+***
+
+### MutableThreadContextStack.txt
+
+| Design Pattern | Percent Confidence | Percent Correctness |
+| :--- | :--- | :--- |
+| Adapter | 90% | 95% |
+| State | 70% | 70% |
+
+***
+
+### ReliabilityStrategy.txt
+
+| Design Pattern | Percent Confidence | Percent Correctness |
+| :--- | :--- | :--- |
+| Strategy | 99% | 100% |
+
+***
+
+### SystemClock.txt
+
+| Design Pattern | Percent Confidence | Percent Correctness |
+| :--- | :--- | :--- |
+| Singleton | 80% | 85% |
+| Strategy | 75% | 80% |

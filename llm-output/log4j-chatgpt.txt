@@ -1,0 +1,135 @@
+Here’s a per-file pattern read with my best judgments. Each class comes from your uploaded `cramfile.txt` (source noted once per class).
+
+---
+
+### 1) `org.apache.logging.log4j.core.async.ArrayBlockingQueueFactory<E>`
+ — factory for `BlockingQueue` instances.&#x20;
+
+| Pattern                              | Why it fits (brief)                                                                        | Detection Confidence | Pattern Correctness |
+| ------------------------------------ | ------------------------------------------------------------------------------------------ | -------------------: | ------------------: |
+| Factory Method                       | `create(int)` constructs `ArrayBlockingQueue` based on a parameter.                        |                  95% |                 95% |
+| Plugin / SPI                         | `@Plugin(... elementType = BlockingQueueFactory.ELEMENT_TYPE)` exposes it as an extension. |                  90% |                 85% |
+| Static Factory (idiom)               | `@PluginFactory createFactory()` supplies instances without `new` at call sites.           |                  85% |                 80% |
+| Abstract Factory                     | Implements `BlockingQueueFactory<E>` to create a family of queues via type param.          |                  60% |                 60% |
+| Dependency Injection (config-driven) | Log4j’s plugin system injects this factory from configuration.                             |                  55% |                 60% |
+
+---
+
+### 2) `org.apache.logging.log4j.core.async.AsyncWaitStrategyFactory`
+ — interface to produce LMAX `WaitStrategy`.&#x20;
+
+| Pattern              | Why it fits                                                       | Detection Confidence | Pattern Correctness |
+| -------------------- | ----------------------------------------------------------------- | -------------------: | ------------------: |
+| Factory Method       | `createWaitStrategy()` returns a `WaitStrategy`.                  |                  90% |                 90% |
+| Strategy             | Selects among interchangeable wait strategies for async logging.  |                  85% |                 85% |
+| Abstract Factory     | Interface enabling families of `WaitStrategy` variants.           |                  65% |                 60% |
+| Plugin / SPI         | Designed for pluggable implementations consumed by async loggers. |                  60% |                 70% |
+| Dependency Inversion | Callers depend on the abstraction, not a concrete wait strategy.  |                  55% |                 65% |
+
+---
+
+### 3) `org.apache.logging.log4j.BridgeAware`
+ — interface to let bridges set caller FQCN.&#x20;
+
+| Pattern                                 | Why it fits                                                        | Detection Confidence | Pattern Correctness |
+| --------------------------------------- | ------------------------------------------------------------------ | -------------------: | ------------------: |
+| Bridge                                  | Explicitly supports “bridge” integrations to convey location data. |                  80% |                 75% |
+| Adapter                                 | Used by adapters to pass caller info across APIs.                  |                  70% |                 70% |
+| SPI / Role Interface                    | Narrow interface for a specific integration role.                  |                  70% |                 80% |
+| Callback                                | Consumer calls back `setEntryPoint(...)` to adjust behavior.       |                  60% |                 65% |
+| Interface Segregation (principle/idiom) | Small, focused contract for cross-framework interop.               |                  55% |                 70% |
+
+---
+
+### 4) `org.apache.logging.log4j.cassandra.CassandraAppender`
+ (+ inner `Builder`) — Log4j Appender backed by Cassandra.&#x20;
+
+| Pattern         | Why it fits                                                       | Detection Confidence | Pattern Correctness |
+| --------------- | ----------------------------------------------------------------- | -------------------: | ------------------: |
+| Builder         | Fluent `Builder` with many `setX` methods and `build()`.          |                  95% |                 95% |
+| Plugin / SPI    | `@Plugin` registers appender for configuration use.               |                  90% |                 90% |
+| Template Method | Inherits from `AbstractDatabaseAppender`, leverages parent hooks. |                  80% |                 80% |
+| Factory Method  | `@PluginBuilderFactory newBuilder()` supplies the builder.        |                  75% |                 80% |
+| Facade          | Delegates Cassandra ops to `CassandraManager` to hide complexity. |                  60% |                 70% |
+
+---
+
+### 5) `org.apache.logging.log4j.core.appender.rolling.action.CompositeAction`
+ — executes a list of `Action`s.&#x20;
+
+| Pattern                             | Why it fits                                               | Detection Confidence | Pattern Correctness |
+| ----------------------------------- | --------------------------------------------------------- | -------------------: | ------------------: |
+| Composite                           | Treats a group of `Action` like a single `Action`.        |                  95% |                 95% |
+| Command                             | Each `Action` encapsulates an operation with `execute()`. |                  80% |                 85% |
+| Template Method                     | `run()` delegates to `execute()` with error handling.     |                  65% |                 70% |
+| Iterator (usage)                    | Iterates uniformly over child actions.                    |                  50% |                 55% |
+| Fail-Fast / Bulkhead (error policy) | `stopOnError` governs failure semantics across batch.     |                  45% |                 55% |
+
+---
+
+### 6) `org.apache.logging.log4j.FilterPerformanceComparison`
+ — JUnit perf harness with enum strategies and worker threads.&#x20;
+
+| Pattern                    | Why it fits                                                         | Detection Confidence | Pattern Correctness |
+| -------------------------- | ------------------------------------------------------------------- | -------------------: | ------------------: |
+| Strategy                   | `Target` enum constants implement different `timedLoop` behaviors.  |                  90% |                 90% |
+| Template Method            | Common timing/loop shape; specifics in each enum constant override. |                  70% |                 75% |
+| Test Fixture (xUnit idiom) | `@BeforeAll/@AfterAll/@Test` structure for repeatable benchmarks.   |                  70% |                 80% |
+| Worker Thread              | Inner `Worker extends Thread` encapsulates task per thread.         |                  65% |                 70% |
+| Command (light)            | `Worker.run()` executes a self-contained logging task.              |                  55% |                 60% |
+
+---
+
+### 7) `org.apache.logging.slf4j.Log4jEventBuilder`
+ — SLF4J `LoggingEventBuilder` backed by Log4j.&#x20;
+
+| Pattern                    | Why it fits                                                       | Detection Confidence | Pattern Correctness |
+| -------------------------- | ----------------------------------------------------------------- | -------------------: | ------------------: |
+| Builder / Fluent Interface | Chainable setters culminating in `log()`.                         |                  95% |                 95% |
+| Adapter                    | Converts SLF4J `Marker` to Log4j marker via `Log4jMarkerFactory`. |                  85% |                 85% |
+| Bridge                     | Cooperates with `BridgeAware` to set FQCN across frameworks.      |                  65% |                 70% |
+| Facade                     | Simplifies logging call construction before delegating to Log4j.  |                  60% |                 70% |
+| Context Scope (RAII idiom) | Uses `CloseableThreadContext` in try-with-resources to add MDC.   |                  55% |                 80% |
+
+---
+
+### 8) `org.apache.logging.log4j.spi.MutableThreadContextStack`
+ — mutable stack for thread context messages.&#x20;
+
+| Pattern                    | Why it fits                                             | Detection Confidence | Pattern Correctness |
+| -------------------------- | ------------------------------------------------------- | -------------------: | ------------------: |
+| Prototype                  | `copy()` returns a cloned stack instance.               |                  85% |                 90% |
+| Adapter                    | Wraps a `List<String>` to satisfy `ThreadContextStack`. |                  75% |                 80% |
+| Decorator                  | Adds stack semantics & “freeze” behavior atop a list.   |                  65% |                 70% |
+| Iterator (exposure)        | Exposes `iterator()` to traverse elements.              |                  60% |                 65% |
+| Guarded Suspension (idiom) | Mutators check `frozen` invariant before proceeding.    |                  55% |                 65% |
+
+---
+
+### 9) `org.apache.logging.log4j.core.config.ReliabilityStrategy`
+ — contract for reliable delivery across config changes.&#x20;
+
+| Pattern                 | Why it fits                                                     | Detection Confidence | Pattern Correctness |
+| ----------------------- | --------------------------------------------------------------- | -------------------: | ------------------: |
+| Strategy                | Multiple implementations can vary reliability behavior.         |                  95% |                 95% |
+| Lifecycle Hooks         | `beforeStop*`, `afterLogEvent()` hook points around operations. |                  85% |                 85% |
+| Template Method (hooks) | Defines hook surface to be invoked by a controlling template.   |                  70% |                 70% |
+| Callback                | Methods are invoked by the logging pipeline at specific times.  |                  65% |                 75% |
+| SPI                     | Pure interface intended for pluggable providers.                |                  70% |                 85% |
+
+---
+
+### 10) `org.apache.logging.log4j.core.util.SystemClock`
+ — time source that implements `Clock` & `PreciseClock`.&#x20;
+
+| Pattern                | Why it fits                                                                        | Detection Confidence | Pattern Correctness |
+| ---------------------- | ---------------------------------------------------------------------------------- | -------------------: | ------------------: |
+| Strategy               | Swappable clock implementation for timing.                                         |                  95% |                 95% |
+| Adapter                | Adapts `System.currentTimeMillis()` / `Clock.systemUTC()` to Log4j’s `Clock` APIs. |                  75% |                 80% |
+| Singleton (rejected)   | Not enforced; no global single instance here.                                      |                  40% |                 30% |
+| Null Object (rejected) | Provides real time, not a do-nothing implementation.                               |                  30% |                 20% |
+| Utility Class (idiom)  | `final` class offering concrete behavior without state.                            |                  55% |                 70% |
+
+---
+
+If you want, I can also export these into a CSV or add brief code-based justifications per row.

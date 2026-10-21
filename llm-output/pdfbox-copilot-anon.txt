@@ -1,0 +1,123 @@
+-# Design Pattern Analysis
+
+## Class ident$32
+
+| Design Pattern      | Detection Confidence (%) | Correctness (%) |
+|---------------------|--------------------------|-----------------|
+| Visitor             | 95                       | 90              |
+| Builder             | 40                       | 60              |
+| Adapter             | 30                       | 50              |
+| Composite           | 20                       | 30              |
+| Template Method     | 25                       | 40              |
+
+---
+
+## Class ident$16
+
+| Design Pattern      | Detection Confidence (%) | Correctness (%) |
+|---------------------|--------------------------|-----------------|
+| Flyweight           | 95                       | 90              |
+| Factory Method      | 90                       | 85              |
+| Singleton           | 50                       | 40              |
+| Registry            | 40                       | 30              |
+| Custom Caching Pool | 35                       | 25              |
+
+---
+
+## Class ident$18 (implements ident$15)
+
+| Design Pattern  | Detection Confidence (%) | Correctness (%) |
+|-----------------|--------------------------|-----------------|
+| Bridge          | 90                       | 85              |
+| Adapter         | 85                       | 80              |
+| Facade          | 60                       | 50              |
+| Decorator       | 40                       | 35              |
+| Proxy           | 20                       | 20              |
+
+---
+
+## Class ident$7
+
+| Design Pattern      | Detection Confidence (%) | Correctness (%) |
+|---------------------|--------------------------|-----------------|
+| Service Locator     | 90                       | 85              |
+| Singleton           | 85                       | 80              |
+| Dependency Injection| 50                       | 40              |
+| Registry            | 45                       | 35              |
+| Facade              | 30                       | 25              |
+
+---
+
+## Interface ident$25
+
+| Design Pattern      | Detection Confidence (%) | Correctness (%) |
+|---------------------|--------------------------|-----------------|
+| Abstract Factory    | 95                       | 90              |
+| Factory Method      | 90                       | 85              |
+| Dependency Injection| 50                       | 40              |
+| Registry            | 35                       | 30              |
+| Prototype           | 20                       | 20              |
+
+---
+
+## Class ident$28
+
+| Design Pattern      | Detection Confidence (%) | Correctness (%) |
+|---------------------|--------------------------|-----------------|
+| Factory Method      | 95                       | 90              |
+| Singleton           | 50                       | 40              |
+| Strategy            | 40                       | 35              |
+| Adapter             | 30                       | 25              |
+| Chain of Responsibility | 25                   | 20              |
+
+---
+
+## Class ident$24
+
+| Design Pattern      | Detection Confidence (%) | Correctness (%) |
+|---------------------|--------------------------|-----------------|
+| Template Method     | 95                       | 90              |
+| Lazy Initialization | 90                       | 85              |
+| Strategy            | 40                       | 35              |
+| Factory Method      | 30                       | 25              |
+| Caching (Flyweight) | 20                       | 20              |
+
+---
+
+## Class ident$30
+
+| Design Pattern      | Detection Confidence (%) | Correctness (%) |
+|---------------------|--------------------------|-----------------|
+| Builder             | 95                       | 90              |
+| Facade              | 85                       | 80              |
+| Strategy            | 60                       | 55              |
+| Iterator            | 40                       | 30              |
+| Template Method     | 30                       | 25              |
+
+---
+
+## Class ident$18 (registry)
+
+| Design Pattern      | Detection Confidence (%) | Correctness (%) |
+|---------------------|--------------------------|-----------------|
+| Registry            | 95                       | 90              |
+| Singleton           | 90                       | 85              |
+| Service Locator     | 85                       | 80              |
+| Factory Method      | 80                       | 75              |
+| Provider            | 40                       | 35              |
+
+---
+
+## Class ident$16 (extension)
+
+| Design Pattern      | Detection Confidence (%) | Correctness (%) |
+|---------------------|--------------------------|-----------------|
+| Factory Method      | 95                       | 90              |
+| Template Method     | 85                       | 80              |
+| Abstract Factory    | 50                       | 45              |
+| Singleton           | 20                       | 15              |
+| Prototype           | 15                       | 10              |
+
+---
+
+If you’d like deeper justification for any detection—or want to adjust confidence thresholds—let me know and I can refine the analysis.

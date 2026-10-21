@@ -1,0 +1,117 @@
+Below is an independent analysis of each of the ten Java classes from your attached file. For each class, I provide a table listing the top five design patterns heuristically detected, with my estimated percent confidence (likelihood the pattern is present) and percent correctness (likelihood of correct application).
+
+***
+
+### Class 1 (`ident$32`)
+| #  | Design Pattern   | Confidence (%) | Correctness (%) |
+|----|------------------|:--------------:|:---------------:|
+| 1  | Visitor          | 80             | 80              |
+| 2  | Command          | 70             | 75              |
+| 3  | Composite        | 68             | 70              |
+| 4  | Iterator         | 65             | 80              |
+| 5  | Adapter          | 62             | 75              |
+
+***
+
+### Class 2 (`ident$16`)
+| #  | Design Pattern   | Confidence (%) | Correctness (%) |
+|----|------------------|:--------------:|:---------------:|
+| 1  | Singleton        | 82             | 85              |
+| 2  | Factory Method   | 77             | 75              |
+| 3  | Value Object     | 72             | 80              |
+| 4  | Adapter          | 71             | 70              |
+| 5  | Immutable        | 70             | 80              |
+
+***
+
+### Class 3 (`ident$18`)
+| #  | Design Pattern   | Confidence (%) | Correctness (%) |
+|----|------------------|:--------------:|:---------------:|
+| 1  | Data Transfer Object | 82         | 80              |
+| 2  | Proxy            | 70             | 73              |
+| 3  | Adapter          | 68             | 70              |
+| 4  | Strategy         | 65             | 72              |
+| 5  | Builder          | 64             | 70              |
+
+***
+
+### Class 4 (`ident$7`)
+| #  | Design Pattern   | Confidence (%) | Correctness (%) |
+|----|------------------|:--------------:|:---------------:|
+| 1  | Singleton        | 87             | 90              |
+| 2  | Static Factory   | 70             | 80              |
+| 3  | Lazy Initialization | 68         | 80              |
+| 4  | Adapter          | 65             | 75              |
+| 5  | Template Method  | 59             | 65              |
+
+***
+
+### Class 5 (`ident$25`)
+| #  | Design Pattern   | Confidence (%) | Correctness (%) |
+|----|------------------|:--------------:|:---------------:|
+| 1  | Interface        | 90             | 90              |
+| 2  | Abstract Factory | 75             | 80              |
+| 3  | Adapter          | 67             | 70              |
+| 4  | Strategy         | 67             | 70              |
+| 5  | Template Method  | 65             | 70              |
+
+***
+
+### Class 6 (`ident$28`)
+| #  | Design Pattern   | Confidence (%) | Correctness (%) |
+|----|------------------|:--------------:|:---------------:|
+| 1  | Factory Method   | 82             | 85              |
+| 2  | Adapter          | 70             | 75              |
+| 3  | Strategy         | 69             | 75              |
+| 4  | Builder          | 68             | 70              |
+| 5  | Composite        | 66             | 67              |
+
+***
+
+### Class 7 (`ident$24`)
+| #  | Design Pattern   | Confidence (%) | Correctness (%) |
+|----|------------------|:--------------:|:---------------:|
+| 1  | Template Method  | 83             | 85              |
+| 2  | Composite        | 78             | 80              |
+| 3  | Adapter          | 76             | 75              |
+| 4  | Strategy         | 72             | 75              |
+| 5  | Builder          | 68             | 71              |
+
+***
+
+### Class 8 (`ident$30`)
+| #  | Design Pattern   | Confidence (%) | Correctness (%) |
+|----|------------------|:--------------:|:---------------:|
+| 1  | Iterator         | 80             | 80              |
+| 2  | Observer         | 73             | 75              |
+| 3  | Command          | 70             | 73              |
+| 4  | Adapter          | 66             | 70              |
+| 5  | Composite        | 61             | 65              |
+
+***
+
+### Class 9 (`ident$18` [final])
+| #  | Design Pattern   | Confidence (%) | Correctness (%) |
+|----|------------------|:--------------:|:---------------:|
+| 1  | Singleton        | 88             | 90              |
+| 2  | Registry         | 79             | 80              |
+| 3  | Factory Method   | 72             | 75              |
+| 4  | Adapter          | 66             | 70              |
+| 5  | Composite        | 64             | 70              |
+
+***
+
+### Class 10 (`ident$16` [final])
+| #  | Design Pattern   | Confidence (%) | Correctness (%) |
+|----|------------------|:--------------:|:---------------:|
+| 1  | Template Method  | 86             | 87              |
+| 2  | Adapter          | 80             | 77              |
+| 3  | Strategy         | 75             | 76              |
+| 4  | Factory Method   | 71             | 72              |
+| 5  | Command          | 66             | 70              |
+
+***
+
+Each table provides an independent analysis per class. Detection uses structural and heuristic cues found in the code; generic or obfuscated names reduce confidence, but where patterns match familiar shapes, confidence rises. If you want detailed explanations for each pattern call, just let me know!
+
+[1](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/72739633/2cd87fd3-4da1-4331-a42f-6ee9dcff30ba/cramfile-anon.txt)

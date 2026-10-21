@@ -1,0 +1,147 @@
+Below, each Java class from your attached file is analyzed independently. Each table lists the **top 5 design patterns detected** per class, the **percent confidence** that the pattern is present, and the **percent correctness** (how well the class actually implements the pattern, in context). Note: Since full method bodies are sometimes elided, this analysis draws from class structure, naming, and context.
+
+***
+
+## 1. `Artifact` (org.apache.maven.artifact.Artifact)
+
+| Design Pattern        | Confidence (%) | Correctness (%) |
+|----------------------|:--------------:|:---------------:|
+| Interface            |      99        |      100        |
+| Constant/Static      |      98        |      100        |
+| Factory Method       |      85        |      80         |
+| Template Method      |      60        |      60         |
+| Dependency Injection |      55        |      70         |
+
+- **Comments:** The class defines an interface and constants, and allows for handler injection and artifact filtering, but specific method implementations (like factory/template patterns) are not present.
+
+***
+
+## 2. `BuildFailure` (org.apache.maven.execution.BuildFailure)
+
+| Design Pattern         | Confidence (%) | Correctness (%) |
+|-----------------------|:--------------:|:---------------:|
+| Inheritance           |      99        |      97         |
+| Information Expert    |      90        |      85         |
+| Exception Wrapping    |      80        |      80         |
+| Builder               |      70        |      60         |
+| Immutable Object      |      60        |      90         |
+
+- **Comments:** `BuildFailure` extends `BuildSummary` and keeps state; exposes cause; has a builder-like construction flow but is not a full builder.
+
+***
+
+## 3. `CoreExportsProvider` (org.apache.maven.extension.internal.CoreExportsProvider)
+
+| Design Pattern       | Confidence (%) | Correctness (%) |
+|---------------------|:--------------:|:---------------:|
+| Dependency Injection|      99        |      98         |
+| Provider            |      99        |      98         |
+| Singleton           |      95        |      98         |
+| Named               |      95        |      95         |
+| Composition         |      80        |      80         |
+
+- **Comments:** Uses annotations for injection and singleton scope, provides CoreExports via DI container.
+
+***
+
+## 4. `CycleDetectedInPluginGraphException` (org.apache.maven.plugin.CycleDetectedInPluginGraphException)
+
+| Design Pattern       | Confidence (%) | Correctness (%) |
+|---------------------|:--------------:|:---------------:|
+| Exception           |      99        |      100        |
+| Information Expert  |      80        |      80         |
+| Decorator           |      65        |      60         |
+| Immutable Object    |      50        |      80         |
+| Adapter             |      40        |      50         |
+
+- **Comments:** Custom Exception, holds Plugin reference/context.
+
+***
+
+## 5. `DefaultMavenExecutionRequestPopulator` (org.apache.maven.execution.DefaultMavenExecutionRequestPopulator)
+
+| Design Pattern        | Confidence (%) | Correctness (%) |
+|----------------------|:--------------:|:---------------:|
+| Strategy             |      95        |      90         |
+| Dependency Injection |      99        |      99         |
+| Singleton            |      95        |      99         |
+| Factory              |      90        |      85         |
+| Template Method      |      80        |      80         |
+
+- **Comments:** DI used (`@Inject`), Singleton, methods implementing various population strategies.
+
+***
+
+## 6. `DefaultProjectDependencyGraph` (org.apache.maven.graph.DefaultProjectDependencyGraph)
+
+| Design Pattern     | Confidence (%) | Correctness (%) |
+|-------------------|:--------------:|:---------------:|
+| Composite         |      95        |      90         |
+| Strategy          |      85        |      85         |
+| Immutable Object  |      80        |      85         |
+| Information Expert|      80        |      85         |
+| Template Method   |      75        |      75         |
+
+- **Comments:** Manages and returns lists, applies sorting strategies.
+
+***
+
+## 7. `DefaultRuntimeInformation` (org.apache.maven.rtinfo.internal.DefaultRuntimeInformation)
+
+| Design Pattern       | Confidence (%) | Correctness (%) |
+|---------------------|:--------------:|:---------------:|
+| Singleton           |      99        |      99         |
+| Dependency Injection|      99        |      99         |
+| Information Expert  |      90        |      85         |
+| Adapter             |      80        |      70         |
+| Facade              |      70        |      70         |
+
+- **Comments:** Provides runtime info; uses DI, Singleton, and exposes runtime queries.
+
+***
+
+## 8. `Features` (org.apache.maven.api.feature.Features)
+
+| Design Pattern   | Confidence (%) | Correctness (%) |
+|------------------|:--------------:|:---------------:|
+| Utility Class    |      99        |      99         |
+| Static Factory   |      95        |      90         |
+| Final Class      |      99        |      100        |
+| Information Expert|     80        |      85         |
+| Strategy         |      75        |      75         |
+
+- **Comments:** Final class, only static methods, acts as a feature flag utility.
+
+***
+
+## 9. `InputLocation` (org.apache.maven.model.InputLocation)
+
+| Design Pattern       | Confidence (%) | Correctness (%) |
+|---------------------|:--------------:|:---------------:|
+| Data Transfer Object|      99        |      99         |
+| Prototype/Cloneable |      99        |      99         |
+| Information Expert  |      90        |      90         |
+| Adapter             |      80        |      75         |
+| Builder             |      60        |      60         |
+
+- **Comments:** Serializable, contains clone/merge, tracks and adapts location info.
+
+***
+
+## 10. `InputSource` (org.apache.maven.model.InputSource)
+
+| Design Pattern     | Confidence (%) | Correctness (%) |
+|--------------------|:--------------:|:---------------:|
+| Data Transfer Object |    99        |      99         |
+| Prototype/Cloneable  |    99        |      99         |
+| Information Expert   |    90        |      90         |
+| Adapter             |    80        |      80         |
+| Utility Class       |    60        |      60         |
+
+- **Comments:** Serializable, cloneable, adapts model/source info.
+
+***
+
+If you want a different pattern set or deeper explanations for any particular class, just specify which one!
+
+[1](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/72739633/98b0fabd-41ef-4a87-abcf-fb146b0b9692/cramfile.txt)

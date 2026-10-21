@@ -1,0 +1,127 @@
+## Class ident$13
+
+| Pattern               | Confidence | Correctness |
+|-----------------------|-----------:|------------:|
+| Factory Method        |       95%  |        90%  |
+| Prototype             |       80%  |        75%  |
+| Singleton             |       70%  |        65%  |
+| Builder               |       60%  |        55%  |
+| Fluent Interface      |       50%  |        50%  |
+
+---
+
+## Class ident$15
+
+| Pattern               | Confidence | Correctness |
+|-----------------------|-----------:|------------:|
+| Decorator             |       95%  |        90%  |
+| Proxy                 |       85%  |        80%  |
+| Delegation            |       75%  |        70%  |
+| Adapter               |       60%  |        55%  |
+| Wrapper               |       50%  |        45%  |
+
+---
+
+## Class ident$23
+
+| Pattern               | Confidence | Correctness |
+|-----------------------|-----------:|------------:|
+| Observer              |       90%  |        85%  |
+| Flyweight             |       80%  |        75%  |
+| Factory Method        |       70%  |        65%  |
+| Iterator              |       60%  |        60%  |
+| Facade                |       50%  |        50%  |
+
+---
+
+## Class ident$18 (reflection invoker)
+
+| Pattern               | Confidence | Correctness |
+|-----------------------|-----------:|------------:|
+| Command               |       90%  |        85%  |
+| Strategy              |       80%  |        75%  |
+| Chain of Responsibility |     70%  |        65%  |
+| Iterator              |       60%  |        60%  |
+| Reflection            |       50%  |        50%  |
+
+---
+
+## Class ident$16
+
+| Pattern               | Confidence | Correctness |
+|-----------------------|-----------:|------------:|
+| Decorator             |       90%  |        85%  |
+| Strategy              |       85%  |        80%  |
+| Adapter               |       75%  |        70%  |
+| Null Object           |       65%  |        60%  |
+| Proxy                 |       55%  |        50%  |
+
+---
+
+## Class ident$8 (value object)
+
+| Pattern               | Confidence | Correctness |
+|-----------------------|-----------:|------------:|
+| Value Object          |       95%  |        90%  |
+| Immutable Object      |       90%  |        85%  |
+| Data Transfer Object  |       80%  |        75%  |
+| Factory (constructors) |      60%  |        55%  |
+| Adapter (toString)    |       50%  |        45%  |
+
+---
+
+## Class ident$21 (abstract subclass)
+
+| Pattern               | Confidence | Correctness |
+|-----------------------|-----------:|------------:|
+| Template Method       |       95%  |        90%  |
+| Hook Method           |       85%  |        80%  |
+| Factory Method        |       80%  |        75%  |
+| Strategy              |       70%  |        65%  |
+| Abstract Class        |       60%  |        55%  |
+
+---
+
+## Class ident$18 (tracing utility)
+
+| Pattern               | Confidence | Correctness |
+|-----------------------|-----------:|------------:|
+| Singleton             |       90%  |        85%  |
+| Facade                |       80%  |        75%  |
+| Proxy                 |       70%  |        65%  |
+| Utility Class         |       60%  |        55%  |
+| Command               |       50%  |        45%  |
+
+---
+
+## Interface ident$25
+
+| Pattern               | Confidence | Correctness |
+|-----------------------|-----------:|------------:|
+| Facade                |       90%  |        85%  |
+| Template Method       |       85%  |        80%  |
+| Strategy              |       75%  |        70%  |
+| Adapter               |       60%  |        55%  |
+| Proxy                 |       55%  |        50%  |
+
+---
+
+## Interface ident$14
+
+| Pattern               | Confidence | Correctness |
+|-----------------------|-----------:|------------:|
+| Factory Method        |       95%  |        90%  |
+| Service Locator       |       85%  |        80%  |
+| Abstract Factory      |       70%  |        65%  |
+| Strategy              |       60%  |        55%  |
+| Dependency Injection  |       50%  |        45%  |
+
+---
+
+Below are a few additional observations you might find useful:
+
+- Many of these classes use static factory methods heavily; consolidating those into builder classes could improve readability.
+- The heavy use of reflection and default methods hints at a plugin-like architecture—consider explicitly modeling plugin loading if you need more flexible extension points.
+- Several interfaces mix default logic with abstract hooks, which is idiomatic in modern Java but can blur the lines between pure interfaces and abstract base classes. If clarity is a goal, splitting responsibilities might help.
+- For the large decorator/proxy class (`ident$15`), automated testing of all corner cases around exception handling and varargs expansion will be crucial to avoid runtime surprises.
+- If you’re often detecting patterns like Factory or Proxy in batch, an AST-based static analysis tool might help automate this classification across your codebase.

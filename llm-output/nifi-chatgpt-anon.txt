@@ -1,0 +1,105 @@
+Got it — I went through the 10 Java snippets (each split by `<<<<<<<<DIVIDER>>>>>>>>`) and analyzed them independently. Because the code is intentionally obfuscated (`ident$…`), I based the pattern calls on structure, roles, and call flows that are still visible (factory-style constructors, decorator-style forwarding, template hooks, observers, etc.). Each class below has its own table with my top 5 likely patterns, plus (1) confidence that the file implements that pattern and (2) how correct/idiomatic the implementation appears.
+
+# Class 1 (first block)&#x20;
+
+| Pattern                                     | Why it likely applies                                                                                               | Detection confidence | Pattern correctness |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | -------------------: | ------------------: |
+| Static Factory Method                       | Multiple `ident$20(…)` overloads create and return `ident$19` via `new ident$29(…)` and a standard seed `ident$17`. |                  94% |                 92% |
+| Builder                                     | The created object is configured by a series of setter-like calls (`ident$31`, `ident$32`, …).                      |                  72% |                 68% |
+| Factory (Utility)                           | Centralized construction & configuration in a stateless, all-static class.                                          |                  70% |                 70% |
+| Telescoping Constructors (alt ctor pattern) | Overloaded methods offer different parameter packs for construction.                                                |                  66% |                 62% |
+| Parameter Defaults/Director role            | The constant `ident$17` and repeated sequencing act like a “director” over a builder.                               |                  55% |                 52% |
+
+# Class 2 (second block)&#x20;
+
+| Pattern            | Why it likely applies                                                                         | Detection confidence | Pattern correctness |
+| ------------------ | --------------------------------------------------------------------------------------------- | -------------------: | ------------------: |
+| Decorator          | Wraps an underlying logger-like `ident$20`, prepends text, augments args, and then delegates. |                  91% |                 90% |
+| Adapter            | Normalizes calls/arguments (especially `Throwable`) to the wrapped API.                       |                  78% |                 76% |
+| Proxy              | Adds behavior (prefix, throwable handling) while deferring to the real logger.                |                  72% |                 70% |
+| Facade             | Presents a simplified, consistent logging surface while hiding argument massaging.            |                  58% |                 55% |
+| Guard/Preprocessor | Detects/reshapes trailing `Throwable` and prefixes messages before forwarding.                |                  54% |                 54% |
+
+# Class 3 (third block)&#x20;
+
+| Pattern                | Why it likely applies                                                                                 | Detection confidence | Pattern correctness |
+| ---------------------- | ----------------------------------------------------------------------------------------------------- | -------------------: | ------------------: |
+| Observer               | Maintains a collection `ident$34` of listeners; `ident$41/ident$43/ident$45` manage/return observers. |                  83% |                 80% |
+| Cache/Registry         | `ident$32` stores per-key state; `ident$52/ident$63` read/write “metrics” by key.                     |                  74% |                 71% |
+| Facade                 | Wraps `ident$26`, `ident$20`, timing/source services into one surface.                                |                  56% |                 54% |
+| Factory Method (light) | Builds `ident$28 = new ident$35(…this…)` to provision an internal collaborator.                       |                  49% |                 46% |
+| Memento (weak)         | Persists/retrieves timestamp-like values per key, enabling later reconstruction.                      |                  38% |                 34% |
+
+# Class 4 (fourth block)&#x20;
+
+| Pattern                         | Why it likely applies                                                             | Detection confidence | Pattern correctness |
+| ------------------------------- | --------------------------------------------------------------------------------- | -------------------: | ------------------: |
+| Reflection/Introspector Utility | Iterates methods, checks annotation/type compatibility, sets accessible, invokes. |                  92% |                 90% |
+| Command (Invoker flavor)        | Selects and invokes methods as “commands” based on signature/annotation.          |                  62% |                 58% |
+| Template Method (weak)          | Fixed algorithm (scan → filter → verify → invoke) with variable targets.          |                  51% |                 47% |
+| Facade (utility surface)        | Static helpers hide low-level reflective steps and error handling.                |                  48% |                 46% |
+| Error-Handling Strategy         | Uses logger and type-check branches to choose safe invocation paths.              |                  44% |                 42% |
+
+# Class 5 (fifth block)&#x20;
+
+| Pattern                  | Why it likely applies                                                                    | Detection confidence | Pattern correctness |
+| ------------------------ | ---------------------------------------------------------------------------------------- | -------------------: | ------------------: |
+| Value Object (Immutable) | Final fields, defensive copy/wrapping of map, stringified id; returns unmodifiable view. |                  88% |                 86% |
+| Adapter                  | Exposes a simple key→value retrieval interface over an input map.                        |                  60% |                 58% |
+| Provider                 | `ident$31()` returns an optional-like wrapper around an identifier/token.                |                  56% |                 54% |
+| Data Transfer Object     | Small, data-centric object used across boundaries.                                       |                  52% |                 50% |
+| Defensive Copying        | Explicit copying/wrapping of the incoming map to prevent external mutation.              |                  50% |                 50% |
+
+# Class 6 (sixth block)&#x20;
+
+| Pattern                 | Why it likely applies                                                   | Detection confidence | Pattern correctness |
+| ----------------------- | ----------------------------------------------------------------------- | -------------------: | ------------------: |
+| Value Object            | Three finals, identity via fields, `toString()` composed from fields.   |                  94% |                 93% |
+| Data Transfer Object    | Pure data carrier for three related strings.                            |                  90% |                 90% |
+| Immutable Data          | All fields `final`; only set via constructors.                          |                  86% |                 86% |
+| Overloaded Constructors | Convenience creation with or without the first field.                   |                  58% |                 57% |
+| Simple Factory (weak)   | Overloads emulate primitive factory choices for presence/absence of id. |                  40% |                 38% |
+
+# Class 7 (seventh block)&#x20;
+
+| Pattern          | Why it likely applies                                                                               | Detection confidence | Pattern correctness |
+| ---------------- | --------------------------------------------------------------------------------------------------- | -------------------: | ------------------: |
+| Template Method  | Abstract hooks (`ident$51`, `ident$53`, `ident$55`) called from final/overridden flow (`ident$65`). |                  93% |                 92% |
+| Builder (Fluent) | Several `.ident$34()/.ident$42()/.ident$45(…)… .ident$40()` sequences configure objects.            |                  86% |                 84% |
+| Strategy         | Static lambda `ident$29` supplies a pluggable behavior for composing `ident$9.ident$34()…`.         |                  74% |                 71% |
+| Factory Method   | `ident$59(…)` constructs new configured `ident$8` instances.                                        |                  68% |                 66% |
+| Hook Method      | Subclasses override `ident$53` to extend initialization without changing the algorithm.             |                  65% |                 64% |
+
+# Class 8 (eighth block)&#x20;
+
+| Pattern                 | Why it likely applies                                                                               | Detection confidence | Pattern correctness |
+| ----------------------- | --------------------------------------------------------------------------------------------------- | -------------------: | ------------------: |
+| Facade                  | Tiny static API (`ident$24()`, `ident$30()`, `ident$32()`) wraps a subsystem (`ident$11/ident$12`). |                  82% |                 80% |
+| Singleton               | Single static instance `ident$24` mediates access to subsystem behavior.                            |                  74% |                 72% |
+| Static Utility          | Stateless static methods coordinate lifecycle/logging.                                              |                  70% |                 68% |
+| Service Locator (weak)  | Central place from which threads/services interact with the singleton.                              |                  44% |                 40% |
+| Logger Decorator (weak) | Adds cross-cutting logging around lifecycle calls.                                                  |                  41% |                 38% |
+
+# Class 9 (ninth block, interface)&#x20;
+
+| Pattern                        | Why it likely applies                                                                      | Detection confidence | Pattern correctness |
+| ------------------------------ | ------------------------------------------------------------------------------------------ | -------------------: | ------------------: |
+| Strategy                       | An interface defining a swappable implementation surface (many ops & flags).               |                  88% |                 86% |
+| Template Method (via defaults) | Default methods (`ident$28()`, `ident$37()`) provide partial algorithms.                   |                  60% |                 58% |
+| Adapter (SPI)                  | Methods hint at adapting external resources (byte\[]/streams/headers).                     |                  55% |                 53% |
+| Facade                         | Consolidates a broad set of operations behind one contract.                                |                  52% |                 50% |
+| Builder (protocol setup)       | Return types like `ident$45`, `ident$22<String>` suggest staged/fluently configured flows. |                  42% |                 40% |
+
+# Class 10 (tenth block, interface)&#x20;
+
+| Pattern                 | Why it likely applies                                                      | Detection confidence | Pattern correctness |
+| ----------------------- | -------------------------------------------------------------------------- | -------------------: | ------------------: |
+| Factory / Provider      | `ident$15(String)` returns something like `Optional<ident$8>` given a key. |                  82% |                 80% |
+| Strategy                | A pluggable policy for resolving `ident$8` by name.                        |                  60% |                 58% |
+| Abstract Factory (weak) | Interface for families of created objects (if multiple impls exist).       |                  46% |                 42% |
+| Service Locator (weak)  | Name→object lookup surface when paired with a registry.                    |                  40% |                 36% |
+| Adapter (weak)          | Could adapt a string id to a richer `ident$8` object.                      |                  38% |                 35% |
+
+---
+
+If you’d like, I can also export this as a CSV/Excel with one sheet per class, or annotate each call-site in the code with inline comments pointing to the specific lines that drove each pattern call.

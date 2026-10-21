@@ -1,0 +1,130 @@
+Awesome—diving in! I parsed your file into 10 independent classes and, for each one, identified the **top 5 design patterns** I see expressed in that file. Each table shows (1) the pattern, (2) a one-line rationale tied to code behavior, (3) my **confidence the pattern is really present**, and (4) the **percent correctness**—how faithfully the code follows the canonical version of that pattern.
+
+---
+
+### 1) `org.apache.kafka.metadata.AssignmentsHelper`&#x20;
+
+| Pattern                   | Why it fits                                                                            | Detection | Correctness |
+| ------------------------- | -------------------------------------------------------------------------------------- | --------: | ----------: |
+| **Adapter**               | Transforms `Map<TopicIdPartition, Uuid>` into wire DTOs (`AssignReplicasToDirs*Data`). |       90% |         85% |
+| **Factory Method**        | Static methods (`buildRequestData`, `buildResponseData`) create configured DTO graphs. |       85% |         80% |
+| **Builder**               | Incrementally assembles nested objects (directories → topics → partitions).            |       80% |         70% |
+| **Strategy (Comparator)** | Sorting via pluggable `Comparator.comparing(...)` during `normalize(...)`.             |       75% |         85% |
+| **Prototype**             | Uses `duplicate()` before normalization to avoid mutating the original.                |       70% |         80% |
+
+---
+
+### 2) `org.apache.kafka.server.mutable.BoundedList<E>`&#x20;
+
+| Pattern                         | Why it fits                                                                           | Detection | Correctness |
+| ------------------------------- | ------------------------------------------------------------------------------------- | --------: | ----------: |
+| **Decorator**                   | Wraps a `List<E>` to add length-bound behavior while delegating most methods.         |       95% |         90% |
+| **Protection Proxy**            | Enforces bounds and prevents structural mutation via unmodifiable iterators/subLists. |       85% |         85% |
+| **Factory Method**              | `newArrayBacked(...)` statics return configured instances.                            |       75% |         80% |
+| **Iterator**                    | Exposes controlled iteration via `Collections.unmodifiableList(...).iterator()`.      |       70% |         85% |
+| **Guard (Precondition Checks)** | Validates capacities and sizes before mutating.                                       |       80% |         80% |
+
+---
+
+### 3) `kafka.server.handlers.DescribeTopicPartitionsRequestHandler`&#x20;
+
+| Pattern                      | Why it fits                                                                  | Detection | Correctness |
+| ---------------------------- | ---------------------------------------------------------------------------- | --------: | ----------: |
+| **Command Handler**          | Handles a specific request type and returns a response DTO.                  |       90% |         85% |
+| **Strategy**                 | Delegates authorization checks to `AuthHelper.authorize(...)`.               |       80% |         85% |
+| **Facade**                   | Orchestrates `MetadataCache`, config limits, and auth into one flow.         |       75% |         80% |
+| **Builder**                  | Helper `describeTopicPartitionsResponseTopic(...)` composes response pieces. |       65% |         70% |
+| **Iterator/Stream Pipeline** | Uses sorted/filtering streams to materialize topic set.                      |       60% |         75% |
+
+---
+
+### 4) `org.apache.kafka.server.purgatory.DelayedOperation` (abstract)&#x20;
+
+| Pattern                    | Why it fits                                                                                               | Detection | Correctness |
+| -------------------------- | --------------------------------------------------------------------------------------------------------- | --------: | ----------: |
+| **Template Method**        | `forceComplete()` / `run()` define invariant flow; subclasses fill `onComplete/tryComplete/onExpiration`. |       95% |         95% |
+| **Command**                | Each delayed op encapsulates an action to be executed later.                                              |       80% |         85% |
+| **Double-Checked Locking** | Checks `completed` before/after acquiring `lock`.                                                         |       80% |         80% |
+| **Guarded Suspension**     | Uses a `ReentrantLock` to guard completion/tryComplete.                                                   |       70% |         80% |
+| **Callback**               | Completion paths explicitly call subclass-provided hooks.                                                 |       75% |         85% |
+
+---
+
+### 5) `org.apache.kafka.queue.EventQueue` (interface + nested classes)&#x20;
+
+| Pattern         | Why it fits                                                                                                                | Detection | Correctness |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------- | --------: | ----------: |
+| **Command**     | `Event` encapsulates an action (`run()`), decoupled from executor.                                                         |       95% |         95% |
+| **Strategy**    | Deadline calculators (`NoDeadlineFunction`, `DeadlineFunction`, `EarliestDeadlineFunction`) are interchangeable behaviors. |       90% |         90% |
+| **Null Object** | `VoidEvent.INSTANCE` and `NoDeadlineFunction.INSTANCE` provide safe do-nothing behaviors.                                  |       90% |         90% |
+| **Singleton**   | Stateless helpers exposed as single shared instances.                                                                      |       85% |         90% |
+| **Scheduler**   | Deferred scheduling semantics (`scheduleDeferred`, `deadlineNs`).                                                          |       70% |         80% |
+
+---
+
+### 6) `org.apache.kafka.server.fault.LoggingFaultHandler`&#x20;
+
+| Pattern                                | Why it fits                                                | Detection | Correctness |
+| -------------------------------------- | ---------------------------------------------------------- | --------: | ----------: |
+| **Strategy**                           | Implements `FaultHandler` policy via logging + action.     |       90% |         90% |
+| **Command**                            | Wraps a `Runnable action` to execute on fault.             |       85% |         90% |
+| **Decorator / Wrapper**                | Adds logging around an underlying recovery action.         |       70% |         75% |
+| **Exception Translation**              | Converts failures into a `FaultHandlerException`.          |       65% |         80% |
+| **(Possible) Chain of Responsibility** | Could participate in a chain of handlers (not shown here). |       40% |         50% |
+
+---
+
+### 7) `kafka.server.builders.LogManagerBuilder`&#x20;
+
+| Pattern                | Why it fits                                                          | Detection | Correctness |
+| ---------------------- | -------------------------------------------------------------------- | --------: | ----------: |
+| **Builder**            | Fluent setters + `build()` producing a configured `LogManager`.      |       98% |         95% |
+| **Fluent Interface**   | Chained `setX(...).setY(...)` calls.                                 |       95% |         95% |
+| **Factory Method**     | `build()` creates the target instance.                               |       85% |         90% |
+| **Adapter**            | Converts Java collections to Scala (`CollectionConverters.asScala`). |       70% |         80% |
+| **Guard (Validation)** | Fails fast if required components are missing.                       |       85% |         85% |
+
+---
+
+### 8) `kafka.server.share.PendingRemoteFetches` (+ `RemoteFetch` record)&#x20;
+
+| Pattern            | Why it fits                                                                            | Detection | Correctness |
+| ------------------ | -------------------------------------------------------------------------------------- | --------: | ----------: |
+| **Future/Promise** | Aggregates `CompletableFuture<RemoteLogReadResult>` and uses `allOf(...)`.             |       95% |         95% |
+| **Composite**      | Treats multiple fetches as a single logical “pending set” (`isDone`, callback on all). |       80% |         85% |
+| **Callback**       | Accepts a completion callback (`whenComplete`).                                        |       85% |         90% |
+| **Facade**         | Provides a simple API over various fetch/task/future details.                          |       70% |         80% |
+| **Value Object**   | Java `record` for immutable, tuple-like `RemoteFetch`.                                 |       75% |         90% |
+
+---
+
+### 9) `kafka.server.QuotaFactory` (+ `QuotaFactory.QuotaManagers`)&#x20;
+
+| Pattern              | Why it fits                                                              | Detection | Correctness |
+| -------------------- | ------------------------------------------------------------------------ | --------: | ----------: |
+| **Abstract Factory** | `instantiate(...)` creates a *family* of related quota managers.         |       95% |         95% |
+| **Null Object**      | `UNBOUNDED_QUOTA` no-ops but conforms to `ReplicaQuota`.                 |       95% |         95% |
+| **Facade**           | `QuotaManagers` bundles several managers with a single shutdown surface. |       80% |         85% |
+| **Singleton**        | `UNBOUNDED_QUOTA` is a single shared instance.                           |       85% |         90% |
+| **Adapter**          | Wraps a `ClientQuotaCallback` as a `Plugin` for uniform lifecycle.       |       70% |         80% |
+
+---
+
+### 10) `kafka.server.share.SharePartitionCache`&#x20;
+
+| Pattern                          | Why it fits                                                                        | Detection | Correctness |
+| -------------------------------- | ---------------------------------------------------------------------------------- | --------: | ----------: |
+| **Repository / Cache**           | Centralized storage/retrieval of `SharePartition` by key.                          |       95% |         90% |
+| **Lazy Initialization**          | `computeIfAbsent(...)` creates and stores on demand.                               |       90% |         90% |
+| **Flyweight (reuse)**            | Reuses partition instances keyed by `SharePartitionKey`.                           |       70% |         75% |
+| **Monitor Object (Thread-safe)** | Uses `synchronized` for group map consistency; `ConcurrentHashMap` for partitions. |       85% |         85% |
+| **Immutable View**               | Returns `Set.copyOf(...)` / `Map.copyOf(...)` snapshots to callers.                |       80% |         90% |
+
+---
+
+>#### Notes
+
+* Some entries (e.g., **Guard**, **Scheduler**, **Repository**) are widely used architectural patterns but not always part of the classic GoF catalog; they’re still the best descriptors for what the code is doing.
+* “Percent correctness” reflects how closely the implementation hews to the canonical intent of the pattern, not code quality.
+
+If you’d like, I can export this into a CSV or a Markdown report per class.

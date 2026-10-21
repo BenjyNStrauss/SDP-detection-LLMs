@@ -1,0 +1,112 @@
+># Design Pattern Analysis for 10 Java Files
+
+## File 1: class#0.txt
+
+| Design Pattern | Confidence % | Correctness % | Evidence |
+|----------------|-------------|---------------|----------|
+| Builder Pattern | 95% | 98% | Multiple setter methods returning `this`, final `build()` method, required field validation |
+| Factory Method | 85% | 90% | Creates and returns new instance of `ident$6` with configured parameters |
+| Fluent Interface | 98% | 99% | Chain of method calls returning `this` for configuration |
+| Parameter Object | 80% | 85% | Encapsulates many configuration parameters into single object |
+| Validation Pattern | 90% | 95% | Explicit null checks with RuntimeException for required fields |
+
+## File 2: class#1.txt
+
+| Design Pattern | Confidence % | Correctness % | Evidence |
+|----------------|-------------|---------------|----------|
+| Factory Method | 92% | 95% | Static method `ident$68` creates and returns configured instances |
+| Data Transfer Object | 88% | 92% | Inner class `ident$49` with getters and immutable data structure |
+| Template Method | 75% | 80% | Abstract methods in anonymous class with concrete implementations |
+| Null Object Pattern | 85% | 88% | `ident$36` provides safe default implementations |
+| Resource Management | 80% | 85% | `ident$64()` method handles cleanup of multiple resources |
+
+## File 3: class#2.txt
+
+| Design Pattern | Confidence % | Correctness % | Evidence |
+|----------------|-------------|---------------|----------|
+| Strategy Pattern | 88% | 90% | Different handling strategies based on boolean conditions |
+| Template Method | 82% | 85% | Common processing flow with variations for different cases |
+| Factory Method | 75% | 80% | Creates instances based on input parameters and conditions |
+| Command Pattern | 70% | 75% | Encapsulates operations and their parameters |
+| Builder Pattern | 65% | 70% | Method chaining for object construction (ident$84 method) |
+
+## File 4: class#3.txt
+
+| Design Pattern | Confidence % | Correctness % | Evidence |
+|----------------|-------------|---------------|----------|
+| Cache Pattern | 95% | 97% | HashMap storage with get/put operations and key-based retrieval |
+| Synchronized Wrapper | 90% | 95% | Synchronized methods protecting shared state |
+| Lazy Initialization | 85% | 88% | `computeIfAbsent` pattern for on-demand creation |
+| Factory Method | 80% | 83% | Creates new instances based on function parameters |
+| Observer Pattern | 70% | 75% | Collection management with notification-like operations |
+
+## File 5: class#4.txt
+
+| Design Pattern | Confidence % | Correctness % | Evidence |
+|----------------|-------------|---------------|----------|
+| Composite Pattern | 90% | 93% | Record structure with nested components and collections |
+| Facade Pattern | 85% | 88% | Provides unified interface to complex subsystem operations |
+| Command Pattern | 80% | 83% | Encapsulates operations with Future/CompletableFuture |
+| Builder Pattern | 75% | 78% | Constructor with multiple parameters suggesting builder usage |
+| State Pattern | 70% | 73% | Different states tracked and managed through the structure |
+
+## File 6: class#5.txt
+
+| Design Pattern | Confidence % | Correctness % | Evidence |
+|----------------|-------------|---------------|----------|
+| Decorator Pattern | 98% | 99% | Wraps existing Collection, delegates all operations, adds size limit |
+| Proxy Pattern | 85% | 88% | Controls access to underlying collection with validation |
+| Template Method | 80% | 85% | Consistent method delegation pattern with validation checks |
+| Adapter Pattern | 75% | 80% | Adapts generic Collection interface with size constraints |
+| Strategy Pattern | 70% | 75% | Different behavior based on capacity limits |
+
+## File 7: class#6.txt
+
+| Design Pattern | Confidence % | Correctness % | Evidence |
+|----------------|-------------|---------------|----------|
+| Strategy Pattern | 90% | 93% | Runnable strategy for error handling behavior |
+| Template Method | 85% | 88% | Common error handling flow with customizable actions |
+| Factory Method | 80% | 83% | Creates RuntimeException instances with consistent pattern |
+| Command Pattern | 75% | 78% | Encapsulates cleanup actions as Runnable commands |
+| Exception Handling Pattern | 95% | 97% | Structured exception creation and logging |
+
+## File 8: class#7.txt
+
+| Design Pattern | Confidence % | Correctness % | Evidence |
+|----------------|-------------|---------------|----------|
+| Template Method | 95% | 97% | Abstract methods with concrete initialization flow |
+| State Pattern | 90% | 92% | Boolean state management with synchronized access |
+| Observer Pattern | 80% | 83% | Callback interface for state change notifications |
+| Singleton (Thread-Safe) | 85% | 88% | Volatile boolean with double-checked locking pattern |
+| Command Pattern | 75% | 78% | Functional interface for encapsulating actions |
+
+## File 9: class#8.txt
+
+| Design Pattern | Confidence % | Correctness % | Evidence |
+|----------------|-------------|---------------|----------|
+| Strategy Pattern | 95% | 97% | Multiple implementations of functional interface for different behaviors |
+| Template Method | 88% | 90% | Default methods providing common behavior with customizable parts |
+| Command Pattern | 85% | 87% | Interface encapsulating actions with exception handling |
+| Factory Method | 80% | 82% | Static instances and factory-like creation patterns |
+| State Pattern | 75% | 78% | Enum states and condition-based behavior |
+
+## File 10: class#9.txt
+
+| Design Pattern | Confidence % | Correctness % | Evidence |
+|----------------|-------------|---------------|----------|
+| Builder Pattern | 92% | 95% | Method chaining with fluent interface for complex object construction |
+| Factory Method | 88% | 90% | Static methods creating configured instances of complex objects |
+| Composite Pattern | 85% | 87% | Nested map structures representing hierarchical data |
+| Template Method | 80% | 82% | Common processing patterns for different object types |
+| Visitor Pattern | 75% | 78% | Stream operations with method references suggesting traversal patterns |
+
+>## Summary
+
+The most commonly detected patterns across all files:
+1. **Builder Pattern** - Highly prevalent for complex object construction
+2. **Factory Method** - Common for object creation with configuration
+3. **Template Method** - Frequent in abstract classes and interfaces
+4. **Strategy Pattern** - Multiple implementations and conditional behavior
+5. **Command Pattern** - Encapsulation of operations and callbacks
+
+The confidence levels are generally high (70-98%) due to clear structural evidence in the code, even with obfuscation. The correctness percentages reflect the strength of the pattern implementation and adherence to standard design pattern principles.

@@ -1,0 +1,119 @@
+># Design Pattern Analysis for Attached Java Classes
+
+## AssignmentsHelper
+
+| Pattern             | Detection Confidence | Correctness |
+|---------------------|---------------------:|------------:|
+| Factory Method      | 85%                  | 90%         |
+| Builder             | 80%                  | 85%         |
+| Facade              | 75%                  | 80%         |
+| Strategy            | 70%                  | 75%         |
+| Fluent Interface    | 65%                  | 70%         |
+
+---
+
+## BoundedList<E>
+
+| Pattern             | Detection Confidence | Correctness |
+|---------------------|---------------------:|------------:|
+| Decorator           | 90%                  | 90%         |
+| Proxy               | 80%                  | 85%         |
+| Factory Method      | 75%                  | 80%         |
+| Adapter             | 70%                  | 75%         |
+| Template Method     | 60%                  | 65%         |
+
+---
+
+## DescribeTopicPartitionsRequestHandler
+
+| Pattern                   | Detection Confidence | Correctness |
+|---------------------------|---------------------:|------------:|
+| Factory Method            | 85%                  | 90%         |
+| Builder                   | 80%                  | 85%         |
+| Chain of Responsibility   | 75%                  | 80%         |
+| Strategy                  | 70%                  | 75%         |
+| Fluent Interface          | 65%                  | 70%         |
+
+---
+
+## DelayedOperation
+
+| Pattern             | Detection Confidence | Correctness |
+|---------------------|---------------------:|------------:|
+| Template Method     | 95%                  | 95%         |
+| Command             | 85%                  | 90%         |
+| State               | 75%                  | 80%         |
+| Hook Method         | 70%                  | 75%         |
+| Null Object         | 60%                  | 65%         |
+
+---
+
+## EventQueue
+
+| Pattern             | Detection Confidence | Correctness |
+|---------------------|---------------------:|------------:|
+| Command             | 90%                  | 90%         |
+| Strategy            | 85%                  | 85%         |
+| Template Method     | 75%                  | 80%         |
+| Null Object         | 70%                  | 75%         |
+| Factory Method      | 65%                  | 70%         |
+
+---
+
+## LoggingFaultHandler
+
+| Pattern             | Detection Confidence | Correctness |
+|---------------------|---------------------:|------------:|
+| Strategy            | 90%                  | 90%         |
+| Command             | 80%                  | 85%         |
+| Decorator           | 70%                  | 75%         |
+| Template Method     | 65%                  | 70%         |
+| Facade              | 60%                  | 65%         |
+
+---
+
+## LogManagerBuilder
+
+| Pattern             | Detection Confidence | Correctness |
+|---------------------|---------------------:|------------:|
+| Builder             | 95%                  | 95%         |
+| Fluent Interface    | 90%                  | 90%         |
+| Factory Method      | 85%                  | 85%         |
+| Parameter Object    | 70%                  | 75%         |
+| Lazy Initialization | 65%                  | 70%         |
+
+---
+
+## PendingRemoteFetches
+
+| Pattern                 | Detection Confidence | Correctness |
+|-------------------------|---------------------:|------------:|
+| Future                  | 90%                  | 90%         |
+| Callback                | 85%                  | 85%         |
+| Composite               | 75%                  | 80%         |
+| Iterator                | 70%                  | 75%         |
+| Data Transfer Object    | 65%                  | 70%         |
+
+---
+
+## QuotaFactory
+
+| Pattern             | Detection Confidence | Correctness |
+|---------------------|---------------------:|------------:|
+| Factory Method      | 95%                  | 95%         |
+| Singleton           | 85%                  | 90%         |
+| Facade              | 80%                  | 85%         |
+| Strategy            | 75%                  | 80%         |
+| Dependency Injection| 65%                  | 70%         |
+
+---
+
+## SharePartitionCache
+
+| Pattern             | Detection Confidence | Correctness |
+|---------------------|---------------------:|------------:|
+| Cache               | 90%                  | 90%         |
+| Repository          | 80%                  | 85%         |
+| Factory Method      | 75%                  | 80%         |
+| Registry            | 70%                  | 75%         |
+| Proxy (Thread-Safe) | 65%                  | 70%         |

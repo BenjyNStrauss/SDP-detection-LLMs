@@ -1,0 +1,133 @@
+Here is an independent analysis for each of the ten Java classes found in your file. For each class, I provide a table of the top five detected design patterns, with percent confidence that the pattern is present and estimated percent correctness of the pattern's implementation based on the code shown.
+
+***
+
+### 1. `AssignmentsHelper` (org.apache.kafka.metadata)
+
+| Design Pattern         | Confidence | Correctness |
+|-----------------------|------------|-------------|
+| Utility Class         | 95%        | 100%        |
+| Builder               | 85%        | 95%         |
+| Factory               | 75%        | 95%         |
+| Normalizer            | 65%        | 90%         |
+| Map Accumulation      | 60%        | 95%         |
+
+***
+
+### 2. `BoundedList` (org.apache.kafka.server.mutable)
+
+| Design Pattern           | Confidence | Correctness |
+|-------------------------|------------|-------------|
+| Decorator (List)        | 90%        | 100%        |
+| Exception Handling      | 85%        | 100%        |
+| Factory Method          | 80%        | 95%         |
+| Immutable Iterator      | 75%        | 100%        |
+| Composition             | 70%        | 100%        |
+
+***
+
+### 3. `DescribeTopicPartitionsRequestHandler` (kafka.server.handlers)
+
+| Design Pattern         | Confidence | Correctness |
+|-----------------------|------------|-------------|
+| Handler               | 95%        | 100%        |
+| Command               | 90%        | 95%         |
+| Authorization Wrapper | 80%        | 100%        |
+| Facade                | 70%        | 95%         |
+| Exception Shielding   | 65%        | 95%         |
+
+***
+
+### 4. `DelayedOperation` (org.apache.kafka.server.purgatory)
+
+| Design Pattern        | Confidence | Correctness |
+|----------------------|------------|-------------|
+| Template Method      | 95%        | 100%        |
+| Abstract Class       | 95%        | 100%        |
+| Command              | 85%        | 100%        |
+| Thread-Safe (Lock)   | 80%        | 100%        |
+| Timeout/Callback     | 75%        | 100%        |
+
+***
+
+### 5. `EventQueue` (org.apache.kafka.queue)
+
+| Design Pattern         | Confidence | Correctness |
+|-----------------------|------------|-------------|
+| Event Queue/Command   | 95%        | 100%        |
+| Strategy (DeadlineFn) | 80%        | 100%        |
+| Template Method       | 75%        | 100%        |
+| Singleton (VoidEvent) | 65%        | 100%        |
+| Adapter               | 60%        | 90%         |
+
+***
+
+### 6. `LoggingFaultHandler` (org.apache.kafka.server.fault)
+
+| Design Pattern      | Confidence | Correctness |
+|--------------------|------------|-------------|
+| Strategy           | 95%        | 100%        |
+| Command            | 75%        | 100%        |
+| Adapter            | 65%        | 100%        |
+| Exception Handling | 70%        | 100%        |
+| Logger/Observer    | 60%        | 100%        |
+
+***
+
+### 7. `LogManagerBuilder` (kafka.server.builders)
+
+| Design Pattern  | Confidence | Correctness |
+|-----------------|------------|-------------|
+| Builder         | 100%       | 100%        |
+| Fluent API      | 95%        | 100%        |
+| Factory         | 90%        | 100%        |
+| Dependency Injection | 70%        | 90%         |
+| Parameter Object    | 60%        | 95%         |
+
+***
+
+### 8. `PendingRemoteFetches` (kafka.server.share)
+
+| Design Pattern   | Confidence | Correctness |
+|------------------|------------|-------------|
+| Composite        | 80%        | 95%         |
+| Observer (callback) | 75%     | 95%         |
+| Record/Data Holder | 85%     | 100%        |
+| Iterator         | 60%        | 90%         |
+| Asynchronous Completion | 80%  | 95%         |
+
+***
+
+### 9. `QuotaFactory` (kafka.server)
+
+| Design Pattern           | Confidence | Correctness |
+|-------------------------|------------|-------------|
+| Factory                 | 100%       | 100%        |
+| Singleton (UNBOUNDED)   | 90%        | 100%        |
+| Parameter Object        | 80%        | 95%         |
+| Composite/Managers Group| 70%        | 95%         |
+| Adapter                 | 60%        | 90%         |
+
+***
+
+### 10. `SharePartitionCache` (kafka.server.share)
+
+| Design Pattern     | Confidence | Correctness |
+|--------------------|------------|-------------|
+| Cache              | 95%        | 100%        |
+| Singleton-Like     | 60%        | 100%        |
+| Thread Safe Map    | 85%        | 95%         |
+| Composite/Group    | 75%        | 95%         |
+| Adapter/Wrapper    | 60%        | 90%         |
+
+***
+
+**Notes:**
+- "Correctness" estimates are based on implementation style and typical usage; they assume the rest of the codebase matches these patterns.
+- Some patterns, such as "Normalizer," "Composite," or "Authorization Wrapper," are less formalized but describe real design traits in these files.
+- Singleton patterns appear where static instances or usage patterns are evident, but are often "loose" singletons (not enforced).
+- Builder, Factory, Handler, Command, and various wrapper/decorator patterns are widely and effectively applied throughout this Kafka codebase.
+
+If you want further explanations or examples from the code for any pattern detected above, let me know!
+
+[1] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/72739633/ea37dcb9-bc29-4ac8-8e0a-be9fb261c3f8/cramfile.txt

@@ -1,0 +1,127 @@
+-# Design Pattern Analysis Report
+
+Below are the top five design patterns detected in each Java file, along with confidence and correctness metrics.
+
+---
+
+## Class ident$27
+
+| Design Pattern     | Detection Confidence | Correctness |
+|--------------------|----------------------|-------------|
+| Builder            | 95%                  | 90%         |
+| Fluent Interface   | 90%                  | 85%         |
+| Template Method    | 75%                  | 70%         |
+| Command            | 60%                  | 50%         |
+| Strategy           | 50%                  | 40%         |
+
+---
+
+## Class ident$19 (List Wrapper)
+
+| Design Pattern    | Detection Confidence | Correctness |
+|-------------------|----------------------|-------------|
+| Prototype         | 90%                  | 85%         |
+| Decorator         | 85%                  | 80%         |
+| Adapter           | 80%                  | 75%         |
+| Template Method   | 70%                  | 65%         |
+| Iterator          | 60%                  | 50%         |
+
+---
+
+## Interface ident$7
+
+| Design Pattern    | Detection Confidence | Correctness |
+|-------------------|----------------------|-------------|
+| Strategy          | 70%                  | 50%         |
+| Command           | 60%                  | 40%         |
+| Observer          | 50%                  | 30%         |
+| Template Method   | 40%                  | 25%         |
+| Adapter           | 30%                  | 20%         |
+
+---
+
+## Class ident$37
+
+| Design Pattern     | Detection Confidence | Correctness |
+|--------------------|----------------------|-------------|
+| Builder            | 95%                  | 90%         |
+| Factory Method     | 85%                  | 80%         |
+| Template Method    | 75%                  | 70%         |
+| Fluent Interface   | 70%                  | 65%         |
+| Prototype          | 50%                  | 40%         |
+
+---
+
+## Class ident$25 (Benchmark Runner)
+
+| Design Pattern      | Detection Confidence | Correctness |
+|---------------------|----------------------|-------------|
+| Strategy (Enum)     | 90%                  | 85%         |
+| Template Method     | 80%                  | 75%         |
+| Command             | 70%                  | 65%         |
+| Factory Method      | 60%                  | 55%         |
+| Iterator            | 50%                  | 45%         |
+
+---
+
+## Class ident$18 (Composite Checker)
+
+| Design Pattern          | Detection Confidence | Correctness |
+|-------------------------|----------------------|-------------|
+| Composite               | 90%                  | 85%         |
+| Template Method         | 80%                  | 75%         |
+| Chain of Responsibility | 75%                  | 70%         |
+| Strategy                | 65%                  | 60%         |
+| Iterator                | 60%                  | 55%         |
+
+---
+
+## Class ident$16 (System Adapter)
+
+| Design Pattern    | Detection Confidence | Correctness |
+|-------------------|----------------------|-------------|
+| Adapter           | 95%                  | 90%         |
+| Facade            | 60%                  | 50%         |
+| Strategy          | 50%                  | 40%         |
+| Bridge            | 40%                  | 30%         |
+| Proxy             | 30%                  | 20%         |
+
+---
+
+## Interface ident$17
+
+| Design Pattern    | Detection Confidence | Correctness |
+|-------------------|----------------------|-------------|
+| Strategy          | 85%                  | 75%         |
+| Observer          | 60%                  | 50%         |
+| Template Method   | 40%                  | 30%         |
+| Command           | 30%                  | 20%         |
+| Bridge            | 20%                  | 10%         |
+
+---
+
+## Class ident$26 (Factory Provider)
+
+| Design Pattern   | Detection Confidence | Correctness |
+|------------------|----------------------|-------------|
+| Factory Method   | 90%                  | 85%         |
+| Singleton        | 30%                  | 20%         |
+| Builder          | 25%                  | 15%         |
+| Prototype        | 25%                  | 10%         |
+| Strategy         | 20%                  | 10%         |
+
+---
+
+## Interface ident$14
+
+| Design Pattern    | Detection Confidence | Correctness |
+|-------------------|----------------------|-------------|
+| Strategy          | 80%                  | 60%         |
+| Bridge            | 30%                  | 20%         |
+| Marker Interface  | 25%                  | 15%         |
+| Template Method   | 20%                  | 10%         |
+| Observer          | 15%                  | 10%         |
+
+---
+
+Beyond these tables, you might consider integrating a static-analysis plugin that flags common pattern idioms (e.g., nested builder classes, `clone()` methods, enum‐based strategies) and then validate them with custom rules. Automating confidence thresholds and generating UML overlays can streamline code reviews and ensure these pattern detections drive actionable refactorings.

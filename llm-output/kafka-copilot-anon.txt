@@ -1,0 +1,119 @@
+## Class ident$36
+
+| Design Pattern                  | Detection Confidence | Correctness |
+| --------------------------------| -------------------- | ----------- |
+| Builder                         | 95%                  | 95%         |
+| Fluent Interface                | 90%                  | 90%         |
+| Factory Method                  | 80%                  | 80%         |
+| Lazy Initialization             | 65%                  | 60%         |
+| Singleton (default ident$29)    | 60%                  | 70%         |
+
+---
+
+## Class ident$32
+
+| Design Pattern       | Detection Confidence | Correctness |
+| ---------------------| -------------------- | ----------- |
+| Null Object          | 95%                  | 95%         |
+| Factory Method       | 90%                  | 90%         |
+| Static Factory       | 85%                  | 85%         |
+| Visitor / Callback   | 75%                  | 70%         |
+| Optional / Maybe     | 80%                  | 80%         |
+
+---
+
+## Class ident$43
+
+| Design Pattern        | Detection Confidence | Correctness |
+| ----------------------| -------------------- | ----------- |
+| Strategy              | 95%                  | 95%         |
+| Factory Method        | 90%                  | 90%         |
+| Fluent Builder        | 85%                  | 85%         |
+| Iterator              | 80%                  | 80%         |
+| Visitor / Callback    | 75%                  | 70%         |
+
+---
+
+## Class ident$22
+
+| Design Pattern       | Detection Confidence | Correctness |
+| ---------------------| -------------------- | ----------- |
+| Registry             | 90%                  | 90%         |
+| Cache                | 85%                  | 85%         |
+| Lazy Initialization  | 80%                  | 80%         |
+| Factory Method       | 75%                  | 75%         |
+| Thread-Safe Proxy    | 70%                  | 70%         |
+
+---
+
+## Class ident$28
+
+| Design Pattern                | Detection Confidence | Correctness |
+| -------------------------------| -------------------- | ----------- |
+| Composite                     | 90%                  | 90%         |
+| Iterator                      | 85%                  | 85%         |
+| Observer (Publish-Subscribe)  | 80%                  | 80%         |
+| Visitor / Callback            | 75%                  | 75%         |
+| Template Method               | 70%                  | 70%         |
+
+---
+
+## Class ident$17 (bounded collection)
+
+| Design Pattern       | Detection Confidence | Correctness |
+| ---------------------| -------------------- | ----------- |
+| Decorator            | 95%                  | 95%         |
+| Proxy                | 85%                  | 85%         |
+| Adapter              | 75%                  | 75%         |
+| Template Method      | 70%                  | 70%         |
+| Strategy             | 60%                  | 60%         |
+
+---
+
+## Class ident$12 (error handler)
+
+| Design Pattern               | Detection Confidence | Correctness |
+| -----------------------------| -------------------- | ----------- |
+| Strategy                     | 95%                  | 95%         |
+| Decorator (logging wrapper)  | 80%                  | 80%         |
+| Facade (simplified API)      | 75%                  | 75%         |
+| Factory Method               | 70%                  | 70%         |
+| Null Object (no-op branch)   | 60%                  | 60%         |
+
+---
+
+## Class ident$17 (abstract lifecycle)
+
+| Design Pattern       | Detection Confidence | Correctness |
+| ---------------------| -------------------- | ----------- |
+| Template Method      | 95%                  | 95%         |
+| Strategy (callback)  | 85%                  | 85%         |
+| State                | 75%                  | 75%         |
+| Monitor Object       | 70%                  | 70%         |
+| Bridge               | 60%                  | 60%         |
+
+---
+
+## Interface ident$13
+
+| Design Pattern       | Detection Confidence | Correctness |
+| ---------------------| -------------------- | ----------- |
+| Strategy             | 95%                  | 95%         |
+| Facade               | 90%                  | 90%         |
+| Template Method      | 85%                  | 85%         |
+| Null Object          | 80%                  | 80%         |
+| Adapter              | 75%                  | 75%         |
+
+---
+
+## Class ident$23
+
+| Design Pattern       | Detection Confidence | Correctness |
+| ---------------------| -------------------- | ----------- |
+| Factory              | 95%                  | 95%         |
+| Builder              | 90%                  | 90%         |
+| Fluent Interface     | 85%                  | 85%         |
+| Utility (Helper)     | 80%                  | 80%         |
+| Template Method      | 70%                  | 70%         |
+
+---
