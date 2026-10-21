@@ -1,0 +1,119 @@
+Based on the content of the files, here is an analysis of the design patterns implemented in each. The confidence and correctness percentages are my subjective estimations based on the code structure and intent.
+
+### **ErrorStringBuilder.txt**
+
+| Design Pattern | Confidence (%) | Correctness (%) |
+| :--- | :--- | :--- |
+| **Builder** | 95 | 95 |
+| **Strategy** | 70 | 80 |
+| **Decorator** | 60 | 75 |
+| **Composite** | 50 | 60 |
+| **Singleton** | 20 | 100 |
+
+***
+
+### **EXTDTAReaderInputStream.txt**
+
+| Design Pattern | Confidence (%) | Correctness (%) |
+| :--- | :--- | :--- |
+| **Adapter** | 90 | 95 |
+| **Decorator** | 85 | 90 |
+| **Proxy** | 75 | 80 |
+| **Factory Method** | 65 | 70 |
+| **Facade** | 55 | 60 |
+
+***
+
+### **JiraIssue.txt**
+
+| Design Pattern | Confidence (%) | Correctness (%) |
+| :--- | :--- | :--- |
+| **State** | 90 | 95 |
+| **Value Object** | 85 | 90 |
+| **Singleton** | 75 | 100 |
+| **Data Access Object (DAO)** | 70 | 80 |
+| **Builder** | 60 | 70 |
+
+***
+
+### **LanguageFactory.txt**
+
+| Design Pattern | Confidence (%) | Correctness (%) |
+| :--- | :--- | :--- |
+| **Factory Method** | 95 | 95 |
+| **Singleton** | 90 | 100 |
+| **Abstract Factory** | 80 | 85 |
+| **Proxy** | 60 | 70 |
+| **Strategy** | 50 | 60 |
+
+***
+
+### **Limits.txt**
+
+| Design Pattern | Confidence (%) | Correctness (%) |
+| :--- | :--- | :--- |
+| **Constant Interface** | 95 | 95 |
+| **Singleton** | 80 | 100 |
+| **Strategy** | 60 | 70 |
+| **Flyweight** | 50 | 60 |
+| **Facade** | 40 | 50 |
+
+***
+
+### **MessageVetter.txt**
+
+| Design Pattern | Confidence (%) | Correctness (%) |
+| :--- | :--- | :--- |
+| **Strategy** | 90 | 95 |
+| **Iterator** | 85 | 90 |
+| **Template Method** | 75 | 80 |
+| **Visitor** | 70 | 85 |
+| **Facade** | 60 | 70 |
+
+***
+
+### **ReleaseNoteReader.txt**
+
+| Design Pattern | Confidence (%) | Correctness (%) |
+| :--- | :--- | :--- |
+| **Facade** | 90 | 95 |
+| **Adapter** | 85 | 90 |
+| **Singleton** | 75 | 100 |
+| **Observer** | 65 | 75 |
+| **Command** | 55 | 60 |
+
+***
+
+### **ResultDescription.txt**
+
+| Design Pattern | Confidence (%) | Correctness (%) |
+| :--- | :--- | :--- |
+| **Interface** | 95 | 100 |
+| **Adapter** | 80 | 90 |
+| **Decorator** | 70 | 80 |
+| **Proxy** | 60 | 75 |
+| **Factory Method** | 50 | 60 |
+
+***
+
+### **Securable.txt**
+
+| Design Pattern | Confidence (%) | Correctness (%) |
+| :--- | :--- | :--- |
+| **Enum Singleton** | 95 | 100 |
+| **State** | 85 | 90 |
+| **Registry** | 80 | 90 |
+| **Strategy** | 70 | 80 |
+| **Builder** | 60 | 75 |
+
+***
+
+### **SignedBinary.txt**
+
+| Design Pattern | Confidence (%) | Correctness (%) |
+| :--- | :--- | :--- |
+| **Strategy** | 90 | 95 |
+| **Singleton** | 85 | 100 |
+| **Adapter** | 80 | 90 |
+| **Facade** | 70 | 80 |
+| **Template Method** | 60 | 75 |

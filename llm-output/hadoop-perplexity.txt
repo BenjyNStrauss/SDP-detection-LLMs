@@ -1,0 +1,135 @@
+Below are analyses for each of the ten Java classes found in your cramfile.txt file, as separated by ">>>>>>>". Each table lists the top five design patterns detected per class, with percent confidence (likelihood the pattern is present) and percent correctness (likelihood the identified instance is a textbook or correct use of the pattern).
+
+***
+
+### 1. `BulkDelete` (org.apache.hadoop.fs)
+
+| Design Pattern        | Confidence (%) | Correctness (%) |
+|----------------------|:--------------:|:---------------:|
+| Interface            | 100            | 100             |
+| Template Method      | 75             | 70              |
+| Strategy             | 55             | 60              |
+| Idempotent Operation | 50             | 80              |
+| Decorator            | 30             | 40              |
+
+***
+
+### 2. `Concat` (org.apache.hadoop.fs.shell)
+
+| Design Pattern      | Confidence (%) | Correctness (%) |
+|--------------------|:--------------:|:---------------:|
+| Command            | 95             | 95              |
+| Template Method    | 70             | 65              |
+| Factory            | 60             | 60              |
+| Exception Handling | 50             | 90              |
+| Adapter            | 40             | 50              |
+
+***
+
+### 3. `CryptoProtocolVersion` (org.apache.hadoop.crypto)
+
+| Design Pattern      | Confidence (%) | Correctness (%) |
+|--------------------|:--------------:|:---------------:|
+| Enum Type          | 100            | 100             |
+| Singleton          | 80             | 80              |
+| Factory Method     | 65             | 60              |
+| Strategy           | 45             | 40              |
+| Flyweight          | 40             | 60              |
+
+***
+
+### 4. `DiskValidatorFactory` (org.apache.hadoop.util)
+
+| Design Pattern      | Confidence (%) | Correctness (%) |
+|--------------------|:--------------:|:---------------:|
+| Factory            | 100            | 95              |
+| Singleton          | 90             | 90              |
+| Cache/Registry     | 75             | 85              |
+| Strategy           | 60             | 70              |
+| Lazy Initialization| 55             | 70              |
+
+***
+
+### 5. `LeaseRecoverable` (org.apache.hadoop.fs)
+
+| Design Pattern | Confidence (%) | Correctness (%) |
+|---------------|:--------------:|:---------------:|
+| Interface     | 100            | 100             |
+| Template      | 60             | 60              |
+| Strategy      | 60             | 65              |
+| Marker        | 45             | 60              |
+| Adapter       | 40             | 45              |
+
+***
+
+### 6. `ExternalCall` (org.apache.hadoop.ipc)
+
+| Design Pattern      | Confidence (%) | Correctness (%) |
+|--------------------|:--------------:|:---------------:|
+| Template Method    | 85             | 80              |
+| Abstract Class     | 80             | 90              |
+| Future/Promise     | 70             | 80              |
+| Command            | 55             | 65              |
+| State              | 50             | 60              |
+
+***
+
+### 7. `ProtobufHelper` (org.apache.hadoop.ipc)
+
+| Design Pattern   | Confidence (%) | Correctness (%) |
+|-----------------|:--------------:|:---------------:|
+| Static Utility   | 95             | 95              |
+| Adapter         | 75             | 70              |
+| Deprecated      | 60             | 70              |
+| Facade          | 55             | 60              |
+| Singleton       | 50             | 60              |
+
+***
+
+### 8. `RefreshRegistry` (org.apache.hadoop.ipc)
+
+| Design Pattern      | Confidence (%) | Correctness (%) |
+|--------------------|:--------------:|:---------------:|
+| Registry           | 100            | 95              |
+| Singleton          | 80             | 90              |
+| Observer/Publish-Subscribe | 70      | 80              |
+| Command            | 60             | 70              |
+| Factory            | 45             | 55              |
+
+***
+
+### 9. `GangliaMetricVisitor` (org.apache.hadoop.metrics2.sink.ganglia)
+
+| Design Pattern   | Confidence (%) | Correctness (%) |
+|------------------|:-------------:|:---------------:|
+| Visitor          | 100           | 100             |
+| Adapter          | 50            | 60              |
+| Template         | 45            | 55              |
+| State            | 40            | 60              |
+| Strategy         | 35            | 50              |
+
+***
+
+### 10. `SnapshotCommands` (org.apache.hadoop.fs.shell)
+
+| Design Pattern      | Confidence (%) | Correctness (%) |
+|--------------------|:--------------:|:---------------:|
+| Command            | 100            | 100             |
+| Factory            | 80             | 75              |
+| Template Method    | 75             | 80              |
+| State              | 45             | 50              |
+| Exception Handling | 40             | 60              |
+
+***
+
+>#### Notes on the methodology:
+
+- **Design pattern detection** is based on naming, code structure, and explicit use of pattern constructs (e.g., implementing interfaces, extending abstract classes, patterns of method signature, use of registries/factories).
+- **Confidence** reflects how likely it is that the file *actually* implements the pattern.
+- **Correctness** reflects how closely the implementation follows common or "best-practice" instances of the pattern.
+- “Exception Handling” is not a GoF pattern but noted where structured error management was significant.
+- Several classes combine multiple patterns, sometimes in non-standard ways.
+
+Let me know if you’d like more detailed code commentary or further breakdown for any specific class.
+
+[1] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/72739633/afcc23d6-5360-4c63-a076-5bd7cfe9a7a7/cramfile.txt

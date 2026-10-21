@@ -1,0 +1,128 @@
+Here’s a per-class pattern scan of your 10 Java snippets (each class analyzed independently). I list the top 5 patterns/idioms I see in that single file, with (1) my confidence that the pattern is present and (2) how correct/faithful its implementation is to the canonical form.
+
+### 1) `ErrorStringBuilder` — patterns detected&#x20;
+
+| Rank | Pattern / Idiom         | Why it fits                                                                                    | Detection | Correctness |
+| ---- | ----------------------- | ---------------------------------------------------------------------------------------------- | --------: | ----------: |
+| Builder                 | Named “*StringBuilder*”; fluent-ish `append/appendln/stackTrace()` assembling an error string. |       85% |         80% |
+| Adapter                 | Adapts `Throwable.printStackTrace(PrintWriter)` to a `String` buffer instead of a stream.      |       70% |         65% |
+| Strategy                | Pluggable `PrintWriterGetHeader headerGetter` injects header behavior.                         |       60% |         55% |
+| Facade                  | Simplifies printing headers, lines, stack traces behind a tiny API.                            |       60% |         60% |
+| Decorator (lightweight) | Adds headers around prints without changing `PrintWriter` internals.                           |       45% |         40% |
+
+---
+
+### 2) `EXTDTAReaderInputStream` (abstract) — patterns detected&#x20;
+
+| Rank | Pattern / Idiom         | Why it fits                                                                     | Detection | Correctness |
+| ---- | ----------------------- | ------------------------------------------------------------------------------- | --------: | ----------: |
+| Template Method         | Algorithm in `checkStatus()` with subclass hook `onClientSideStreamingError()`. |       90% |         85% |
+| Factory Method (static) | `throwEXTDTATransferException(int)` selects/creates exception by status.        |       75% |         75% |
+| Adapter                 | Converts protocol status byte into Java exceptions.                             |       55% |         50% |
+| Hook Method             | Protected abstract cleanup method for subclasses to specialize.                 |       65% |         60% |
+| (Possible) Decorator    | Extends `InputStream`; subclasses may wrap another stream (not shown here).     |       35% |         30% |
+
+---
+
+### 3) `JiraIssue` — patterns detected&#x20;
+
+| Rank | Pattern / Idiom              | Why it fits                                                        | Detection | Correctness |
+| ---- | ---------------------------- | ------------------------------------------------------------------ | --------: | ----------: |
+| Factory Method (static)      | `createJiraIssueList(String)` constructs domain objects from text. |       80% |         75% |
+| Value Object / DTO           | Simple holder for key/title/fixVersions/release note id.           |       75% |         75% |
+| Parser (state machine idiom) | Integer `STATE_*` constants drive a finite-state parse.            |       65% |         60% |
+| Guard Clause                 | Validates keys (`DERBY-*`, `Integer.parseInt`) early.              |       55% |         55% |
+| URL Builder (idiom)          | Methods compose JIRA/attachment URLs from fields.                  |       50% |         50% |
+
+---
+
+### 4) `LanguageFactory` (interface) — patterns detected&#x20;
+
+| Rank | Pattern / Idiom              | Why it fits                                                                                          | Detection | Correctness |
+| ---- | ---------------------------- | ---------------------------------------------------------------------------------------------------- | --------: | ----------: |
+| Abstract Factory             | Interface dedicated to creating language-layer artifacts (`ParameterValueSet`, `ResultDescription`). |       95% |         90% |
+| Factory Method               | Creation operations are per-product factory methods.                                                 |       85% |         85% |
+| Service Provider / SPI       | `MODULE` identifier implies discovery/lookup by a container/monitor.                                 |       70% |         65% |
+| Facade                       | Presents a unified creation API to clients of the language layer.                                    |       55% |         50% |
+| Dependency Inversion (idiom) | Clients depend on abstractions, not concrete creators.                                               |       60% |         60% |
+
+---
+
+### 5) `Limits` (constants interface) — patterns detected&#x20;
+
+| Rank | Pattern / Idiom                                  | Why it fits                                     | Detection | Correctness |
+| ---- | ------------------------------------------------ | ----------------------------------------------- | --------: | ----------: |
+| Constants Interface (idiom / known anti-pattern) | Pure static limits; no behavior.                |       95% |         95% |
+| Namespace Object (idiom)                         | Centralizes DB2/Derby limit constants.          |       70% |         70% |
+| Configuration Holder                             | Encapsulates system limits used across modules. |       55% |         55% |
+| Flyweight (conceptual)                           | Shared, immutable values reused globally.       |       35% |         35% |
+| Facade (very weak)                               | Single place to “ask about limits”.             |       25% |         25% |
+
+*(No classical GoF behavior pattern present; above are structural idioms.)*
+
+---
+
+### 6) `MessageVetter` — patterns detected&#x20;
+
+| Rank | Pattern / Idiom            | Why it fits                                                    | Detection | Correctness |
+| ---- | -------------------------- | -------------------------------------------------------------- | --------: | ----------: |
+| Strategy                   | Anonymous `FileFilter` strategy injected into directory scan.  |       85% |         85% |
+| Iterator                   | Iterates `Properties.propertyNames()` and files uniformly.     |       65% |         65% |
+| Template Method (internal) | `vet()` → `vetMessage()` → checks: fixed sequence of steps.    |       60% |         55% |
+| Facade                     | Wraps multiple validations behind a single `vet()` call.       |       50% |         50% |
+| Guard Clauses              | Early failures via `AssertionError` when patterns don’t match. |       45% |         45% |
+
+---
+
+### 7) `ReleaseNoteReader` — patterns detected&#x20;
+
+| Rank | Pattern / Idiom            | Why it fits                                                                   | Detection | Correctness |
+| ---- | -------------------------- | ----------------------------------------------------------------------------- | --------: | ----------: |
+| Facade                     | Simple API over DOM parsing for release notes (`getReleaseNote*`, `forbid*`). |       75% |         70% |
+| Strategy / DI              | Accepts `DocumentBuilder` via ctor; caller supplies parsing strategy.         |       70% |         65% |
+| Template Method (internal) | Main processing flow: parse → extract sections → forbid tags.                 |       55% |         50% |
+| Validator (idiom)          | Encapsulates structural validation rules (`forbidBlockQuotes`).               |       60% |         60% |
+| Command-Line Tool          | `main(String[])` orchestrates the workflow.                                   |       55% |         55% |
+
+---
+
+### 8) `ResultDescription` (interface) — patterns detected&#x20;
+
+| Rank | Pattern / Idiom       | Why it fits                                                                               | Detection | Correctness |
+| ---- | --------------------- | ----------------------------------------------------------------------------------------- | --------: | ----------: |
+| Adapter               | Bridges internal result metadata to JDBC `ResultSetMetaData` (`setMetaData/getMetaData`). |       75% |         70% |
+| Facade                | One abstraction to query statement result metadata.                                       |       65% |         65% |
+| Bridge (role)         | Abstraction decoupled from implementations that carry column info.                        |       60% |         55% |
+| Iterator (conceptual) | Column access patterns (`getColumnInfo()`, `getColumnDescriptor(int)`).                   |       50% |         50% |
+| Builder (weak)        | `truncateColumns(...)` returns a modified description (structural transformation).        |       35% |         35% |
+
+---
+
+### 9) `Securable` (enum) — patterns detected&#x20;
+
+| Rank | Pattern / Idiom          | Why it fits                                                   | Detection | Correctness |
+| ---- | ------------------------ | ------------------------------------------------------------- | --------: | ----------: |
+| Typesafe Enum            | Java `enum` encapsulates constants with fields/behavior.      |       95% |         95% |
+| Registry                 | Central registry mapping operations → (schemaId, name, type). |       75% |         70% |
+| Singleton (per constant) | Each enum value is a singleton instance.                      |       70% |         70% |
+| Flyweight                | Shared immutable instances reused across the system.          |       60% |         60% |
+| Data Dictionary (idiom)  | Declarative metadata table in code.                           |       60% |         60% |
+
+---
+
+### 10) `SignedBinary` — patterns detected&#x20;
+
+| Rank | Pattern / Idiom            | Why it fits                                                        | Detection | Correctness |
+| ---- | -------------------------- | ------------------------------------------------------------------ | --------: | ----------: |
+| Utility Class              | All-static converters; hidden ctor.                                |       95% |         95% |
+| Adapter                    | Adapts raw bytes (big/little-endian) to Java primitives.           |       75% |         75% |
+| Strategy (parameterized)   | Branch on `byteOrder` constant selects conversion strategy.        |       60% |         50% |
+| Facade                     | Single place to perform endian-aware conversions.                  |       55% |         55% |
+| Factory Method (very weak) | “Build” primitives from binary representations via static methods. |       35% |         35% |
+
+---
+
+>#### Notes & caveats
+
+* Several entries (e.g., *Constants Interface*, *Utility Class*, *Registry*) are idioms rather than strict GoF patterns; I’ve included them because they best describe the role of the code you provided. Where a classic GoF pattern fits strongly (e.g., *Abstract Factory* in `LanguageFactory`, *Template Method* in `EXTDTAReaderInputStream`), I’ve scored them higher.&#x20;
+* If you’d like, I can turn this into a spreadsheet or annotate each class with code pointers for where each pattern shows up.

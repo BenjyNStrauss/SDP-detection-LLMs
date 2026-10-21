@@ -1,0 +1,137 @@
+### AbstractThrottler.txt
+
+This file primarily implements concurrency and control-flow related patterns. [cite_start]The abstract class `AbstractThrottler` provides a blueprint for throttling logic, while the use of a `ScheduledExecutorService` indicates a mechanism for executing tasks at a controlled rate[cite: 31, 32].
+
+| Design Pattern | Confidence % | Correctness % |
+| :--- | :--- | :--- |
+| **Template Method** | 95% | 98% |
+| **Strategy** | 90% | 95% |
+| **Decorator** | 75% | 85% |
+| **Command** | 70% | 80% |
+| **Observer** | 60% | 75% |
+
+***
+
+### AggregationStrategy.txt
+
+[cite_start]This file defines an interface for aggregating exchanges[cite: 111]. [cite_start]This is a clear example of the Strategy pattern, where different concrete implementations can provide custom aggregation logic without affecting the client code[cite: 111, 112].
+
+| Design Pattern | Confidence % | Correctness % |
+| :--- | :--- | :--- |
+| **Strategy** | 99% | 99% |
+| **Interface Segregation Principle** | 90% | 95% |
+| **Processor** | 80% | 90% |
+| **Factory Method** | 65% | 80% |
+| **Composite** | 50% | 70% |
+
+***
+
+### AggregationStrategyBeanAdapterAllowNullTest.txt
+
+As a test file, this code primarily demonstrates the use of other patterns rather than implementing them itself. [cite_start]The name `AggregationStrategyBeanAdapter` strongly suggests the **Adapter** pattern, while the core functionality is centered around an `AggregationStrategy`[cite: 178].
+
+| Design Pattern | Confidence % | Correctness % |
+| :--- | :--- | :--- |
+| **Adapter** | 95% | 90% |
+| **Strategy** | 90% | 95% |
+| **Test-Specific Subclass** | 85% | 90% |
+| **Builder** | 75% | 80% |
+| **Value Object** | 60% | 75% |
+
+***
+
+### DefaultModelReifierFactory.txt
+
+[cite_start]The `DefaultModelReifierFactory` class contains methods for creating various components[cite: 212, 213]. The naming convention and purpose of this class are a textbook example of the **Factory Method** pattern, where a factory is responsible for creating objects, often decoupling the client code from the concrete classes being instantiated.
+
+| Design Pattern | Confidence % | Correctness % |
+| :--- | :--- | :--- |
+| **Factory Method** | 99% | 99% |
+| **Singleton** | 80% | 90% |
+| **Abstract Factory** | 70% | 85% |
+| **Builder** | 60% | 75% |
+| **Dependency Injection** | 55% | 70% |
+
+***
+
+### DefaultProcessorFactory.txt
+
+[cite_start]Similar to the previous file, the name `DefaultProcessorFactory` and its role in creating `Processor` objects directly point to the **Factory Method** pattern[cite: 258]. [cite_start]The class uses a `FactoryFinder` SPI, which is a common mechanism for implementing factories in frameworks[cite: 257].
+
+| Design Pattern | Confidence % | Correctness % |
+| :--- | :--- | :--- |
+| **Factory Method** | 99% | 99% |
+| **Singleton** | 80% | 90% |
+| **Abstract Factory** | 70% | 85% |
+| **Strategy** | 65% | 80% |
+| **Dependency Injection** | 60% | 75% |
+
+***
+
+### DefaultPropertiesSourceFactory.txt
+
+This file's name and purpose, creating properties sources, are another explicit example of the **Factory Method** pattern. The class likely serves as a centralized point for instantiating different properties source implementations.
+
+| Design Pattern | Confidence % | Correctness % |
+| :--- | :--- | :--- |
+| **Factory Method** | 99% | 99% |
+| **Singleton** | 80% | 90% |
+| **Abstract Factory** | 70% | 85% |
+| **Builder** | 60% | 75% |
+| **Dependency Injection** | 55% | 70% |
+
+***
+
+### JavadocHelper.txt
+
+[cite_start]This file is a utility class with a private constructor and static methods[cite: 341]. [cite_start]This design prevents instantiation and exposes a set of static helper methods, which is a common implementation of a **Singleton** pattern for stateless utility classes[cite: 341].
+
+| Design Pattern | Confidence % | Correctness % |
+| :--- | :--- | :--- |
+| **Singleton** | 95% | 99% |
+| **Facade** | 80% | 90% |
+| **Utility Class** | 99% | 99% |
+| **Static Gateway** | 85% | 95% |
+| **Helper** | 99% | 99% |
+
+***
+
+### KeyValueHolder.txt
+
+This file likely represents a simple data structure for holding a key-value pair. This is a classic implementation of a **Value Object** or **Data Transfer Object (DTO)**, designed to hold data without complex business logic.
+
+| Design Pattern | Confidence % | Correctness % |
+| :--- | :--- | :--- |
+| **Value Object** | 95% | 95% |
+| **Data Transfer Object (DTO)** | 90% | 90% |
+| **Immutable Object** | 70% | 80% |
+| **Builder** | 50% | 70% |
+| **Plain Old Java Object (POJO)** | 99% | 99% |
+
+***
+
+### Strings.txt
+
+[cite_start]Similar to `JavadocHelper.txt`, this file is a utility class with a private constructor and static methods for string manipulation[cite: 408]. It's a perfect example of a **Utility Class** pattern, a form of **Singleton** that provides a collection of stateless helper functions.
+
+| Design Pattern | Confidence % | Correctness % |
+| :--- | :--- | :--- |
+| **Singleton** | 95% | 99% |
+| **Facade** | 80% | 90% |
+| **Utility Class** | 99% | 99% |
+| **Static Gateway** | 85% | 95% |
+| **Helper** | 99% | 99% |
+
+***
+
+### ToStringTypeConverter.txt
+
+The purpose of this class is to convert an object's state to a string representation. [cite_start]This aligns with the **Adapter** pattern, which allows two incompatible interfaces to work together[cite: 485]. It acts as a bridge between an object and its string representation.
+
+| Design Pattern | Confidence % | Correctness % |
+| :--- | :--- | :--- |
+| **Adapter** | 95% | 98% |
+| **Strategy** | 85% | 90% |
+| **Facade** | 70% | 85% |
+| **Converter** | 99% | 99% |
+| **Builder** | 50% | 70% |

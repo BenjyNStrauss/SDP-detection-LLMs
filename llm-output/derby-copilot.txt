@@ -1,0 +1,121 @@
+# ErrorStringBuilder
+
+| Design Pattern | Detection Confidence (%) | Correctness (%) |
+| -------------- | ------------------------ | --------------- |
+| Builder        | 95                       | 80              |
+| Strategy       | 90                       | 85              |
+| Facade         | 85                       | 70              |
+| Adapter        | 80                       | 65              |
+| Decorator      | 75                       | 60              |
+
+---
+
+# EXTDTAReaderInputStream
+
+| Design Pattern   | Detection Confidence (%) | Correctness (%) |
+| ---------------- | ------------------------ | --------------- |
+| Decorator        | 95                       | 90              |
+| Template Method  | 90                       | 85              |
+| Factory Method   | 80                       | 75              |
+| State            | 70                       | 65              |
+| Hook Method      | 65                       | 60              |
+
+---
+
+# JiraIssue
+
+| Design Pattern      | Detection Confidence (%) | Correctness (%) |
+| ------------------- | ------------------------ | --------------- |
+| Factory Method      | 95                       | 90              |
+| Data Transfer Object| 85                       | 80              |
+| Value Object        | 90                       | 85              |
+| Iterator            | 70                       | 60              |
+| Builder             | 60                       | 50              |
+
+---
+
+# LanguageFactory
+
+| Design Pattern                | Detection Confidence (%) | Correctness (%) |
+| ----------------------------- | ------------------------ | --------------- |
+| Abstract Factory              | 95                       | 90              |
+| Factory Method                | 90                       | 85              |
+| Service Provider Interface    | 85                       | 80              |
+| Bridge                        | 75                       | 70              |
+| Dependency Injection          | 65                       | 60              |
+
+---
+
+# Limits
+
+| Design Pattern       | Detection Confidence (%) | Correctness (%) |
+| -------------------- | ------------------------ | --------------- |
+| Constant Interface   | 100                      | 90              |
+| Namespacing          | 90                       | 85              |
+| Data Container       | 85                       | 80              |
+| Flyweight            | 80                       | 75              |
+| Value Object         | 70                       | 65              |
+
+---
+
+# MessageVetter
+
+| Design Pattern         | Detection Confidence (%) | Correctness (%) |
+| ---------------------- | ------------------------ | --------------- |
+| Template Method        | 95                       | 90              |
+| Strategy               | 90                       | 85              |
+| Interpreter            | 85                       | 80              |
+| Chain of Responsibility| 75                       | 70              |
+| Singleton              | 60                       | 55              |
+
+---
+
+# ReleaseNoteReader
+
+| Design Pattern | Detection Confidence (%) | Correctness (%) |
+| -------------- | ------------------------ | --------------- |
+| Facade         | 95                       | 90              |
+| Template Method| 90                       | 85              |
+| Factory Method | 85                       | 80              |
+| Builder        | 75                       | 65              |
+| Utility Class  | 65                       | 60              |
+
+---
+
+# ResultDescription
+
+| Design Pattern                | Detection Confidence (%) | Correctness (%) |
+| ----------------------------- | ------------------------ | --------------- |
+| Strategy                      | 95                       | 90              |
+| Service Provider Interface    | 90                       | 85              |
+| Bridge                        | 85                       | 80              |
+| Factory Method                | 75                       | 70              |
+| Null Object                   | 60                       | 50              |
+
+---
+
+# Securable
+
+| Design Pattern       | Detection Confidence (%) | Correctness (%) |
+| -------------------- | ------------------------ | --------------- |
+| Typesafe Enum        | 100                      | 100             |
+| Registry             | 90                       | 85              |
+| Flyweight            | 80                       | 75              |
+| Strategy             | 70                       | 65              |
+| Singleton            | 60                       | 55              |
+
+---
+
+# SignedBinary
+
+| Design Pattern  | Detection Confidence (%) | Correctness (%) |
+| --------------- | ------------------------ | --------------- |
+| Utility Class   | 100                      | 100             |
+| Strategy        | 95                       | 90              |
+| Facade          | 85                       | 80              |
+| Singleton       | 90                       | 85              |
+| Factory Method  | 70                       | 65              |
+
+---
+
+Beyond these ten, you might also explore how these classes could evolve under alternative patterns—such as refactoring `ErrorStringBuilder` into a fluent-builder API, or introducing pluggable error-format strategies to more cleanly separate formatting concerns.

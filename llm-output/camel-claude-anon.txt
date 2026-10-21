@@ -1,0 +1,113 @@
+> Design Patterns Analysis for 10 Java Files
+
+## File 1: class#0.txt - Utility Class
+
+| Pattern | Confidence | Correctness | Description |
+|---------|------------|-------------|-------------|
+| Utility/Helper Pattern | 95% | 90% | Final class with private constructor and all static methods |
+| Null Object Pattern | 80% | 85% | Methods handle null inputs gracefully with default behaviors |
+| String Processing Pattern | 85% | 80% | Specialized methods for string manipulation and validation |
+| Guard Clause Pattern | 90% | 85% | Early returns and null checks throughout methods |
+| Builder-like Pattern | 70% | 75% | StringBuilder usage for efficient string construction |
+
+## File 2: class#1.txt - String Processing Utility
+
+| Pattern | Confidence | Correctness | Description |
+|---------|------------|-------------|-------------|
+| Utility/Helper Pattern | 95% | 90% | Final class with private constructor and static methods |
+| Chain of Responsibility | 75% | 80% | Sequential string processing with multiple replace operations |
+| Template Method Pattern | 70% | 75% | Structured string processing with defined steps |
+| Strategy Pattern (implicit) | 65% | 70% | Different processing strategies based on boolean parameters |
+| Filter Pattern | 80% | 85% | Character filtering based on conditions |
+
+## File 3: class#2.txt - Generic Pair Class
+
+| Pattern | Confidence | Correctness | Description |
+|---------|------------|-------------|-------------|
+| Value Object Pattern | 95% | 95% | Immutable class holding two related values |
+| Generic Type Pattern | 90% | 90% | Parameterized types for type safety |
+| Equals/HashCode Contract | 90% | 85% | Proper implementation of equals and hashCode |
+| Immutable Object Pattern | 85% | 90% | Final fields, no setters, immutable design |
+| Data Transfer Object (DTO) | 80% | 85% | Simple data container with accessors |
+
+## File 4: class#3.txt - Abstract Base Class
+
+| Pattern | Confidence | Correctness | Description |
+|---------|------------|-------------|-------------|
+| Template Method Pattern | 85% | 85% | Abstract class with concrete and abstract methods |
+| State Pattern | 75% | 80% | Internal State enum and state-related methods |
+| Strategy Pattern | 70% | 75% | Multiple interfaces implemented suggesting strategy composition |
+| Observer Pattern (partial) | 65% | 70% | Methods for setting/getting state that could notify observers |
+| Factory Method Pattern | 60% | 65% | Abstract method that subclasses must implement |
+
+## File 5: class#4.txt - Service/Factory Implementation
+
+| Pattern | Confidence | Correctness | Description |
+|---------|------------|-------------|-------------|
+| Factory Method Pattern | 90% | 85% | Multiple create methods for different object types |
+| Singleton Pattern (partial) | 70% | 75% | Single instance management with null checks |
+| Strategy Pattern | 80% | 80% | Different creation strategies based on method parameters |
+| Service Locator Pattern | 75% | 80% | Dynamic loading and instantiation of services |
+| Dependency Injection | 65% | 70% | Constructor injection and service resolution |
+
+## File 6: class#5.txt - Adapter/Converter Class
+
+| Pattern | Confidence | Correctness | Description |
+|---------|------------|-------------|-------------|
+| Adapter Pattern | 90% | 85% | Converting between different interface types |
+| Facade Pattern | 85% | 80% | Simplified interface over complex subsystem |
+| Converter Pattern | 80% | 85% | Multiple conversion methods for different types |
+| Delegation Pattern | 75% | 80% | Delegating calls to appropriate converters |
+| Bridge Pattern | 70% | 75% | Abstracting implementation details |
+
+## File 7: class#6.txt - Test Class with Inner Classes
+
+| Pattern | Confidence | Correctness | Description |
+|---------|------------|-------------|-------------|
+| Test Fixture Pattern | 95% | 90% | JUnit test structure with setup and assertions |
+| Builder Pattern (partial) | 80% | 75% | Fluent interface for test data construction |
+| Inner Class Pattern | 85% | 85% | Static inner classes for test data and helpers |
+| Data Builder Pattern | 75% | 80% | Creating test objects with builder-like methods |
+| Template Method Pattern | 70% | 75% | Structured test execution pattern |
+
+## File 8: class#7.txt - Interface with Default Methods
+
+| Pattern | Confidence | Correctness | Description |
+|---------|------------|-------------|-------------|
+| Strategy Pattern | 90% | 85% | Interface defining algorithmic family |
+| Template Method Pattern | 85% | 80% | Default methods providing common behavior |
+| Adapter Pattern (interface) | 75% | 80% | Default implementations for easier adaptation |
+| Command Pattern (partial) | 70% | 75% | Methods that encapsulate operations |
+| Observer Pattern (partial) | 65% | 70% | Notification-like methods with default implementations |
+
+## File 9: class#8.txt - Type Converter
+
+| Pattern | Confidence | Correctness | Description |
+|---------|------------|-------------|-------------|
+| Strategy Pattern | 85% | 80% | Different conversion strategies based on type |
+| Type Safe Enum Pattern | 80% | 85% | Type-safe conversion handling |
+| Null Object Pattern | 75% | 80% | Graceful handling of null and unsupported types |
+| Adapter Pattern | 70% | 75% | Converting between different type systems |
+| Chain of Responsibility | 65% | 70% | Sequential type checking and conversion |
+
+## File 10: class#9.txt - Factory with Composition
+
+| Pattern | Confidence | Correctness | Description |
+|---------|------------|-------------|-------------|
+| Factory Method Pattern | 90% | 85% | Multiple factory methods for different object types |
+| Composition Pattern | 85% | 80% | Using composition over inheritance |
+| Dependency Injection | 80% | 75% | Constructor injection of dependencies |
+| Builder Pattern (partial) | 75% | 70% | Creating objects with different configurations |
+| Strategy Pattern | 70% | 75% | Different creation strategies for different types |
+
+>## Summary
+
+The files demonstrate a mix of creational, structural, and behavioral patterns typical in enterprise Java applications. Common patterns across files include:
+
+- **Utility/Helper Pattern**: Multiple files use static utility methods
+- **Factory Patterns**: Several factory implementations for object creation
+- **Strategy Pattern**: Algorithmic variations and type-based processing
+- **Adapter Pattern**: Converting between different interfaces/types
+- **Template Method**: Structured processing with customizable steps
+
+The obfuscated nature of the code makes some patterns harder to identify with complete certainty, but the structural elements are clear enough to detect the main design patterns with reasonable confidence.

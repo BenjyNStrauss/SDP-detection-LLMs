@@ -1,0 +1,113 @@
+># Design Patterns Analysis for 10 Java Files
+
+## File 1: class#0.txt
+
+| Design Pattern | Confidence % | Correctness % | Evidence |
+|---------------|--------------|---------------|----------|
+| Decorator Pattern | 95% | 90% | Class implements multiple interfaces and wraps another object (ident$28), delegating calls while potentially adding behavior |
+| Delegation Pattern | 90% | 95% | All @Override methods delegate to ident$28 field, classic delegation structure |
+| Adapter Pattern | 80% | 85% | Could be adapting ident$27 type to work with interfaces ident$23, ident$24, ident$25 |
+| Proxy Pattern | 75% | 80% | Similar structure to decorator but could be controlling access to ident$28 |
+| Wrapper Pattern | 85% | 90% | Clear wrapping of ident$28 object with consistent delegation pattern |
+
+## File 2: class#1.txt
+
+| Design Pattern | Confidence % | Correctness % | Evidence |
+|---------------|--------------|---------------|----------|
+| Factory Pattern | 85% | 80% | Methods ident$93 and ident$102 create and return ident$23 objects with different parameters |
+| Cache Pattern | 90% | 95% | Uses ident$42<ident$54> ident$55 as a cache with get/put operations and cache key comparison |
+| Builder Pattern | 75% | 70% | Complex object construction in ident$100 method with multiple parameters |
+| Singleton Pattern | 70% | 65% | Static cache field suggests shared state, though not full singleton implementation |
+| Template Method | 65% | 60% | ident$100 method provides template for object creation with variations |
+
+## File 3: class#2.txt
+
+| Design Pattern | Confidence % | Correctness % | Evidence |
+|---------------|--------------|---------------|----------|
+| Decorator Pattern | 95% | 95% | Wraps ident$18 ident$21 and ident$22 ident$23, adding monitoring/logging behavior |
+| Observer Pattern | 80% | 75% | Uses lambda expressions for notification callbacks in ident$33 method |
+| Strategy Pattern | 70% | 65% | Different behaviors based on conditions (ident$25 <= 0, ident$27 state) |
+| Proxy Pattern | 85% | 80% | Controls access to underlying ident$21 object with additional monitoring |
+| Chain of Responsibility | 60% | 55% | ident$33 method with conditional execution could represent chain links |
+
+## File 4: class#3.txt
+
+| Design Pattern | Confidence % | Correctness % | Evidence |
+|---------------|--------------|---------------|----------|
+| Iterator Pattern | 95% | 95% | Implements standard Iterator interface with hasNext(), next(), remove() methods |
+| Template Method | 90% | 85% | Abstract class with ident$36() abstract method and concrete template methods |
+| State Pattern | 85% | 80% | Uses State enum to control behavior and state transitions |
+| Null Object Pattern | 70% | 65% | ident$33() method returns null, suggesting null object handling |
+| Factory Method | 75% | 70% | Abstract ident$36() method suggests subclasses create specific objects |
+
+## File 5: class#4.txt
+
+| Design Pattern | Confidence % | Correctness % | Evidence |
+|---------------|--------------|---------------|----------|
+| Factory Pattern | 90% | 85% | Static method ident$52 creates and returns ident$51 objects |
+| Strategy Pattern | 80% | 75% | Different retry strategies with loop and condition checking |
+| Builder Pattern | 75% | 70% | Complex object construction in ident$52 with multiple steps |
+| Retry Pattern | 85% | 90% | Clear retry loop with attempt counting (ident$50 retries) |
+| Exception Handling Pattern | 80% | 85% | Systematic exception collection and re-throwing |
+
+## File 6: class#5.txt
+
+| Design Pattern | Confidence % | Correctness % | Evidence |
+|---------------|--------------|---------------|----------|
+| Observer Pattern | 90% | 85% | Uses ident$10 ident$20 for event notification with ident$29 method |
+| Event-Driven Pattern | 85% | 80% | Static methods trigger events based on conditions |
+| Null Object Pattern | 75% | 70% | Methods check for null parameters before processing |
+| Utility Pattern | 80% | 85% | Final class with static methods, private constructor |
+| Conditional Logging Pattern | 85% | 90% | ident$27 method checks conditions before logging events |
+
+## File 7: class#6.txt
+
+| Design Pattern | Confidence % | Correctness % | Evidence |
+|---------------|--------------|---------------|----------|
+| Singleton Pattern | 95% | 90% | Static final instance ident$23, implements single responsibility |
+| Observer Pattern | 85% | 80% | Implements ident$13<ident$16> interface for observation |
+| Command Pattern | 75% | 70% | ident$29 method processes ident$14<ident$16> commands |
+| Factory Pattern | 70% | 65% | Creates and processes different types of objects |
+| Delegation Pattern | 80% | 85% | Delegates to ident$15.ident$23().ident$37 for processing |
+
+## File 8: class#7.txt
+
+| Design Pattern | Confidence % | Correctness % | Evidence |
+|---------------|--------------|---------------|----------|
+| Iterator Pattern | 95% | 95% | Implements Iterator interface with hasNext(), next() methods |
+| Template Method | 85% | 80% | Abstract methods ident$66, ident$104 with concrete template structure |
+| Composite Pattern | 80% | 75% | Hierarchical structure with ident$80, ident$82, ident$83 relationships |
+| Builder Pattern | 75% | 70% | Complex construction in ident$72 method with multiple steps |
+| Chain Pattern | 70% | 65% | Linked structure with ident$50 references between objects |
+
+## File 9: class#8.txt
+
+| Design Pattern | Confidence % | Correctness % | Evidence |
+|---------------|--------------|---------------|----------|
+| State Pattern | 95% | 95% | Enum-based state management with State<ident$16, ident$19> interface |
+| Template Method | 90% | 85% | Abstract class with concrete and abstract methods defining algorithm structure |
+| Strategy Pattern | 80% | 75% | Different behaviors based on state transitions and conditions |
+| Observer Pattern | 75% | 70% | State changes and notifications through ident$90 method |
+| Null Object Pattern | 70% | 65% | Handles null states and invalid transitions gracefully |
+
+## File 10: class#9.txt
+
+| Design Pattern | Confidence % | Correctness % | Evidence |
+|---------------|--------------|---------------|----------|
+| Builder Pattern | 90% | 85% | Complex object construction with ident$89 inner class and multiple setup steps |
+| Resource Management Pattern | 95% | 90% | AutoCloseable implementation with proper resource cleanup |
+| Factory Pattern | 80% | 75% | Static factory method ident$51 creates configured instances |
+| Buffer Management Pattern | 85% | 80% | Buffer allocation and management with size calculations |
+| Iterator Pattern | 75% | 70% | ident$73 method returns iterator-like structure for data access |
+
+>## Summary
+
+The most commonly detected patterns across all files:
+1. **Factory Pattern** - Present in 6/10 files
+2. **Iterator Pattern** - Present in 4/10 files  
+3. **Template Method Pattern** - Present in 4/10 files
+4. **Observer Pattern** - Present in 4/10 files
+5. **Decorator Pattern** - Present in 2/10 files
+6. **State Pattern** - Present in 2/10 files
+
+The analysis shows a mix of creational, structural, and behavioral patterns, with Factory and Iterator patterns being the most prevalent in this codebase.

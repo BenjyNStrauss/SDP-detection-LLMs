@@ -1,0 +1,116 @@
+># Design Patterns Analysis of Java Files
+
+## 1. CollectionFactory.txt
+
+| Design Pattern | Confidence | Correctness | Description |
+|---|---|---|---|
+| **Factory Method** | 95% | 90% | Static methods like `createHashedMap()`, `createHashedSet()` create specific implementations (HashMap, HashSet) |
+| **Abstract Factory** | 85% | 85% | The class serves as a factory for creating related collections (Maps and Sets) |
+| **Template Method** | 70% | 75% | Overloaded methods follow similar creation patterns with different parameters |
+| **Utility/Helper** | 90% | 95% | Central place for allocating collections, designed as utility class |
+| **Strategy** | 60% | 70% | Allows plugging in new implementations (mentioned in comments about trove) |
+
+## 2. Graph.txt
+
+| Design Pattern | Confidence | Correctness | Description |
+|---|---|---|---|
+| **Template Method** | 90% | 90% | Interface defines algorithm structure, implementations fill in specific steps |
+| **Strategy** | 85% | 85% | Different graph implementations can use different strategies for storage/retrieval |
+| **Iterator** | 95% | 95% | Uses `ExtendedIterator<Triple>` extensively for traversing graph elements |
+| **Observer** | 80% | 85% | `GraphEventManager` suggests event notification system |
+| **Null Object** | 85% | 90% | `emptyGraph` constant provides a null object implementation |
+
+## 3. LangTagX.txt
+
+| Design Pattern | Confidence | Correctness | Description |
+|---|---|---|---|
+| **Facade** | 90% | 90% | Provides simplified interface to complex `LangTags` operations |
+| **Factory Method** | 85% | 85% | `createLanguageTag()` method creates LangTag objects |
+| **Template Method** | 75% | 80% | Methods like `formatLanguageTag()` follow similar validation/formatting pattern |
+| **Adapter** | 70% | 75% | Adapts `LangTagException` to `JenaException` |
+| **Strategy** | 65% | 70% | Different formatting strategies (format vs basicFormat) based on validation |
+
+## 4. LocatorURL.txt
+
+| Design Pattern | Confidence | Correctness | Description |
+|---|---|---|---|
+| **Template Method** | 95% | 95% | `open()` defines algorithm, `performOpen()` is abstract for subclasses |
+| **Strategy** | 85% | 85% | Different URL schemes can have different opening strategies |
+| **Chain of Responsibility** | 75% | 80% | `acceptByScheme()` suggests filtering in a chain of locators |
+| **Factory Method** | 70% | 75% | Creates `TypedInputStream` objects through `performOpen()` |
+| **Command** | 60% | 65% | `open()` method encapsulates the action of opening a resource |
+
+## 5. ModelListenerAdapter.txt
+
+| Design Pattern | Confidence | Correctness | Description |
+|---|---|---|---|
+| **Adapter** | 95% | 95% | Converts `ModelChangedListener` interface to `GraphListener` interface |
+| **Observer** | 90% | 90% | Implements listener pattern for model change notifications |
+| **Bridge** | 80% | 85% | Bridges between Graph and Model abstraction layers |
+| **Decorator** | 70% | 75% | Decorates Graph events with Model-specific behavior |
+| **Proxy** | 65% | 70% | Acts as proxy between graph events and model listener |
+
+## 6. RDFS.txt
+
+| Design Pattern | Confidence | Correctness | Description |
+|---|---|---|---|
+| **Singleton** | 85% | 85% | Static constants ensure single instances of vocabulary terms |
+| **Factory Method** | 80% | 85% | `resource()` and `property()` methods create RDF resources/properties |
+| **Flyweight** | 75% | 80% | Vocabulary constants are shared immutable objects |
+| **Lazy Initialization** | 90% | 90% | `Init` inner class prevents circular initialization issues |
+| **Namespace Pattern** | 85% | 90% | Organizes vocabulary terms under common namespace URI |
+
+## 7. ReasonerVocabulary.txt
+
+| Design Pattern | Confidence | Correctness | Description |
+|---|---|---|---|
+| **Singleton** | 85% | 85% | Static constants for vocabulary terms |
+| **Factory Method** | 80% | 80% | Helper methods like `jenaReasonerProperty()` create properties |
+| **Flyweight** | 75% | 80% | Vocabulary constants are shared immutable objects |
+| **Namespace Pattern** | 90% | 90% | Multiple namespaces organized with consistent property creation |
+| **Configuration** | 70% | 75% | Properties serve as configuration parameters for reasoners |
+
+## 8. SchemaDVFactory.txt
+
+| Design Pattern | Confidence | Correctness | Description |
+|---|---|---|---|
+| **Abstract Factory** | 95% | 95% | Abstract class for creating families of datatype validators |
+| **Singleton** | 90% | 90% | `getInstance()` provides single global instance |
+| **Factory Method** | 85% | 85% | Abstract methods for creating built-in types |
+| **Template Method** | 70% | 75% | Common structure for datatype factory implementations |
+| **Registry** | 80% | 85% | Manages collection of built-in datatypes in SymbolHash |
+
+## 9. TypeMapper.txt
+
+| Design Pattern | Confidence | Correctness | Description |
+|---|---|---|---|
+| **Singleton** | 95% | 95% | Global instance managed through `getInstance()` |
+| **Registry** | 95% | 95% | Maintains registries of datatypes by URI and Java class |
+| **Factory Method** | 80% | 85% | Creates appropriate datatypes based on URI or class |
+| **Strategy** | 75% | 80% | Different strategies for unknown datatypes (silent vs exception) |
+| **Flyweight** | 70% | 75% | Datatypes are shared immutable objects |
+
+## 10. ValidatedInfo.txt
+
+| Design Pattern | Confidence | Correctness | Description |
+|---|---|---|---|
+| **Data Transfer Object** | 95% | 95% | Simple container for validation results |
+| **Value Object** | 90% | 90% | Holds immutable validation information |
+| **Information Holder** | 85% | 90% | Designed specifically to carry validation results |
+| **Plain Old Java Object** | 80% | 85% | Simple data structure without behavior |
+| **Composite** | 60% | 65% | Can hold different types of actual values (single or array) |
+
+>## Summary
+
+The most commonly observed patterns across these files are:
+
+1. **Factory Method** - Used extensively for object creation
+2. **Singleton** - For global registries and vocabulary constants  
+3. **Template Method** - For defining algorithm skeletons
+4. **Adapter** - For interface compatibility
+5. **Registry** - For managing collections of related objects
+6. **Observer** - For event notification systems
+7. **Facade** - For simplifying complex subsystems
+8. **Flyweight** - For shared immutable objects
+
+These patterns reflect the nature of the Apache Jena framework, which deals with RDF data management, vocabulary handling, and extensible architectures for semantic web applications.

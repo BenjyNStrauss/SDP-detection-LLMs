@@ -1,0 +1,141 @@
+Awesome—dug through your file and split it at each `<<<<<<<<DIVIDER>>>>>>>>`. Below are ten independent tables (one per class) with my top 5 detected patterns, plus (1) confidence that the pattern is present and (2) how correct/faithful the implementation appears within the snippet. All assessments are based on the attached code.&#x20;
+
+### Class 1 (segment 1) — abstract opener with whitelist and hook
+
+| Pattern                                      | Confidence | Correctness |
+| -------------------------------------------- | ---------: | ----------: |
+| Template Method (validate → open)            |        92% |         90% |
+| Factory Method (abstract `ident$41`)         |        85% |         88% |
+| Strategy (via `implements ident$22`)         |        60% |         70% |
+| Hook Method (logger gating via `ident$29()`) |        65% |         72% |
+| Guard/Filter (extension whitelist)           |        70% |         78% |
+
+*(Template skeleton: `open()` → validate via `ident$34` → delegate to abstract `ident$41`; optional logging hook.)*&#x20;
+
+---
+
+### Class 2 (segment 2) — static generic creators
+
+| Pattern                              | Confidence | Correctness |
+| ------------------------------------ | ---------: | ----------: |
+| Static Factory Method                |        96% |         95% |
+| Abstract Factory (family of types)   |        70% |         78% |
+| Factory Method (overloads)           |        75% |         80% |
+| Facade (simplified construction API) |        55% |         65% |
+| Method Overloading as API Variants   |        55% |         70% |
+
+*(Cluster of `ident$14/ident$23` static creators returning interface-like types.)*&#x20;
+
+---
+
+### Class 3 (segment 3) — path/URI utility with wrapping
+
+| Pattern                                    | Confidence | Correctness |
+| ------------------------------------------ | ---------: | ----------: |
+| Facade (unified path ops)                  |        88% |         90% |
+| Adapter (wrap & translate exceptions)      |        80% |         85% |
+| Normalizer/Validator (precondition checks) |        70% |         78% |
+| Fail-Fast (throw on invalid input)         |        60% |         75% |
+| Compatibility Layer (fallback behavior)    |        55% |         70% |
+
+*(Centralizes path conversion, existence checks, mkdir, equality after normalization.)*&#x20;
+
+---
+
+### Class 4 (segment 4) — global registry of handlers/converters
+
+| Pattern                               | Confidence | Correctness |
+| ------------------------------------- | ---------: | ----------: |
+| Singleton (with replaceable instance) |        95% |         95% |
+| Service Locator                       |        92% |         90% |
+| Registry                              |        90% |         92% |
+| Strategy (pluggable `ident$66`)       |        78% |         85% |
+| Factory (type-to-handler resolution)  |        72% |         82% |
+
+*(Static `get/set`, static init, maps name→handler & class→handler, registration methods.)*&#x20;
+
+---
+
+### Class 5 (segment 5) — simple data carrier
+
+| Pattern                                 | Confidence | Correctness |
+| --------------------------------------- | ---------: | ----------: |
+| Data Transfer Object (DTO)              |        97% |         95% |
+| Value Object (lightweight state holder) |        70% |         65% |
+| Record/POJO (anemic model)              |        85% |         90% |
+| Memento (possible state snapshot)       |        35% |         50% |
+| Aggregate Part (embeddable item)        |        40% |         55% |
+
+*(Three public fields; no behavior—classic DTO/POJO usage.)*&#x20;
+
+---
+
+### Class 6 (segment 6) — abstract provider with default instance
+
+| Pattern                                     | Confidence | Correctness |
+| ------------------------------------------- | ---------: | ----------: |
+| Singleton (default global provider)         |        88% |         90% |
+| Abstract Factory (creates related products) |        80% |         85% |
+| Factory Method (abstract `ident$25`)        |        82% |         85% |
+| Service Provider (pluggable impl)           |        70% |         78% |
+| Dependency Inversion (code to abstraction)  |        60% |         75% |
+
+*(Abstract base + static default instance returning factory-like products.)*&#x20;
+
+---
+
+### Class 7 (segment 7) — interface with default & anon “no-op” impl
+
+| Pattern                                     | Confidence | Correctness |
+| ------------------------------------------- | ---------: | ----------: |
+| Strategy (behavior via interface)           |        92% |         92% |
+| Null Object (static no-op instance)         |        85% |         88% |
+| Adapter (default methods normalize args)    |        70% |         78% |
+| Template Method (defaults delegate to core) |        60% |         70% |
+| Facade-ish API (convenience overloads)      |        45% |         65% |
+
+*(Anonymous static impl + many default methods wrapping core signatures.)*&#x20;
+
+---
+
+### Class 8 (segment 8) — two-part delegating component (transform → emit)
+
+| Pattern                                    | Confidence | Correctness |
+| ------------------------------------------ | ---------: | ----------: |
+| Adapter (translate input to sink)          |        88% |         90% |
+| Bridge (separate transform & output roles) |        75% |         82% |
+| Decorator/Pipeline (stage composition)     |        70% |         78% |
+| Composition over Inheritance               |        80% |         88% |
+| Equality by components (Value semantics)   |        65% |         80% |
+
+*(Implements `ident$15`; delegates to `ident$18` then `ident$20`, across overloads.)*&#x20;
+
+---
+
+### Class 9 (segment 9) — namespaced constant keys & mirrors
+
+| Pattern                               | Confidence | Correctness |
+| ------------------------------------- | ---------: | ----------: |
+| Flyweight (shared key instances)      |        70% |         78% |
+| Static Factory (key creation helpers) |        72% |         80% |
+| Multiton (one per name/category)      |        60% |         70% |
+| Typesafe Enum (constant instances)    |        58% |         68% |
+| Facade (centralized accessors)        |        55% |         70% |
+
+*(Static finals built via helper factories; nested class provides “mirrors”.)*&#x20;
+
+---
+
+### Class 10 (segment 10) — logging/metric keys namespace
+
+| Pattern                              | Confidence | Correctness |
+| ------------------------------------ | ---------: | ----------: |
+| Flyweight (reused identifiers)       |        72% |         80% |
+| Static Factory (scoped key creation) |        78% |         85% |
+| Multiton (per-name instances)        |        60% |         70% |
+| Facade (single point for ids)        |        58% |         72% |
+| Namespace Module (constants group)   |        75% |         88% |
+
+*(String base prefixes + helper builders to create a family of keys/constants.)*&#x20;
+
+If you want, I can also drop a one-liner under each table pointing to the exact lines that triggered each call (e.g., where the singleton is initialized, where the abstract method is invoked, etc.), or export this as a CSV for grading.

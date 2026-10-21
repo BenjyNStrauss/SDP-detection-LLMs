@@ -1,0 +1,153 @@
+Nice — I analyzed each of the 10 Java classes in the uploaded file and for each class I listed the top 5 design patterns I detect, with a percentage confidence in the detection and a percentage estimate of how *correct / present* that pattern is in the code. I based the analysis on the uploaded file.&#x20;
+
+(If you’d like, I can now: 1) mark lines that show each pattern in the code, or 2) produce short refactor suggestions to make a given pattern clearer — tell me which class to focus on.)
+
+---
+
+# 1) `AbstractIterator<V>` — (from the uploaded file).&#x20;
+
+| Pattern                                                     | Detection confidence | Percent correctness / presence |
+| ----------------------------------------------------------- | -------------------: | -----------------------------: |
+| Iterator                                                    |                  98% |                            99% |
+| Template Method                                             |                  92% |                            90% |
+| State (internal enum used as a state machine)               |                  88% |                            85% |
+| Peeking (variant of Iterator / “Peekable Iterator” pattern) |                  85% |                            85% |
+| Null Object / End-Of-Data sentinel                          |                  70% |                            65% |
+
+Notes: `computeNext()` is an abstract template method implemented by subclasses; the class implements `Iterator` and `PeekingIterator` and manages an internal `State` enum to control iteration lifecycle. `endOfData()` acts like a sentinel.
+
+---
+
+# 2) `AbstractState<T extends Enum<T>, I>` — (from the uploaded file).&#x20;
+
+| Pattern                                                   | Detection confidence | Percent correctness / presence |
+| --------------------------------------------------------- | -------------------: | -----------------------------: |
+| State (state machine semantics)                           |                  97% |                            95% |
+| Template Method (hooks like `onComplete`)                 |                  88% |                            85% |
+| Strategy (uses `T extends Enum` to parametrize behaviour) |                  70% |                            65% |
+| Guard / Validation (rejecting backward transitions)       |                  75% |                            75% |
+| Memento / History-ish (records timestamps per state)      |                  60% |                            55% |
+
+Notes: This class maintains an ordinal-based state machine, timestamps per state, and exposes controlled state transitions (accept/reject). `onComplete()` is a hook used by subclasses.
+
+---
+
+# 3) `CipherFactory` — (from the uploaded file).&#x20;
+
+| Pattern                                                                         | Detection confidence | Percent correctness / presence |
+| ------------------------------------------------------------------------------- | -------------------: | -----------------------------: |
+| Factory (creates `Cipher` instances)                                            |                  99% |                            98% |
+| Flyweight / Object Pool (thread-local cached `Cipher` objects + `CachedCipher`) |                  92% |                            90% |
+| Caching (LoadingCache usage — cache-as-pattern)                                 |                  95% |                            92% |
+| Plugin / Reflection-based Provider loading (service/plug-in loader)             |                  88% |                            85% |
+| Adapter (wrapping KeyProvider implementations via reflection)                   |                  65% |                            60% |
+
+Notes: Primary role is a factory for encryptor/decryptor `Cipher`s; it uses `FastThreadLocal` + a small `CachedCipher` struct to reuse expensive `Cipher` instances and a `LoadingCache` to memoize keys loaded via a reflected `KeyProvider` plugin.
+
+---
+
+# 4) `DynamicTokenTreeBuilder` — (from the uploaded file).&#x20;
+
+| Pattern                                                                 | Detection confidence | Percent correctness / presence |
+| ----------------------------------------------------------------------- | -------------------: | -----------------------------: |
+| Builder (constructs token tree data structure)                          |                  94% |                            90% |
+| Composite (tree with `InteriorNode` / `Leaf` subclasses)                |                  92% |                            90% |
+| Iterator (provides an iterator over pairs via `AbstractIterator`)       |                  90% |                            88% |
+| Factory Method (inner classes create nodes/leaves at construction time) |                  70% |                            65% |
+| Flyweight (sharing submaps / reusing collections)                       |                  60% |                            55% |
+
+Notes: Code organizes tokens into leaves/blocks and constructs an in-memory tree — classic builder/composite structure; also exposes iteration via an `AbstractIterator` implementation.
+
+---
+
+# 5) `HintsBuffer` — (from the uploaded file).&#x20;
+
+| Pattern                                                                  | Detection confidence | Percent correctness / presence |
+| ------------------------------------------------------------------------ | -------------------: | -----------------------------: |
+| Buffer / Object Pool (slab-based buffer with allocations)                |                  96% |                            94% |
+| Producer-Consumer / Queue-backed (per-host queues of offsets)            |                  90% |                            88% |
+| Iterator (consuming iterator returning recorded hint ByteBuffers)        |                  92% |                            90% |
+| RAII / Resource (Allocation implements `AutoCloseable`)                  |                  88% |                            86% |
+| Flyweight (uses a flyweight `ByteBuffer` duplicate for zero-copy slices) |                  80% |                            75% |
+
+Notes: This class is a concurrency-safe slab allocator for serialized hints; `Allocation` acts like a scoped writer, and `consumingHintsIterator()` provides an iterator over the stored items.
+
+---
+
+# 6) `NettyStreamingConnectionFactory` — (from the uploaded file).&#x20;
+
+| Pattern                                                                                            | Detection confidence | Percent correctness / presence |
+| -------------------------------------------------------------------------------------------------- | -------------------: | -----------------------------: |
+| Factory (creates `StreamingChannel` instances)                                                     |                  99% |                            99% |
+| Retry (connect attempts loop with max attempts)                                                    |                  92% |                            90% |
+| Strategy / Policy (SSL fallback strategy list drives behavior)                                     |                  88% |                            85% |
+| Facade (wraps the complexity of initiating a streaming connection)                                 |                  75% |                            70% |
+| Adapter (converts `OutboundConnectionSettings` / `InetSocketAddress` into actual connection calls) |                  65% |                            60% |
+
+Notes: The class centralizes connection creation with retry and SSL-fallback policy — essentially a specialized factory with retry/fallback logic.
+
+---
+
+# 7) `SchemaAnnouncementDiagnostics` — (from the uploaded file).&#x20;
+
+| Pattern                                                             | Detection confidence | Percent correctness / presence |
+| ------------------------------------------------------------------- | -------------------: | -----------------------------: |
+| Facade / Helper (wraps diagnostic service calls)                    |                  95% |                            93% |
+| Observer / Publisher (publishes events to `DiagnosticEventService`) |                  90% |                            88% |
+| Singleton usage (uses `DiagnosticEventService.instance()`)          |                  85% |                            80% |
+| Utility / Static Method holder                                      |                  92% |                            90% |
+| Null Object / Guard (checks `isEnabled` before publishing)          |                  70% |                            65% |
+
+Notes: This is a small utility/facade around the diagnostic event system; it checks feature enablement and publishes structured events.
+
+---
+
+# 8) `SchemaVersionVerbHandler` — (from the uploaded file).&#x20;
+
+| Pattern                                                                    | Detection confidence | Percent correctness / presence |
+| -------------------------------------------------------------------------- | -------------------: | -----------------------------: |
+| Singleton (public static `instance`)                                       |                  98% |                            98% |
+| Command / Handler (implements `IVerbHandler` and handles inbound messages) |                  96% |                            95% |
+| Adapter (conforms `IVerbHandler` contract to `MessagingService`)           |                  75% |                            70% |
+| Facade (wraps request/response creation for schema version)                |                  65% |                            60% |
+| Null Object / NoPayload pattern (works with `NoPayload`)                   |                  60% |                            55% |
+
+Notes: Very small class — single-instance handler object that responds to a verb; classic handler/command usage.
+
+---
+
+# 9) `SnitchAdapter` — (from the uploaded file).&#x20;
+
+| Pattern                                                                  | Detection confidence | Percent correctness / presence |
+| ------------------------------------------------------------------------ | -------------------: | -----------------------------: |
+| Adapter (adapts `IEndpointSnitch` to several interfaces)                 |                  99% |                            98% |
+| Proxy / Delegation (delegates calls to the wrapped `snitch`)             |                  96% |                            95% |
+| Strategy (pluggable snitch implementation used at runtime)               |                  80% |                            75% |
+| Facade (consolidates several interface responsibilities)                 |                  70% |                            65% |
+| Decorator (lightweight wrapper possibility — thin additional validation) |                  60% |                            55% |
+
+Notes: `SnitchAdapter` is a small adapter/delegation object that exposes `IEndpointSnitch` functionality under several different interface contracts.
+
+---
+
+# 10) `TeeDataInputPlus` — (from the uploaded file).&#x20;
+
+| Pattern                                                                            | Detection confidence | Percent correctness / presence |
+| ---------------------------------------------------------------------------------- | -------------------: | -----------------------------: |
+| Decorator (wraps `DataInputPlus` to add tee behavior)                              |                  99% |                            98% |
+| Proxy (forwards calls to underlying `source`)                                      |                  95% |                            92% |
+| Adapter (adapts a `DataInputPlus` so its reads are mirrored to a `DataOutputPlus`) |                  88% |                            85% |
+| Guard / Limit check (limit + `isLimitReached`)                                     |                  80% |                            78% |
+| Template Method (common wrap logic via `maybeWrite` used by many read methods)     |                  70% |                            68% |
+
+Notes: This is a textbook decorator: it delegates all reads to the wrapped `source` and copies bytes to a `teeBuffer` while respecting an optional limit.
+
+---
+
+If you want, next steps I can do (pick any):
+
+* For any single class: show the exact lines or methods that illustrate each listed pattern.
+* Suggest a small refactor to make a detected pattern clearer or to remove a mistaken pattern.
+* Produce UML-like ASCII or Mermaid diagrams showing relationships (e.g., for `DynamicTokenTreeBuilder` or `CipherFactory`).
+
+Which class should I deep-dive into next?

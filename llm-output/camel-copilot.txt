@@ -1,0 +1,129 @@
+># Analysis of Design Patterns per File
+
+## 1. org.apache.camel.processor.AbstractThrottler
+
+| Pattern              | Confidence (%) | Correctness (%) |
+|----------------------|---------------:|----------------:|
+| Template Method      |             90 |              95 |
+| Strategy             |             85 |              90 |
+| State                |             70 |              75 |
+| Factory Method       |             60 |              65 |
+| Callback             |             55 |              60 |
+
+---
+
+## 2. org.apache.camel.AggregationStrategy
+
+| Pattern              | Confidence (%) | Correctness (%) |
+|----------------------|---------------:|----------------:|
+| Strategy             |            100 |              95 |
+| Template Method      |             80 |              85 |
+| Null Object          |             60 |              70 |
+| Callback             |             60 |              65 |
+| Adapter              |             50 |              55 |
+
+---
+
+## 3. org.apache.camel.processor.aggregator.AggregationStrategyBeanAdapterAllowNullTest
+
+| Pattern              | Confidence (%) | Correctness (%) |
+|----------------------|---------------:|----------------:|
+| Builder              |             90 |              90 |
+| Factory Method       |             85 |              85 |
+| Template Method      |             75 |              80 |
+| Adapter              |             70 |              75 |
+| Null Object          |             50 |              55 |
+
+---
+
+## 4. org.apache.camel.impl.DefaultModelReifierFactory
+
+| Pattern              | Confidence (%) | Correctness (%) |
+|----------------------|---------------:|----------------:|
+| Abstract Factory     |             95 |              90 |
+| Factory Method       |             90 |              85 |
+| Strategy             |             65 |              60 |
+| Adapter              |             50 |              50 |
+| Dependency Injection |             50 |              55 |
+
+---
+
+## 5. org.apache.camel.processor.DefaultProcessorFactory
+
+| Pattern               | Confidence (%) | Correctness (%) |
+|-----------------------|---------------:|----------------:|
+| Factory Method        |             95 |              90 |
+| Service Locator       |             85 |              80 |
+| Strategy              |             70 |              65 |
+| Null Object           |             60 |              55 |
+| Chain of Responsibility |           50 |              50 |
+
+---
+
+## 6. org.apache.camel.component.properties.DefaultPropertiesSourceFactory
+
+| Pattern              | Confidence (%) | Correctness (%) |
+|----------------------|---------------:|----------------:|
+| Abstract Factory     |             90 |              85 |
+| Factory Method       |             90 |              85 |
+| Facade               |             60 |              60 |
+| Dependency Injection |             55 |              60 |
+| Prototype            |             30 |              30 |
+
+---
+
+## 7. org.apache.camel.tooling.util.JavadocHelper
+
+| Pattern              | Confidence (%) | Correctness (%) |
+|----------------------|---------------:|----------------:|
+| Facade               |             80 |              75 |
+| Utility              |             90 |              90 |
+| Strategy             |             30 |              25 |
+| Singleton (static)   |             40 |              40 |
+| Builder (StringBuilder usage) |      20 |              20 |
+
+---
+
+## 8. org.apache.camel.util.KeyValueHolder
+
+| Pattern              | Confidence (%) | Correctness (%) |
+|----------------------|---------------:|----------------:|
+| Value Object         |             95 |              95 |
+| Immutable Object     |             90 |              90 |
+| Data Transfer Object |             80 |              80 |
+| Holder               |             70 |              70 |
+| Builder              |             10 |              10 |
+
+---
+
+## 9. org.apache.camel.tooling.model.Strings
+
+| Pattern              | Confidence (%) | Correctness (%) |
+|----------------------|---------------:|----------------:|
+| Utility              |             95 |              95 |
+| Facade               |             75 |              70 |
+| Strategy             |             40 |              35 |
+| Builder (StringBuilder usage) |      20 |              20 |
+| Template Method      |             10 |              10 |
+
+---
+
+## 10. org.apache.camel.impl.converter.ToStringTypeConverter
+
+| Pattern                  | Confidence (%) | Correctness (%) |
+|--------------------------|---------------:|----------------:|
+| Adapter                  |             95 |              90 |
+| Template Method          |             85 |              85 |
+| Strategy                 |             70 |              65 |
+| Chain of Responsibility  |             60 |              60 |
+| Null Object              |             50 |              55 |
+
+---
+
+Below are some related insights you might find useful:
+
+- Many of these core Camel classes leverage the Factory and Strategy families to stay extensible and configurable at runtime.
+- Utility classes like `Strings` and `JavadocHelper` often resemble Facade patterns, masking complexity behind simple static methods.
+- Interfaces such as `AggregationStrategy` double as Strategy definitions and employ default (Template Method) hooks for common lifecycle events.
+- For test code, Builder and Factory Method patterns help construct and wire test scenarios in a fluent, expressive manner.
+- The presence of `Null Object` and `Holder` idioms shows Camel’s commitment to avoiding null checks and fostering immutable, self-descriptive types.

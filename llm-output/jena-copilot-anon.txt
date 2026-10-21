@@ -1,0 +1,143 @@
+># Design Pattern Analysis per Class
+
+---
+
+## Class ident$20
+
+Top 5 design patterns detected:
+
+| Design Pattern    | Detection Confidence | Correctness |
+| ----------------- | -------------------- | ----------- |
+| Template Method   | 95%                  | 90%         |
+| Factory Method    | 85%                  | 80%         |
+| Strategy          | 75%                  | 70%         |
+| Bridge            | 60%                  | 55%         |
+| Null Object       | 50%                  | 30%         |
+
+---
+
+## Class ident$9
+
+Top 5 design patterns detected:
+
+| Design Pattern                   | Detection Confidence | Correctness |
+| -------------------------------- | -------------------- | ----------- |
+| Abstract Factory                 | 90%                  | 75%         |
+| Factory Method (Static Factory)  | 85%                  | 80%         |
+| Facade                           | 75%                  | 65%         |
+| Singleton (Utility Class)        | 50%                  | 30%         |
+| Builder (Overloaded Factory)     | 40%                  | 20%         |
+
+---
+
+## Class ident$14
+
+Top 5 design patterns detected:
+
+| Design Pattern    | Detection Confidence | Correctness |
+| ----------------- | -------------------- | ----------- |
+| Facade            | 95%                  | 90%         |
+| Adapter           | 85%                  | 75%         |
+| Utility Class     | 80%                  | 70%         |
+| Proxy             | 60%                  | 40%         |
+| Singleton (Flag)  | 50%                  | 30%         |
+
+---
+
+## Class ident$21
+
+Top 5 design patterns detected:
+
+| Design Pattern      | Detection Confidence | Correctness |
+| ------------------- | -------------------- | ----------- |
+| Singleton           | 95%                  | 90%         |
+| Registry            | 90%                  | 85%         |
+| Factory Method      | 85%                  | 80%         |
+| Lazy Initialization | 80%                  | 75%         |
+| Flyweight           | 75%                  | 65%         |
+
+---
+
+## Class ident$10
+
+Top 5 design patterns detected:
+
+| Design Pattern            | Detection Confidence | Correctness |
+| ------------------------- | -------------------- | ----------- |
+| Data Transfer Object      | 95%                  | 95%         |
+| Value Object              | 80%                  | 75%         |
+| JavaBean                  | 75%                  | 70%         |
+| POJO                      | 70%                  | 65%         |
+| Prototype                 | 50%                  | 20%         |
+
+---
+
+## Class ident$14 (abstract)
+
+Top 5 design patterns detected:
+
+| Design Pattern                   | Detection Confidence | Correctness |
+| -------------------------------- | -------------------- | ----------- |
+| Singleton                         | 95%                  | 90%         |
+| Factory Method (Static Accessor)  | 85%                  | 80%         |
+| Strategy                          | 75%                  | 65%         |
+| Template Method                   | 65%                  | 55%         |
+| Service Provider Interface        | 50%                  | 30%         |
+
+---
+
+## Interface ident$25
+
+Top 5 design patterns detected:
+
+| Design Pattern      | Detection Confidence | Correctness |
+| ------------------- | -------------------- | ----------- |
+| Strategy            | 95%                  | 90%         |
+| Template Method     | 85%                  | 75%         |
+| Interface Adapter   | 75%                  | 65%         |
+| Null Object         | 60%                  | 40%         |
+| Command             | 50%                  | 30%         |
+
+---
+
+## Class ident$13
+
+Top 5 design patterns detected:
+
+| Design Pattern    | Detection Confidence | Correctness |
+| ----------------- | -------------------- | ----------- |
+| Decorator         | 95%                  | 90%         |
+| Proxy             | 85%                  | 75%         |
+| Strategy          | 80%                  | 70%         |
+| Adapter           | 60%                  | 50%         |
+| Bridge            | 50%                  | 30%         |
+
+---
+
+## Class ident$11
+
+Top 5 design patterns detected:
+
+| Design Pattern     | Detection Confidence | Correctness |
+| ------------------ | -------------------- | ----------- |
+| Facade             | 90%                  | 85%         |
+| Factory Method     | 85%                  | 80%         |
+| Singleton          | 70%                  | 60%         |
+| Monostate          | 60%                  | 50%         |
+| Registry           | 50%                  | 30%         |
+
+---
+
+## Class ident$14
+
+Top 5 design patterns detected:
+
+| Design Pattern    | Detection Confidence | Correctness |
+| ----------------- | -------------------- | ----------- |
+| Enumeration       | 95%                  | 90%         |
+| Static Factory    | 90%                  | 85%         |
+| Registry          | 85%                  | 80%         |
+| Singleton         | 80%                  | 75%         |
+| Flyweight         | 60%                  | 40%         |
+
+---

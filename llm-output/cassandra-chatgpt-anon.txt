@@ -1,0 +1,143 @@
+Got it. I parsed your file into 10 classes (split on `<<<<<<<<DIVIDER>>>>>>>>`). Because the identifiers are obfuscated, I’m inferring patterns from structure (interfaces implemented, delegation, caching, iterators, state machines, etc.). I cite the specific class blocks from your upload as .
+
+### Class #1 — starts with `public class ident$21 implements ident$23, ident$24, ident$25`
+
+(Thin wrapper that delegates almost every method to a held `ident$27 ident$28`, with a small pre-check/transform step — classic wrapper/adapter vibe. )
+
+| Pattern   | Confidence | Estimated correctness |
+| --------- | ---------: | --------------------: |
+| Adapter   |        75% |                   70% |
+| Decorator |        65% |                   60% |
+| Proxy     |        55% |                   55% |
+| Facade    |        35% |                   30% |
+| Strategy  |        20% |                   20% |
+
+---
+
+### Class #2 — starts with `public class ident$48`
+
+(Reflective construction of a crypto-ish object, per-call random bytes, plus a small in-memory cache and a builder-style cache config; returns cached/new objects. )
+
+| Pattern                            | Confidence | Estimated correctness |
+| ---------------------------------- | ---------: | --------------------: |
+| Factory Method                     |        80% |                   75% |
+| Flyweight (object reuse via cache) |        70% |                   65% |
+| Builder (cache builder/config)     |        65% |                   70% |
+| Lazy Initialization                |        60% |                   60% |
+| Object Pool (lightweight)          |        40% |                   40% |
+
+---
+
+### Class #3 — starts with `public class ident$16 implements ident$18`
+
+(Wrapper that forwards reads to an underlying source and mirrors/records them to a sink with optional byte-budget logic — “tee”/tap decorator. )
+
+| Pattern                           | Confidence | Estimated correctness |
+| --------------------------------- | ---------: | --------------------: |
+| Decorator                         |        85% |                   85% |
+| Observer (notify sink on events)  |        55% |                   50% |
+| Proxy                             |        45% |                   45% |
+| Adapter                           |        30% |                   30% |
+| Throttling/Rate-Limiter (non-GoF) |        35% |                   30% |
+
+---
+
+### Class #4 — starts with `public abstract class ident$18<ident$19> implements ...`
+
+(An `AbstractIterator`-style class with a small state machine (`State` enum) and `ident$36()`/`ident$33()` hooks. )
+
+| Pattern                                   | Confidence | Estimated correctness |
+| ----------------------------------------- | ---------: | --------------------: |
+| Iterator                                  |        90% |                   90% |
+| Template Method                           |        85% |                   85% |
+| State (internal iterator state)           |        70% |                   65% |
+| Lazy Initialization                       |        50% |                   50% |
+| Null Object (occasional null return path) |        20% |                   20% |
+
+---
+
+### Class #5 — starts with `public class ident$46 implements ident$34.ident$48`
+
+(Factory for a connection/handle (`ident$51`), tries multiple transports/variants with bounded retries; optional side-effects/log registration. )
+
+| Pattern                                     | Confidence | Estimated correctness |
+| ------------------------------------------- | ---------: | --------------------: |
+| Factory Method                              |        75% |                   70% |
+| Retry (non-GoF robustness tactic)           |        65% |                   60% |
+| Strategy (choose among `ident$42` variants) |        60% |                   55% |
+| Facade (simplified connect API)             |        40% |                   35% |
+| Chain of Responsibility (iterate fallbacks) |        35% |                   30% |
+
+---
+
+### Class #6 — starts with `final class ident$17`
+
+(Static utility that conditionally fires structured events to a central logger/bus based on flags. )
+
+| Pattern                                     | Confidence | Estimated correctness |
+| ------------------------------------------- | ---------: | --------------------: |
+| Observer / Event Publisher                  |        80% |                   80% |
+| Singleton (static utility + shared bus)     |        60% |                   60% |
+| Facade (thin event API)                     |        55% |                   50% |
+| Mediator (light: centralizes notifications) |        25% |                   25% |
+| Null Object (no-op when disabled)           |        20% |                   20% |
+
+---
+
+### Class #7 — starts with `public final class ident$20 implements ident$13<ident$16>`
+
+(Concrete handler/consumer with a global instance, logs and forwards registration/work to a central coordinator. )
+
+| Pattern                                              | Confidence | Estimated correctness |
+| ---------------------------------------------------- | ---------: | --------------------: |
+| Singleton (public static instance)                   |        70% |                   70% |
+| Strategy (concrete implementation of `ident$13`)     |        60% |                   55% |
+| Observer (participates in subscription/notification) |        55% |                   50% |
+| Command (encapsulated operation)                     |        35% |                   35% |
+| Facade (thin wrapper over coordinator)               |        25% |                   25% |
+
+---
+
+### Class #8 — starts with `public class ident$24 extends ident$26`
+
+(Accumulates time-series or counts per key, exposes iterators over entries, and builds chunked internal structures via inner classes — composite-like assembly + iterators. )
+
+| Pattern                                          | Confidence | Estimated correctness |
+| ------------------------------------------------ | ---------: | --------------------: |
+| Iterator (custom iter over entries/chunks)       |        70% |                   70% |
+| Composite (chunk/tree of segments)               |        65% |                   60% |
+| Builder (staged assembly in `ident$72`)          |        60% |                   55% |
+| Template Method (overridable hooks)              |        55% |                   55% |
+| Visitor (applies ops while building/serializing) |        30% |                   25% |
+
+---
+
+### Class #9 — starts with `public abstract class ident$15<...> extends ident$20<...> implements State<...>`
+
+(General state-machine base over an enum: tracks current state index, transition times, and exposes durations per state. )
+
+| Pattern                                     | Confidence | Estimated correctness |
+| ------------------------------------------- | ---------: | --------------------: |
+| State                                       |        90% |                   90% |
+| Template Method (hooks for lifecycle)       |        70% |                   70% |
+| Strategy (state-specific behavior via enum) |        50% |                   45% |
+| Memento (persists timing/durations)         |        35% |                   30% |
+| Observer (optional: exposes state snapshot) |        20% |                   20% |
+
+---
+
+### Class #10 — starts with `final class ident$40`
+
+(Fronts a buffer/record store; maintains index per key, returns iterables over byte-ranges, and uses an AutoCloseable inner guard to manage region/lock lifetime. )
+
+| Pattern                                      | Confidence | Estimated correctness |
+| -------------------------------------------- | ---------: | --------------------: |
+| Iterator (range iterator per key)            |        70% |                   70% |
+| Facade (unified access over low-level store) |        60% |                   55% |
+| RAII/Guard (AutoCloseable inner “handle”)    |        65% |                   65% |
+| Flyweight (reusing lightweight indices)      |        45% |                   40% |
+| Factory Method (`ident$51` creator)          |        40% |                   40% |
+
+---
+
+If you want, I can also add a short “why not X?” note per class explaining patterns I ruled out (e.g., why it’s not a full Proxy vs. Decorator in #1/#3) or convert this into a CSV/Excel for quick sorting.&#x20;

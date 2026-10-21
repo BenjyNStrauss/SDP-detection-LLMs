@@ -1,0 +1,119 @@
+># Design Pattern Analysis
+
+## AbstractIterator<V>
+
+| Pattern           | Detection Confidence | Correctness |
+| ----------------- | --------------------:| ----------: |
+| Iterator          | 98%                  | 98%         |
+| Template Method   | 95%                  | 95%         |
+| State             | 85%                  | 90%         |
+| Null Object       | 70%                  | 65%         |
+| Adapter           | 60%                  | 50%         |
+
+---
+
+## AbstractState<T, I>
+
+| Pattern           | Detection Confidence | Correctness |
+| ----------------- | --------------------:| ----------: |
+| State             | 98%                  | 95%         |
+| Template Method   | 90%                  | 90%         |
+| Strategy          | 65%                  | 60%         |
+| Factory Method    | 60%                  | 50%         |
+| Null Object       | 40%                  | 30%         |
+
+---
+
+## CipherFactory
+
+| Pattern           | Detection Confidence | Correctness |
+| ----------------- | --------------------:| ----------: |
+| Factory Method    | 95%                  | 95%         |
+| Builder           | 90%                  | 90%         |
+| Flyweight         | 85%                  | 85%         |
+| Strategy          | 85%                  | 80%         |
+| Proxy             | 60%                  | 55%         |
+
+---
+
+## DynamicTokenTreeBuilder
+
+| Pattern           | Detection Confidence | Correctness |
+| ----------------- | --------------------:| ----------: |
+| Builder           | 95%                  | 95%         |
+| Iterator          | 90%                  | 90%         |
+| Composite         | 85%                  | 85%         |
+| Template Method   | 80%                  | 80%         |
+| Factory Method    | 65%                  | 60%         |
+
+---
+
+## HintsBuffer
+
+| Pattern           | Detection Confidence | Correctness |
+| ----------------- | --------------------:| ----------: |
+| Factory Method    | 90%                  | 90%         |
+| Iterator          | 85%                  | 85%         |
+| Object Pool       | 70%                  | 65%         |
+| Template Method   | 60%                  | 55%         |
+| Proxy             | 55%                  | 50%         |
+
+---
+
+## NettyStreamingConnectionFactory
+
+| Pattern                      | Detection Confidence | Correctness |
+| ---------------------------- | --------------------:| ----------: |
+| Factory Method               | 95%                  | 95%         |
+| Strategy                     | 85%                  | 85%         |
+| Adapter                      | 80%                  | 80%         |
+| Decorator                    | 70%                  | 65%         |
+| Chain of Responsibility      | 60%                  | 70%         |
+
+---
+
+## SchemaAnnouncementDiagnostics
+
+| Pattern           | Detection Confidence | Correctness |
+| ----------------- | --------------------:| ----------: |
+| Facade            | 90%                  | 90%         |
+| Singleton         | 85%                  | 85%         |
+| Observer          | 80%                  | 90%         |
+| Utility Class     | 75%                  | 75%         |
+| Strategy          | 40%                  | 40%         |
+
+---
+
+## SchemaVersionVerbHandler
+
+| Pattern           | Detection Confidence | Correctness |
+| ----------------- | --------------------:| ----------: |
+| Singleton         | 95%                  | 95%         |
+| Command (Handler) | 90%                  | 95%         |
+| Strategy          | 65%                  | 60%         |
+| Factory Method    | 50%                  | 50%         |
+| Adapter           | 40%                  | 35%         |
+
+---
+
+## SnitchAdapter
+
+| Pattern           | Detection Confidence | Correctness |
+| ----------------- | --------------------:| ----------: |
+| Adapter           | 98%                  | 98%         |
+| Decorator         | 90%                  | 90%         |
+| Proxy             | 85%                  | 85%         |
+| Strategy          | 75%                  | 70%         |
+| Facade            | 60%                  | 60%         |
+
+---
+
+## TeeDataInputPlus
+
+| Pattern           | Detection Confidence | Correctness |
+| ----------------- | --------------------:| ----------: |
+| Decorator         | 95%                  | 95%         |
+| Adapter           | 90%                  | 90%         |
+| Proxy             | 80%                  | 75%         |
+| Strategy          | 70%                  | 65%         |
+| Template Method   | 50%                  | 50%         |

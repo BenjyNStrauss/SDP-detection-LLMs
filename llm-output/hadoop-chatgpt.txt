@@ -1,0 +1,135 @@
+Awesome—thanks for the bundle. I went class-by-class (each block separated by `<<<<<<<<DIVIDER>>>>>>>>`) and scored the top 5 design-pattern signals I see. For each I give: the pattern, why it fits, my confidence I’m detecting that pattern here, and how correct/faithful the implementation seems.
+
+---
+
+##1) `org.apache.hadoop.fs.BulkDelete`
+ (interface)## — defines an operation contract for bulk deletion with constraints and idempotence notes.&#x20;
+
+| Pattern                                   | Why it fits                                                                                        | Confidence | Estimated correctness |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------- | ---------: | --------------------: |
+| Strategy                                  | Interface lets different FS backends provide their own bulk-delete behavior via `bulkDelete(...)`. |        93% |                   90% |
+| Interface Segregation (ISP)               | Narrow, focused contract just for bulk delete, not general FS ops.                                 |        88% |                   90% |
+| Template Method (lightweight)             | Callers manage lifecycle via `Closeable.close()`; implementations can hook resource release.       |        65% |                   70% |
+| Command (semantic)                        | “Delete these paths” encapsulated as a single operation call with a defined result.                |        60% |                   65% |
+| Idempotent Operation (Reliability tactic) | Spec explicitly calls out idempotence and non-atomicity as behavior.                               |        55% |                   80% |
+
+---
+
+##2) `org.apache.hadoop.fs.shell.Concat`
+ (CLI command)## — a shell subcommand that validates args and invokes `fs.concat`.&#x20;
+
+| Pattern                  | Why it fits                                                                    | Confidence | Estimated correctness |
+| ------------------------ | ------------------------------------------------------------------------------ | ---------: | --------------------: |
+| Command                  | Each CLI op is a command class (`Concat`) registered via `CommandFactory`.     |        95% |                   95% |
+| Template Method          | Inherits lifecycle from `FsCommand` (processOptions/Arguments/Path overrides). |        85% |                   85% |
+| Factory Method           | `registerCommands` adds the command to a factory for creation/dispatch.        |        80% |                   85% |
+| Facade                   | Wraps FS concat capability into a simple CLI interface.                        |        60% |                   70% |
+| Guard Clause / Fail-fast | Early argument/FS checks throw precise exceptions.                             |        55% |                   85% |
+
+---
+
+##3) `org.apache.hadoop.crypto.CryptoProtocolVersion`
+ (enum)## — type-safe protocol versions + support checks.&#x20;
+
+| Pattern                                      | Why it fits                                              | Confidence | Estimated correctness |
+| -------------------------------------------- | -------------------------------------------------------- | ---------: | --------------------: |
+| Type-Safe Enum (GoF: Singleton-per-constant) | Java `enum` holds data/behavior per version.             |        95% |                   95% |
+| Registry of Constants                        | `supported()` exposes the set of supported versions.     |        80% |                   85% |
+| Null Object (soft)                           | `UNKNOWN` represents “no real version”, avoiding nulls.  |        65% |                   75% |
+| Validator / Policy                           | `supports(...)` enforces version policy centrally.       |        70% |                   80% |
+| Information Expert                           | Version/description behavior lives with the enum itself. |        60% |                   85% |
+
+---
+
+##4) `org.apache.hadoop.util.DiskValidatorFactory`
+ — returns cached `DiskValidator` instances, by class or name.&#x20;
+
+| Pattern                              | Why it fits                                                         | Confidence | Estimated correctness |
+| ------------------------------------ | ------------------------------------------------------------------- | ---------: | --------------------: |
+| Factory                              | `getInstance(Class/ String)` instantiates the correct validator.    |        95% |                   95% |
+| Multiton                             | One instance per validator class cached in `INSTANCES`.             |        90% |                   90% |
+| Flyweight                            | Shared validator instances reduce allocation; intrinsic state only. |        75% |                   80% |
+| Reflection (Abstract Factory flavor) | Class loading by name with fallback to known types.                 |        75% |                   85% |
+| Thread-safe Lazy Init                | `putIfAbsent` ensures single instance per key in concurrent map.    |        80% |                   85% |
+
+---
+
+##5) `org.apache.hadoop.ipc.ExternalCall<T>`
+ — wraps a privileged action, runs via IPC handler, and signals completion.&#x20;
+
+| Pattern                          | Why it fits                                                                  | Confidence | Estimated correctness |
+| -------------------------------- | ---------------------------------------------------------------------------- | ---------: | --------------------: |
+| Template Method                  | Overrides `run()`/`doResponse(...)` around a fixed call lifecycle.           |        88% |                   90% |
+| Command                          | Encapsulates a unit of work (`PrivilegedExceptionAction<T>`) to execute.     |        85% |                   90% |
+| Future/Promise (result hand-off) | `get()` waits on completion via `wait/notify` and captures result/exception. |        80% |                   80% |
+| Guarded Suspension               | Blocks in `waitForCompletion()` until `done` becomes true.                   |        70% |                   80% |
+| Memento (error/result capture)   | Captures outcome (result/throwable) for later retrieval.                     |        55% |                   65% |
+
+---
+
+##6) `org.apache.hadoop.metrics2.sink.ganglia.GangliaMetricVisitor`
+ — visits metrics to derive type/slope.&#x20;
+
+| Pattern                             | Why it fits                                                         | Confidence | Estimated correctness |
+| ----------------------------------- | ------------------------------------------------------------------- | ---------: | --------------------: |
+| Visitor                             | Implements `MetricsVisitor` with typed visit methods.               |        98% |                   95% |
+| Type Mapping                        | Centralized mapping from metric kind → wire type and slope.         |        75% |                   85% |
+| Strategy (delegated classification) | Different visit methods encode different classification strategies. |        60% |                   70% |
+| Null Object (slope=null for gauges) | Uses `null` to mean “no slope”.                                     |        55% |                   70% |
+| Immutable Result Snapshot           | Stores derived `type`/`slope` after visitation.                     |        55% |                   75% |
+
+---
+
+##7) `org.apache.hadoop.fs.LeaseRecoverable` (interface)
+ — capability contract for lease recovery/is-closed checks.&#x20;
+
+| Pattern                                | Why it fits                                                | Confidence | Estimated correctness |
+| -------------------------------------- | ---------------------------------------------------------- | ---------: | --------------------: |
+| Capability/Marker Interface (with ops) | Advertises extra FS capability via methods.                |        90% |                   90% |
+| Strategy                               | Different FS implementations supply their recovery logic.  |        85% |                   85% |
+| Interface Segregation                  | Keeps lease-recovery concerns separate from core FS APIs.  |        80% |                   90% |
+| Template Method (consumer side)        | Callers can rely on uniform sequence: recover → isClosed.  |        55% |                   70% |
+| Fail-fast Contract                     | Throws `UnsupportedOperationException` when not supported. |        60% |                   85% |
+
+---
+
+##8) `org.apache.hadoop.ipc.ProtobufHelper` (deprecated)
+ — static helpers delegating to shaded proto helpers.&#x20;
+
+| Pattern                      | Why it fits                                                      | Confidence | Estimated correctness |
+| ---------------------------- | ---------------------------------------------------------------- | ---------: | --------------------: |
+| Facade                       | Simplifies/canonizes protobuf interaction behind static methods. |        90% |                   90% |
+| Adapter                      | Bridges legacy (unshaded) vs shaded protobuf classes.            |        85% |                   90% |
+| Utility Class                | All-static, hidden ctor; pure helpers.                           |        95% |                   95% |
+| Backward-Compatibility Layer | Deprecated shim preserves external API.                          |        80% |                   90% |
+| Flyweight (byte strings)     | Reuses singleton byte strings to reduce allocation.              |        60% |                   75% |
+
+---
+
+##9) `org.apache.hadoop.ipc.RefreshRegistry`
+ — singleton-style default registry mapping identifiers → handlers; dispatches and aggregates responses.&#x20;
+
+| Pattern                                     | Why it fits                                                 | Confidence | Estimated correctness |
+| ------------------------------------------- | ----------------------------------------------------------- | ---------: | --------------------: |
+| Singleton (Initialization-on-Demand Holder) | `RegistryHolder` idiom provides a single default instance.  |        95% |                   95% |
+| Registry                                    | Maps string identifiers to `RefreshHandler`s.               |        95% |                   95% |
+| Observer / Pub-Sub (manual)                 | Multiple handlers receive refresh events for an identifier. |        70% |                   75% |
+| Command                                     | Each handler acts like a command executed on dispatch.      |        70% |                   80% |
+| Aggregator                                  | Collects multiple `RefreshResponse`s into one collection.   |        65% |                   85% |
+
+---
+
+##10) `org.apache.hadoop.fs.shell.SnapshotCommands` (+ inner Create/Delete/Rename)
+ — CLI commands for snapshot operations using FsCommand lifecycle.&#x20;
+
+| Pattern                       | Why it fits                                                       | Confidence | Estimated correctness |
+| ----------------------------- | ----------------------------------------------------------------- | ---------: | --------------------: |
+| Command                       | Three subcommands (create/delete/rename) registered in a factory. |        96% |                   95% |
+| Template Method               | Override `processOptions/Arguments/Path` hooks from `FsCommand`.  |        90% |                   90% |
+| Factory Method                | `registerCommands` wires command classes to the dispatcher.       |        85% |                   90% |
+| Facade                        | Presents FS snapshot ops through simple CLI endpoints.            |        65% |                   75% |
+| Preconditions / Guard Clauses | Validates directory/arg counts early with precise errors.         |        60% |                   85% |
+
+---
+
+If you’d like, I can also output this as a CSV or spreadsheet (one sheet per class) so you can sort/filter by confidence or pattern.

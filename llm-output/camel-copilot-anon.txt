@@ -1,0 +1,127 @@
+-# Design Pattern Analysis
+
+Below is an independent analysis of each of the ten classes. For each class, the top five detected design patterns are ranked by likelihood, with estimated percent confidence in the detection and percent correctness.
+
+---
+
+## Class ident$9
+
+| Design Pattern            | Detection Confidence | Correctness |
+|---------------------------|----------------------|-------------|
+| Utility Class             | 99%                  | 95%         |
+| Facade                    | 80%                  | 70%         |
+| Static Factory Method     | 60%                  | 50%         |
+| Template Method           | 50%                  | 40%         |
+| Adapter                   | 40%                  | 30%         |
+
+---
+
+## Class ident$13
+
+| Design Pattern            | Detection Confidence | Correctness |
+|---------------------------|----------------------|-------------|
+| Utility Class             | 98%                  | 94%         |
+| Facade                    | 75%                  | 65%         |
+| Builder (fluent cleanup)  | 60%                  | 50%         |
+| Template Method           | 45%                  | 35%         |
+| Strategy (format rules)   | 40%                  | 30%         |
+
+---
+
+## Class ident$10<ident$11, ident$12>
+
+| Design Pattern            | Detection Confidence | Correctness |
+|---------------------------|----------------------|-------------|
+| Value Object              | 95%                  | 90%         |
+| Immutable Object          | 90%                  | 85%         |
+| Delegation                | 60%                  | 50%         |
+| Adapter (toString format) | 30%                  | 20%         |
+| Prototype (clone-like)    | 20%                  | 10%         |
+
+---
+
+## Class ident$28
+
+| Design Pattern            | Detection Confidence | Correctness |
+|---------------------------|----------------------|-------------|
+| Template Method           | 95%                  | 90%         |
+| Strategy (behavior inject)| 80%                  | 60%         |
+| State (enum)              | 70%                  | 40%         |
+| Builder (config setters)  | 60%                  | 40%         |
+| Factory Method (static)   | 50%                  | 30%         |
+
+---
+
+## Class ident$33
+
+| Design Pattern            | Detection Confidence | Correctness |
+|---------------------------|----------------------|-------------|
+| Factory Method            | 90%                  | 85%         |
+| Proxy                     | 85%                  | 80%         |
+| Lazy Initialization       | 80%                  | 75%         |
+| Adapter                   | 75%                  | 65%         |
+| Strategy (lookup logic)   | 60%                  | 50%         |
+
+---
+
+## Class ident$38
+
+| Design Pattern            | Detection Confidence | Correctness |
+|---------------------------|----------------------|-------------|
+| Abstract Factory          | 95%                  | 90%         |
+| Factory Method            | 90%                  | 85%         |
+| Strategy (creation rules) | 70%                  | 50%         |
+| Adapter                   | 60%                  | 40%         |
+| Singleton (stateless)     | 40%                  | 30%         |
+
+---
+
+## Class ident$29
+
+| Design Pattern                      | Detection Confidence | Correctness |
+|-------------------------------------|----------------------|-------------|
+| Template Method (test framework)    | 95%                  | 90%         |
+| Builder (fluent test configuration) | 90%                  | 85%         |
+| Factory Method (nested builder)     | 80%                  | 70%         |
+| Strategy (merge helper class)       | 80%                  | 65%         |
+| Command (test invocation)           | 50%                  | 30%         |
+
+---
+
+## Interface ident$9
+
+| Design Pattern            | Detection Confidence | Correctness |
+|---------------------------|----------------------|-------------|
+| Strategy                  | 95%                  | 90%         |
+| Template Method           | 90%                  | 85%         |
+| Null Object (default no-op)| 70%                 | 60%         |
+| Adapter (default adapters) | 60%                 | 40%         |
+| Decorator (method extensions)| 50%               | 30%         |
+
+---
+
+## Class ident$18
+
+| Design Pattern            | Detection Confidence | Correctness |
+|---------------------------|----------------------|-------------|
+| Adapter (conversion logic)| 95%                  | 90%         |
+| Strategy (type mapping)    | 80%                  | 70%         |
+| Template Method            | 75%                  | 60%         |
+| Factory Method             | 50%                  | 30%         |
+| Bridge (abstraction layer) | 40%                  | 20%         |
+
+---
+
+## Class ident$12
+
+| Design Pattern            | Detection Confidence | Correctness |
+|---------------------------|----------------------|-------------|
+| Factory Method            | 95%                  | 90%         |
+| Strategy                  | 90%                  | 85%         |
+| Adapter                   | 80%                  | 75%         |
+| Bridge (interface decoupling)| 60%               | 50%         |
+| Decorator (wrapping args) | 50%                  | 30%         |
+
+---
+
+If you’d like deeper dives into any of these detections or adjustments to confidences and correctness metrics, let me know!

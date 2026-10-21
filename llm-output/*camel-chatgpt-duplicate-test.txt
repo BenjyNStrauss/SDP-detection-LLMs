@@ -1,0 +1,114 @@
+Thanks — I analyzed the 10 Java classes in the uploaded file and for **each class** below I list the **top 5 design patterns / structural roles** I detect, with a brief percent confidence (how sure I am that the pattern is present) and percent correctness (how correctly that pattern is implemented / represented by the code). Source: the uploaded file. 
+
+# 1) `AbstractThrottler` (abstract class)
+
+| Design pattern / role                                                                     | % confidence (detection) | % correctness (how well implemented) |
+| ----------------------------------------------------------------------------------------- | -----------------------: | -----------------------------------: |
+| Template Method (abstract class provides common flow, subclasses supply `getMode()` etc.) |                      92% |                                  90% |
+| Strategy (uses `Expression` fields for correlation / maxRequests — pluggable behavior)    |                      70% |                                  70% |
+| State (uses internal `State` enum to represent sync/async/rejected states)                |                      68% |                                  75% |
+| Guard / Resource Management (handles interrupts, rejections, executor lifecycle)          |                      60% |                                  70% |
+| Id/Metadata holder (implements `IdAware` / `RouteIdAware` as role/adaptor)                |                      50% |                                  65% |
+
+# 2) `AggregationStrategy` (interface)
+
+| Design pattern / role                                                             | % confidence | % correctness |
+| --------------------------------------------------------------------------------- | -----------: | ------------: |
+| Strategy (classic — pluggable aggregation algorithm)                              |          99% |           99% |
+| Template Method (default methods provide standard behavior and extension points)  |          78% |           80% |
+| Null Object / No-op (default `onCompletion`, `timeout` are no-op implementations) |          70% |           75% |
+| Callback (onCompletion/timeout used as callbacks invoked by framework)            |          65% |           70% |
+| Contract / SPI (service provider interface for EIP aggregation)                   |          85% |           85% |
+
+# 3) `AggregationStrategyBeanAdapterAllowNullTest` (unit test + inner classes)
+
+| Design pattern / role                                                                                | % confidence | % correctness |
+| ---------------------------------------------------------------------------------------------------- | -----------: | ------------: |
+| Unit Test / Test Fixture (Junit test using route builder and mocks)                                  |          99% |           99% |
+| Builder (uses `RouteBuilder` inner class for configuring the route — builder-style DSL)              |          80% |           85% |
+| Adapter (the `MyUserAppender` serves as a POJO adapter for aggregation via bean adapter)             |          75% |           75% |
+| Factory (uses `AggregationStrategies.beanAllowNull(...)` — factory producing an AggregationStrategy) |          68% |           70% |
+| Helper / Value Object (`User` inner class as simple data holder)                                     |          80% |           90% |
+
+# 4) `DefaultModelReifierFactory`
+
+| Design pattern / role                                                                   | % confidence | % correctness |
+| --------------------------------------------------------------------------------------- | -----------: | ------------: |
+| Factory (implements `ModelReifierFactory` and creates Route/DataFormat/Processor/etc)   |          99% |           98% |
+| Facade (centralizes many reifier creation calls behind a simple API)                    |          80% |           80% |
+| Factory Method (delegates to `Reifier.reifier(...).createXxx()` factory-method style)   |          85% |           85% |
+| Adapter / Translator (translates model definition objects into runtime implementations) |          70% |           75% |
+| Service Locator / SPI usage (relies on reifier classes discovered by SPI)               |          60% |           65% |
+
+# 5) `DefaultProcessorFactory`
+
+| Design pattern / role                                                                               | % confidence | % correctness |
+| --------------------------------------------------------------------------------------------------- | -----------: | ------------: |
+| Factory (creates `Processor` instances based on definition names / args)                            |          98% |           97% |
+| Service Provider / Plugin (uses `FactoryFinder` SPI and `PluginHelper` to load component factories) |          92% |           90% |
+| Factory Method (chooses and constructs different concrete Processor types)                          |          85% |           85% |
+| Reflection / Registry-based Lookup (resolver and `finder.newInstance(name)`)                        |          75% |           75% |
+| Builder (small: constructs complex `MulticastProcessor`/`Pipeline` with many args)                  |          60% |           65% |
+
+# 6) `DefaultPropertiesSourceFactory`
+
+| Design pattern / role                                                            | % confidence | % correctness |
+| -------------------------------------------------------------------------------- | -----------: | ------------: |
+| Simple Factory (returns different `PropertiesSource` subtypes)                   |          98% |           98% |
+| Abstract Factory (factory produces family of related `PropertiesSource` objects) |          70% |           70% |
+| Dependency Injection (holds `PropertiesComponent` injected via ctor)             |          75% |           80% |
+| Named Constructor / Factory Method (methods named `newXYZPropertiesSource`)      |          68% |           72% |
+| Adapter (wraps information into `PropertiesLocation` + source objects)           |          50% |           60% |
+
+# 7) `JavadocHelper` (utility class)
+
+| Design pattern / role                                                                      | % confidence | % correctness |
+| ------------------------------------------------------------------------------------------ | -----------: | ------------: |
+| Utility / Helper (static helper methods for javadoc sanitization)                          |          99% |           99% |
+| Singleton (effectively stateless static-only class with private ctor)                      |          85% |           85% |
+| Facade (high-level text-sanitization operations composed of smaller steps)                 |          65% |           70% |
+| Sanitizer / Filter (text-processing chain that strips tags & invalid chars)                |          75% |           80% |
+| Strategy (minor — optional: could accept different behaviors; not present, low confidence) |          30% |           30% |
+
+# 8) `KeyValueHolder<K,V>`
+
+| Design pattern / role                                  | % confidence | % correctness |
+| ------------------------------------------------------ | -----------: | ------------: |
+| Value Object (immutable holder with equality/hashCode) |          98% |           98% |
+| Data Transfer Object (simple pair used to pass data)   |          90% |           90% |
+| Immutable Object (final fields, no setters)            |          95% |           95% |
+| Pair / Tuple (semantic role)                           |          85% |           90% |
+| Adapter (light — wraps a key/value pair)               |          40% |           50% |
+
+# 9) `Strings` (utility class in tooling/model)
+
+| Design pattern / role                                               | % confidence | % correctness |
+| ------------------------------------------------------------------- | -----------: | ------------: |
+| Utility / Helper (static string utilities)                          |          99% |           99% |
+| Singleton (static-only class, private ctor)                         |          85% |           85% |
+| Strategy (some helper behavior could be factored, but not present)  |          30% |           30% |
+| Facade (wraps multiple lower-level string ops into convenient APIs) |          60% |           65% |
+| Adapter (provides adaptations of text — low confidence)             |          35% |           40% |
+
+# 10) `ToStringTypeConverter` (extends `TypeConverterSupport`)
+
+| Design pattern / role                                                                   | % confidence | % correctness |
+| --------------------------------------------------------------------------------------- | -----------: | ------------: |
+| Converter (explicit: converts arbitrary objects to String)                              |          99% |           99% |
+| Template Method (extends `TypeConverterSupport` and overrides `convertTo`)              |          85% |           85% |
+| Sentinel / Null-Object (uses `MISS_VALUE` sentinel to indicate unsupported conversions) |          70% |           75% |
+| Strategy (the type conversion is pluggable in the framework; class is one strategy)     |          65% |           70% |
+| Guard Clause (explicitly excludes certain types like `Message`/`WrappedFile`/`Future`)  |          60% |           80% |
+
+---
+
+### Notes / methodology
+
+* I inspected each class independently and reported patterns that are **actually visible in the code** (not speculative architectural patterns outside the file). Where a class is a simple utility or data holder, the top entries reflect that (Utility, Value Object, Factory, etc.).
+* **Confidence** reflects how clearly the code shows the pattern (code idioms / constructs that match pattern).
+* **Correctness** reflects how well the class implements the pattern (e.g., an interface being a Strategy is high correctness; claiming State because an enum exists is lower).
+* If you want, I can:
+
+  * produce a single CSV of all tables,
+  * expand each row with a one-line justification (code locations / method names),
+  * or re-run the analysis focusing only on classical GoF patterns (ignore utilities/tests). Which would you like next?

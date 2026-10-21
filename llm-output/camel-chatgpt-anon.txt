@@ -1,0 +1,152 @@
+I analyzed the uploaded file and each of the 10 Java classes inside. (Source: uploaded file).&#x20;
+
+Below are **10 independent tables** (one per class in file order). Each table lists my top 5 detected design patterns (or architectural idioms), **percent confidence** in that detection, and **percent correctness** (how well that pattern actually fits the class / how useful the label is). After each table I add a *very short* justification (1–2 lines). If you want, I can expand any single class into a deeper explanation and point to exact code locations.
+
+---
+
+# Class 0 (first chunk — `ident$9`, final class of static string utilities)
+
+| Pattern / Idiom                                    | Confidence (detection) | Correctness (fit/usefulness) |
+| -------------------------------------------------- | ---------------------: | ---------------------------: |
+| Utility / Static helper class                      |                    98% |                          98% |
+| Factory (static factory methods / normalizers)     |                    55% |                          50% |
+| Null-check / Guard methods (defensive programming) |                    90% |                          90% |
+| String normalizer / Facade for string ops          |                    65% |                          70% |
+| Immutable / stateless service object               |                    80% |                          75% |
+
+Justification: private constructor + only `static` methods = classic utility class. Several static methods perform string normalization/guarding; calling it a "factory" is weaker but some methods produce normalized values (hence lower confidence).
+
+---
+
+# Class 1 (second chunk — `ident$13`, final class with string/id transformations)
+
+| Pattern / Idiom                                     | Confidence | Correctness |
+| --------------------------------------------------- | ---------: | ----------: |
+| Utility / Static helper class                       |        96% |         96% |
+| Normalizer / Formatter                              |        85% |         88% |
+| Guard/Validation helpers                            |        78% |         80% |
+| Adapter (string canonicalization to other forms)    |        50% |         45% |
+| Facade (wraps multiple string ops into simpler API) |        60% |         65% |
+
+Justification: again a static-only helper that sanitizes/normalizes strings with a few well-defined transformation steps.
+
+---
+
+# Class 2 (third chunk — `ident$10<K,V>` generic pair-like class)
+
+| Pattern / Idiom                                       | Confidence | Correctness |
+| ----------------------------------------------------- | ---------: | ----------: |
+| Value Object / Pair                                   |        99% |         99% |
+| Immutable object (fields `final`, no setters)         |        95% |         95% |
+| DTO (data carrier)                                    |        80% |         80% |
+| Composite (not really; structural hold of two values) |        30% |         20% |
+| Equality / Hashing helper (equals/hashCode pattern)   |        92% |         92% |
+
+Justification: generic pair with final fields, equals/hashCode/toString — textbook Value Object / immutable pair.
+
+---
+
+# Class 3 (fourth chunk — `ident$28` abstract base class)
+
+| Pattern / Idiom                                                         | Confidence | Correctness |
+| ----------------------------------------------------------------------- | ---------: | ----------: |
+| Template Method (abstract class providing common behaviour)             |        88% |         90% |
+| Abstract Base Class / Common Ancestor                                   |        98% |         98% |
+| State (uses inner `enum State`)                                         |        85% |         85% |
+| Strategy (holds various collaborator fields used as pluggable behavior) |        65% |         60% |
+| JavaBean (getters/setters for properties)                               |        90% |         90% |
+
+Justification: `abstract` class with protected fields, constructor and many concrete getters/setters + abstract method(s) → Template Method / Abstract Base. The `State` enum indicates a simple State idiom; fields holding other interfaces/suppliers point to Strategy-like composition.
+
+---
+
+# Class 4 (fifth chunk — `ident$33`, reflection/loader-based provider)
+
+| Pattern / Idiom                                                 | Confidence | Correctness |
+| --------------------------------------------------------------- | ---------: | ----------: |
+| Factory Method / Provider (creates `ident$20` instances)        |        92% |         92% |
+| Service Provider / Service Locator (reflection + cached loader) |        80% |         82% |
+| Adapter (wraps discovered implementation to `ident$20`)         |        68% |         70% |
+| Caching / Lazy initialization                                   |        75% |         78% |
+| Proxy / Delegation (delegates to discovered objects)            |        60% |         60% |
+
+Justification: class loads/queries implementations via a lookup (`ident$40 = ident$29.ident$58(...).ident$60(...)`) and then creates or delegates to instances — typical factory/Service Provider behavior; caching of `ident$40` suggests lazy initialization.
+
+---
+
+# Class 5 (sixth chunk — `ident$38`, mapper/factory of small adapters)
+
+| Pattern / Idiom                                                   | Confidence | Correctness |
+| ----------------------------------------------------------------- | ---------: | ----------: |
+| Factory / Abstract Factory (produces various small typed objects) |        90% |         90% |
+| Adapter (maps inputs to wrapper objects)                          |        88% |         88% |
+| Registry / Dispatcher (central place mapping types to creators)   |        70% |         70% |
+| Strategy (encapsulates creation strategies per type)              |        60% |         60% |
+| Bridge (separates abstraction from implementation)                |        40% |         35% |
+
+Justification: class implements an interface that provides creation methods; each method returns a small wrapper/adapter, so Factory + Adapter are the best fits.
+
+---
+
+# Class 6 (seventh chunk — `ident$29` extends `ident$16`, appears test/fixture with inner classes)
+
+| Pattern / Idiom                                                                | Confidence | Correctness |
+| ------------------------------------------------------------------------------ | ---------: | ----------: |
+| Test Fixture / Unit Test class (uses annotations, setup and assert-like calls) |        92% |         92% |
+| Nested Helper / Builder (inner static classes used to construct objects)       |        75% |         78% |
+| Factory (inner static `ident$33` returns configured objects)                   |        80% |         80% |
+| Template Method (overrides a template hook `ident$53()` to provide behavior)   |        70% |         72% |
+| Fluent API (chained builder-like calls in setup)                               |        60% |         60% |
+
+Justification: presence of `@ident$23` annotation method `ident$37()` and methods like `ident$53()` returning anonymous `ident$19` strongly suggests a test fixture or test-suite setup. Inner static class `ident$33` returns/adjusts objects — factory/helper.
+
+---
+
+# Class 7 (eighth chunk — `ident$9` interface with default methods)
+
+| Pattern / Idiom                                                     | Confidence | Correctness |
+| ------------------------------------------------------------------- | ---------: | ----------: |
+| Strategy (interface describing interchangeable behaviors)           |        94% |         94% |
+| Interface with default methods / Extension Object                   |        88% |         88% |
+| Null Object (default no-op implementations provided)                |        80% |         78% |
+| Observer / Event callback helper (has a method that emits an event) |        50% |         45% |
+| Template Method (defaults implement high-level flow)                |        55% |         50% |
+
+Justification: an interface that provides default behaviors and a small event-sending helper is characteristic of Strategy plus Java 8+ default method idioms. Default no-ops are like Null Object for convenience.
+
+---
+
+# Class 8 (ninth chunk — `ident$18` extends `ident$15`, type-converter)
+
+| Pattern / Idiom                                               | Confidence | Correctness |
+| ------------------------------------------------------------- | ---------: | ----------: |
+| Adapter / Converter (converts input object to requested type) |        95% |         95% |
+| Visitor? (not convincingly)                                   |        25% |         15% |
+| Type Token / Generic cast utility                             |        70% |         72% |
+| Null Object / safe-fallback (returns null on unsupported)     |        80% |         80% |
+| Service / Provider extension (extends base provider class)    |        65% |         70% |
+
+Justification: method `ident$23(Class<T> ...)` inspects the requested class and returns an appropriate conversion → classic Adapter/Converter.
+
+---
+
+# Class 9 (tenth chunk — `ident$12` implementing `ident$9`)
+
+| Pattern / Idiom                                                | Confidence | Correctness |
+| -------------------------------------------------------------- | ---------: | ----------: |
+| Factory / Concrete Factory (implements creation methods)       |        96% |         96% |
+| Dependency Injection (accepts collaborator `ident$16` in ctor) |        85% |         85% |
+| Adapter (wraps arguments into small adapters returned)         |        78% |         78% |
+| Strategy implementation (concrete strategy for `ident$9`)      |        70% |         70% |
+| Simple Facade (simplifies creation of several related objects) |        60% |         60% |
+
+Justification: class implements the interface from Class 8 and returns new wrapper objects; it holds a collaborator injected via constructor — typical concrete factory / DI pattern.
+
+---
+
+If you'd like:
+
+* I can expand any one class into a longer, line-numbered mapping of *which exact method* corresponds to which pattern and why.
+* Or I can produce a consolidated list of the **most common 10 patterns** across the entire file and where they appear.
+
+Which would you like next?

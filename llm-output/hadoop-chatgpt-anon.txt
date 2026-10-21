@@ -1,0 +1,128 @@
+Got it — I read your file and split it at each `<<<<<<<<DIVIDER>>>>>>>>`. Below are ten independent analyses (one per class/enum/interface). For each, I list the top 5 patterns I can infer from the code structure, with (1) confidence that the pattern is present, and (2) how correct/faithful the implementation seems to the canonical form. All observations refer to the uploaded source.&#x20;
+
+# Class 1 — `ident$13 implements ident$9`
+
+Overloaded callbacks for multiple primitive types set internal state (`ident$22`, `ident$23`), suggesting a type-specific visitor/dispatcher.&#x20;
+
+| Pattern                        | Why it likely applies                                                                                                          | Detection | Correctness |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ | --------: | ----------: |
+| Visitor                        | Multiple `ident$30/ident$38` overloads accept a context `ident$8` and different value types, typical of visiting typed nodes.  |       70% |         65% |
+| Strategy                       | Class implements `ident$9` and encapsulates a classification algorithm via fields updated per-type.                            |       40% |         55% |
+| State                          | Internal string tag + optional enum (`ident$11.ident$39`) represent mode/state after a visit.                                  |       35% |         50% |
+| Null Object                    | Frequently sets `ident$23 = null` to signal “no flag,” akin to a null-variant collaborator.                                    |       30% |         45% |
+| Overload-based Double Dispatch | Overloads approximate double dispatch via static type of argument.                                                             |       25% |         45% |
+
+# Class 2 — `enum ident$11`
+
+An enum with fields (`ident$17`, `ident$19`), custom `toString`, membership checks against a curated subset array.&#x20;
+
+| Pattern                        | Why it likely applies                                                     | Detection | Correctness |
+| ------------------------------ | ------------------------------------------------------------------------- | --------: | ----------: |
+| Typesafe Enum / Enum-Singleton | Java `enum` provides per-constant singletons.                             |       90% |         95% |
+| Value Object                   | Immutable name/id pair with semantic methods.                             |       60% |         80% |
+| Flyweight                      | Shared, intrinsic data per constant; subset array caches allowed values.  |       45% |         55% |
+| Factory Method (values/lookup) | Static methods choose among constants by id.                              |       30% |         50% |
+| Guard Clause                   | Early returns in `ident$28` to validate membership.                       |       25% |         40% |
+
+# Class 3 — `final class ident$20`
+
+Static utility with private ctor; caches `Class<? extends ident$24> → ident$24` instances; reflective creation from class name.&#x20;
+
+| Pattern                         | Why it likely applies                                                           | Detection | Correctness |
+| ------------------------------- | ------------------------------------------------------------------------------- | --------: | ----------: |
+| Factory Method / Simple Factory | `ident$28(Class)` and `ident$28(String)` create/return instances by type/name.  |       85% |         85% |
+| Multiton / Registry             | Map acts as keyed cache of one instance per class.                              |       75% |         80% |
+| Lazy Initialization             | Only creates and stores instance if absent.                                     |       80% |         85% |
+| Flyweight (caching)             | Reuses shared instances to reduce construction cost.                            |       60% |         65% |
+| Utility Class                   | Private ctor + all-static API. (Not GoF, but a structural idiom.)               |       90% |         90% |
+
+# Class 4 — `@Deprecated class ident$29`
+
+Legacy façade that forwards to `ident$13` helpers and adapts throwables/bytes/ids into newer types.&#x20;
+
+| Pattern             | Why it likely applies                                                    | Detection | Correctness |
+| ------------------- | ------------------------------------------------------------------------ | --------: | ----------: |
+| Facade              | Single entry point forwarding to `ident$13` for construction/utilities.  |       70% |         75% |
+| Adapter             | Wraps `Throwable` into `ident$8` or unwraps when needed.                 |       70% |         70% |
+| Static Factory      | Several `ident$32/ident$44/ident$47` builder methods.                    |       60% |         65% |
+| Compatibility Layer | `@Deprecated` wrapper to the newer API surface.                          |       55% |         70% |
+| Converter           | Simple type conversions (ids/bytes → domain).                            |       45% |         60% |
+
+# Class 5 — `class ident$27` (with inner holder `ident$33`)
+
+Registry of named handlers (`ident$40`) + init-on-demand holder Singleton; executes all handlers for a command.&#x20;
+
+| Pattern                  | Why it likely applies                                              | Detection | Correctness |
+| ------------------------ | ------------------------------------------------------------------ | --------: | ----------: |
+| Singleton (Holder Idiom) | Private static inner `ident$33` with `ident$35 = new ident$27()`.  |       95% |         95% |
+| Command                  | Handlers invoked to produce `ident$58` results per name.           |       80% |         80% |
+| Service Registry         | Map from `String → ident$40` with register/remove/list.            |       75% |         85% |
+| Strategy                 | Each `ident$40` encapsulates an algorithm for a given key.         |       60% |         70% |
+| Iterator                 | Iterates handlers and aggregates responses.                        |       35% |         55% |
+
+# Class 6 — `abstract class ident$26<T> extends ident$17`
+
+Runs a `ident$10<T>` task, stores result/throwable, coordinates completion via `ident$15` (latch/monitor), exposes blocking `ident$43()`.&#x20;
+
+| Pattern            | Why it likely applies                                                                          | Detection | Correctness |
+| ------------------ | ---------------------------------------------------------------------------------------------- | --------: | ----------: |
+| Template Method    | Final `ident$62()` defines algorithm; subclass supplies hooks like `ident$42()`/`ident$63()`.  |       85% |         85% |
+| Future/Promise     | Async result with blocking wait and captured exception. (Concurrency pattern)                  |       75% |         80% |
+| Guarded Suspension | Waits in loop on monitor until signaled complete.                                              |       60% |         70% |
+| Worker Thread      | Encapsulates unit of work execution behind an abstract task.                                   |       45% |         60% |
+| Error Propagation  | Converts stored `Throwable` to domain exception (`ident$13`).                                  |       40% |         60% |
+
+# Class 7 — `class ident$21 extends ident$23` with nested commands
+
+Registers subcommands (`ident$37`, `ident$38`, `ident$39`), each validates args and performs an action on `ident$48`.&#x20;
+
+| Pattern                       | Why it likely applies                                                        | Detection | Correctness |
+| ----------------------------- | ---------------------------------------------------------------------------- | --------: | ----------: |
+| Command                       | Nested classes are concrete commands with `execute`-like step `ident$62`.    |       90% |         90% |
+| Template Method               | Common flow in base `ident$23` with overrides `ident$47/ident$57/ident$62`.  |       80% |         85% |
+| Registry / Plugin             | `ident$33` registers command classes by name.                                |       70% |         80% |
+| Strategy                      | Each nested class defines a distinct algorithm (open/set/put?).              |       60% |         70% |
+| Logging/Audit (Cross-cutting) | Consistent `ident$73.ident$74(...)` hooks post-action.                       |       40% |         55% |
+
+# Class 8 — `class ident$24 extends ident$26`
+
+Concrete implementation of the abstract task (Class 6), performs batch operation via `ident$4.ident$66(...)`, with injectable override `ident$72`.&#x20;
+
+| Pattern               | Why it likely applies                                                       | Detection | Correctness |
+| --------------------- | --------------------------------------------------------------------------- | --------: | ----------: |
+| Command               | Encapsulates a single operation (invoke `ident$66` on a target).            |       85% |         85% |
+| Template Method       | Supplies the concrete steps/validations required by the abstract workflow.  |       85% |         90% |
+| Dependency Injection  | Static setter `ident$72` swaps the target `ident$17`.                       |       40% |         55% |
+| Adapter               | Transforms parsed args into low-level array for `ident$66`.                 |       35% |         55% |
+| Exception Translation | Wraps `UnsupportedOperationException` into domain `ident$19`.               |       35% |         60% |
+
+# Class 9 — `interface ident$26 extends ident$18, ident$8`
+
+Defines an algorithmic contract that returns a collection of key–value-like results from a list of inputs.&#x20;
+
+| Pattern                   | Why it likely applies                                                     | Detection | Correctness |
+| ------------------------- | ------------------------------------------------------------------------- | --------: | ----------: |
+| Strategy                  | Pure behavioral interface; implementations swap parsing/transform logic.  |       80% |         85% |
+| Iterator/Iterable Role    | Returns a collection/stream of pairs; encourages iteration semantics.     |       40% |         55% |
+| Template Method (enabler) | Often paired with an abstract base (see Class 6/8) to define skeleton.    |       35% |         50% |
+| Factory Method (contract) | Method `ident$34(...)` suggests factory-like creation of result entries.  |       25% |         45% |
+| Adapter Role              | Signature suggests adapting domain inputs to `Map.Entry`-like outputs.    |       25% |         45% |
+
+# Class 10 — `interface ident$11`
+
+Two predicate-style methods returning boolean with a context/arg; used as pluggable rules/validators.&#x20;
+
+| Pattern                             | Why it likely applies                                                    | Detection | Correctness |
+| ----------------------------------- | ------------------------------------------------------------------------ | --------: | ----------: |
+| Specification                       | Boolean checks over a candidate (`ident$14`) with consistent signature.  |       80% |         80% |
+| Strategy                            | Encapsulates interchangeable decision logic behind an interface.         |       70% |         75% |
+| Predicate (functional idiom)        | Minimal, side-effect-free test interface.                                |       60% |         70% |
+| Chain of Responsibility (potential) | Designed to be chained/combined for composite checks.                    |       30% |         45% |
+| Policy                              | Expresses a policy decision boundary independent of consumers.           |       30% |         55% |
+
+---
+
+>### Notes & assumptions
+
+* Obfuscated identifiers limit certainty, so I emphasized structural cues (factory/caching, holder-singleton, command registries, abstract workflows, etc.). Where a pattern is plausible but not provable from signatures alone, I lowered either detection or correctness.
+* If you want, I can re-score with access to the unobfuscated names or run a static pattern detector to triangulate these results against heuristics.

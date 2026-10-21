@@ -1,0 +1,110 @@
+># Design Patterns Analysis - 10 Java Files
+
+## File 1: class#0.txt
+
+| Design Pattern | Confidence % | Correctness % | Evidence |
+|---|---|---|---|
+| Template Method | 90% | 85% | Abstract class with protected abstract methods (`ident$29()`, `ident$41()`) and concrete methods that call them |
+| Strategy/Adapter | 75% | 70% | Implements interface `ident$22`, suggesting interchangeable implementations |
+| Factory Method | 70% | 65% | Abstract method `ident$41(String)` that creates objects based on input |
+| Null Object | 60% | 55% | Returns null when validation fails in `open()` method |
+| Validation Pattern | 85% | 80% | Method `ident$34()` performs string validation with prefix matching |
+
+## File 2: class#1.txt
+
+| Design Pattern | Confidence % | Correctness % | Evidence |
+|---|---|---|---|
+| Factory Method | 95% | 90% | Multiple static factory methods creating different generic collections |
+| Static Factory | 95% | 90% | All methods are static and return new instances |
+| Builder Pattern | 60% | 50% | Overloaded factory methods with different parameters suggest building complexity |
+| Utility Class | 85% | 80% | Class contains only static methods, typical utility pattern |
+| Generic Programming | 90% | 85% | Heavy use of generics with type parameters K,V,E |
+
+## File 3: class#2.txt
+
+| Design Pattern | Confidence % | Correctness % | Evidence |
+|---|---|---|---|
+| Facade | 80% | 75% | Wraps complex operations and provides simpler interface |
+| Exception Translation | 90% | 85% | Catches one exception type and throws another (`ident$25()` method) |
+| Static Utility | 85% | 80% | All methods are static, providing utility functions |
+| Null Object/Safe Navigation | 70% | 65% | Null checks before operations |
+| Deprecated Pattern | 95% | 90% | Uses @Deprecated annotation with version info |
+
+## File 4: class#3.txt
+
+| Design Pattern | Confidence % | Correctness % | Evidence |
+|---|---|---|---|
+| Singleton | 95% | 90% | Static instance `ident$25`, getInstance method `ident$23()` |
+| Registry | 85% | 80% | Two maps storing different types of objects (`ident$67`, `ident$44`) |
+| Factory Registry | 80% | 75% | Combines factory and registry patterns for object creation |
+| Lazy Initialization | 70% | 65% | Uses `computeIfAbsent()` for lazy object creation |
+| Static Initialization | 85% | 80% | Static block initializes singleton and registers default mappings |
+
+## File 5: class#4.txt
+
+| Design Pattern | Confidence % | Correctness % | Evidence |
+|---|---|---|---|
+| Data Transfer Object (DTO) | 95% | 90% | Simple class with public fields for data storage |
+| Plain Old Java Object (POJO) | 90% | 85% | Basic data structure without behavior |
+| Value Object | 80% | 75% | Appears to hold value data (String, Object, short) |
+| Bean Pattern | 70% | 60% | Simple structure typical of Java beans |
+| Data Container | 85% | 80% | Primary purpose is data containment |
+
+## File 6: class#5.txt
+
+| Design Pattern | Confidence % | Correctness % | Evidence |
+|---|---|---|---|
+| Singleton | 90% | 85% | Static instance and factory method pattern |
+| Abstract Factory | 85% | 80% | Abstract class with factory method for creating objects |
+| Template Method | 80% | 75% | Abstract methods to be implemented by subclasses |
+| Static Factory | 85% | 80% | Static method `ident$21()` returns singleton instance |
+| Strategy Pattern | 70% | 65% | Abstract methods suggest different implementations |
+
+## File 7: class#6.txt
+
+| Design Pattern | Confidence % | Correctness % | Evidence |
+|---|---|---|---|
+| Interface Segregation | 85% | 80% | Large interface with many methods, some deprecated |
+| Command Pattern | 75% | 70% | Methods that perform actions with objects as parameters |
+| Default Method Pattern | 90% | 85% | Multiple default implementations in interface |
+| Null Object | 80% | 75% | Static final NULL instance provided |
+| Template Method | 70% | 65% | Default methods call other abstract methods |
+
+## File 8: class#7.txt
+
+| Design Pattern | Confidence % | Correctness % | Evidence |
+|---|---|---|---|
+| Adapter | 90% | 85% | Implements interface and wraps two other objects |
+| Delegation | 85% | 80% | All methods delegate to wrapped objects |
+| Composite | 75% | 70% | Combines two objects (`ident$18`, `ident$20`) to provide functionality |
+| Bridge Pattern | 70% | 65% | Separates abstraction from implementation |
+| Wrapper/Decorator | 80% | 75% | Wraps existing functionality with additional behavior |
+
+## File 9: class#8.txt
+
+| Design Pattern | Confidence % | Correctness % | Evidence |
+|---|---|---|---|
+| Constants Class | 95% | 90% | Contains only static final constants |
+| Factory Class | 80% | 75% | Inner class with factory methods for creating constants |
+| Namespace Pattern | 85% | 80% | Groups related constants together |
+| Static Utility | 90% | 85% | All members are static |
+| Inner Class Factory | 85% | 80% | Inner classes provide factory methods |
+
+## File 10: class#9.txt
+
+| Design Pattern | Confidence % | Correctness % | Evidence |
+|---|---|---|---|
+| Constants Class | 95% | 90% | Primarily contains static final constant definitions |
+| Factory Methods | 80% | 75% | Protected static methods create constants |
+| Namespace Pattern | 85% | 80% | Organizes related constants by domain |
+| Static Utility | 90% | 85% | All methods and fields are static |
+| String Constant Pool | 75% | 70% | Multiple string constants defined for reuse |
+
+>## Analysis Notes
+
+- **Confidence %**: How certain I am that the pattern is present based on visible structure
+- **Correctness %**: How well the implementation follows the pattern's principles
+- Files appear to be obfuscated, limiting detailed analysis
+- Some patterns may be partial implementations or variations
+- Modern Java features (generics, default methods) are evident throughout
+- Several files show enterprise/framework-style patterns typical of larger codebases

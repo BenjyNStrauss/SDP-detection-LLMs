@@ -1,0 +1,123 @@
+># Design Pattern Analysis
+
+## Class: org.apache.jena.util.CollectionFactory
+
+| Pattern                          | Detection Confidence | Correctness |
+| -------------------------------- | -------------------- | ----------- |
+| Static Factory Method (Creational) | 98%                 | 90%         |
+| Facade (Structural)              | 70%                  | 60%         |
+| Utility Class/Simple Wrapper (Structural) | 85%         | 80%         |
+| Singleton (Creational)           | 40%                  | 30%         |
+| Adapter (Structural)             | 20%                  | 15%         |
+
+---
+
+## Class: org.apache.jena.graph.Graph
+
+| Pattern                          | Detection Confidence | Correctness |
+| -------------------------------- | -------------------- | ----------- |
+| Null Object (Behavioral)         | 95%                  | 90%         |
+| Template Method (Behavioral)     | 90%                  | 85%         |
+| Strategy (Behavioral)            | 60%                  | 50%         |
+| Proxy (Structural)               | 30%                  | 20%         |
+| Adapter (Structural)             | 25%                  | 15%         |
+
+---
+
+## Class: org.apache.jena.langtagx.LangTagX
+
+| Pattern                          | Detection Confidence | Correctness |
+| -------------------------------- | -------------------- | ----------- |
+| Static Factory Method (Creational) | 98%                 | 90%         |
+| Adapter (Exception Wrapper) (Structural) | 80%         | 75%         |
+| Strategy (Behavioral)            | 40%                  | 30%         |
+| Template Method (Behavioral)     | 35%                  | 25%         |
+| Facade (Structural)              | 30%                  | 20%         |
+
+---
+
+## Class: org.apache.jena.riot.system.stream.LocatorURL
+
+| Pattern                          | Detection Confidence | Correctness |
+| -------------------------------- | -------------------- | ----------- |
+| Template Method (Behavioral)     | 98%                  | 90%         |
+| Strategy (Behavioral)            | 75%                  | 70%         |
+| Factory Method (Creational)      | 60%                  | 55%         |
+| Abstract Class (Structural)      | 85%                  | 80%         |
+| Null Object (Behavioral)         | 15%                  | 10%         |
+
+---
+
+## Class: org.apache.jena.rdf.model.impl.ModelListenerAdapter
+
+| Pattern                          | Detection Confidence | Correctness |
+| -------------------------------- | -------------------- | ----------- |
+| Adapter (Structural)             | 100%                 | 95%         |
+| Observer (Behavioral)            | 70%                  | 60%         |
+| Decorator (Structural)           | 50%                  | 40%         |
+| Forwarding/Wrapper (Structural)  | 80%                  | 75%         |
+| Strategy (Behavioral)            | 30%                  | 25%         |
+
+---
+
+## Class: org.apache.jena.vocabulary.RDFS
+
+| Pattern                          | Detection Confidence | Correctness |
+| -------------------------------- | -------------------- | ----------- |
+| Singleton (Creational)           | 90%                  | 85%         |
+| Static Factory Method (Creational) | 95%                 | 90%         |
+| Façade (Structural)              | 75%                  | 65%         |
+| Flyweight (Structural)           | 50%                  | 40%         |
+| Registry (Behavioral)            | 35%                  | 25%         |
+
+---
+
+## Class: org.apache.jena.vocabulary.ReasonerVocabulary
+
+| Pattern                          | Detection Confidence | Correctness |
+| -------------------------------- | -------------------- | ----------- |
+| Static Factory Method (Creational) | 95%                 | 90%         |
+| Singleton (Creational)           | 85%                  | 80%         |
+| Registry (Behavioral)            | 70%                  | 65%         |
+| Façade (Structural)              | 60%                  | 50%         |
+| Builder (Creational)             | 20%                  | 15%         |
+
+---
+
+## Class: org.apache.jena.ext.xerces.impl.dv.SchemaDVFactory
+
+| Pattern                          | Detection Confidence | Correctness |
+| -------------------------------- | -------------------- | ----------- |
+| Singleton (Creational)           | 98%                  | 95%         |
+| Abstract Factory (Creational)    | 95%                  | 90%         |
+| Factory Method (Creational)      | 90%                  | 85%         |
+| Service Locator/Registry (Behavioral) | 60%             | 50%         |
+| Template Method (Behavioral)     | 30%                  | 20%         |
+
+---
+
+## Class: org.apache.jena.datatypes.TypeMapper
+
+| Pattern                          | Detection Confidence | Correctness |
+| -------------------------------- | -------------------- | ----------- |
+| Singleton (Creational)           | 100%                 | 95%         |
+| Registry (Behavioral)            | 95%                  | 90%         |
+| Factory Method (Creational)      | 85%                  | 80%         |
+| Iterator (Behavioral)            | 90%                  | 85%         |
+| Strategy (Behavioral)            | 40%                  | 30%         |
+
+---
+
+## Class: org.apache.jena.ext.xerces.impl.dv.ValidatedInfo
+
+| Pattern                          | Detection Confidence | Correctness |
+| -------------------------------- | -------------------- | ----------- |
+| Value Object / Data Transfer Object (Structural) | 100% | 95% |
+| Builder (Creational)             | 15%                  | 10%         |
+| Prototype (Creational)           | 10%                  | 5%          |
+| Observer (Behavioral)            | 5%                   | 2%          |
+| Adapter (Structural)             | 5%                   | 2%          |
+
+---
+
+Below each table are concise estimates of how confidently each pattern was detected in the class and how accurately it applies. Let me know if you’d like deeper justification or to adjust any classification.

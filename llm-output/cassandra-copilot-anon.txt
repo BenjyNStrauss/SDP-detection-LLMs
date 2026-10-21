@@ -1,0 +1,119 @@
+-# Design Pattern Analysis
+
+## Class: ident$21
+
+| Pattern    | Detection Confidence | Implementation Correctness |
+|------------|----------------------|----------------------------|
+| Proxy      | 90%                  | 85%                        |
+| Decorator  | 75%                  | 70%                        |
+| Adapter    | 60%                  | 55%                        |
+| Facade     | 50%                  | 40%                        |
+| Bridge     | 40%                  | 30%                        |
+
+---
+
+## Class: ident$48
+
+| Pattern           | Detection Confidence | Implementation Correctness |
+|-------------------|----------------------|----------------------------|
+| Builder           | 85%                  | 80%                        |
+| Factory Method    | 80%                  | 75%                        |
+| Singleton         | 70%                  | 65%                        |
+| Template Method   | 60%                  | 50%                        |
+| Strategy          | 50%                  | 45%                        |
+
+---
+
+## Class: ident$16
+
+| Pattern    | Detection Confidence | Implementation Correctness |
+|------------|----------------------|----------------------------|
+| Decorator  | 90%                  | 85%                        |
+| Proxy      | 80%                  | 75%                        |
+| Adapter    | 60%                  | 55%                        |
+| Strategy   | 55%                  | 50%                        |
+| Template   | 45%                  | 40%                        |
+
+---
+
+## Class: ident$18
+
+| Pattern          | Detection Confidence | Implementation Correctness |
+|------------------|----------------------|----------------------------|
+| Template Method  | 90%                  | 85%                        |
+| State            | 85%                  | 80%                        |
+| Iterator         | 75%                  | 70%                        |
+| Strategy         | 60%                  | 50%                        |
+| Null Object      | 40%                  | 30%                        |
+
+---
+
+## Class: ident$46
+
+| Pattern         | Detection Confidence | Implementation Correctness |
+|-----------------|----------------------|----------------------------|
+| Factory Method  | 85%                  | 80%                        |
+| Strategy        | 75%                  | 70%                        |
+| Template Method | 60%                  | 50%                        |
+| Retry           | 55%                  | 45%                        |
+| Builder         | 45%                  | 35%                        |
+
+---
+
+## Class: ident$17
+
+| Pattern    | Detection Confidence | Implementation Correctness |
+|------------|----------------------|----------------------------|
+| Singleton  | 90%                  | 85%                        |
+| Facade     | 80%                  | 75%                        |
+| Command    | 70%                  | 65%                        |
+| Observer   | 60%                  | 50%                        |
+| Utility    | 50%                  | 45%                        |
+
+---
+
+## Class: ident$20
+
+| Pattern   | Detection Confidence | Implementation Correctness |
+|-----------|----------------------|----------------------------|
+| Observer  | 90%                  | 85%                        |
+| Singleton | 80%                  | 75%                        |
+| Strategy  | 55%                  | 50%                        |
+| Chain     | 45%                  | 40%                        |
+| Facade    | 40%                  | 35%                        |
+
+---
+
+## Class: ident$24
+
+| Pattern    | Detection Confidence | Implementation Correctness |
+|------------|----------------------|----------------------------|
+| Iterator   | 85%                  | 80%                        |
+| Composite  | 60%                  | 55%                        |
+| Strategy   | 55%                  | 50%                        |
+| Builder    | 45%                  | 40%                        |
+| Template   | 40%                  | 35%                        |
+
+---
+
+## Class: ident$15
+
+| Pattern          | Detection Confidence | Implementation Correctness |
+|------------------|----------------------|----------------------------|
+| Template Method  | 90%                  | 85%                        |
+| State            | 85%                  | 80%                        |
+| Strategy         | 60%                  | 55%                        |
+| Iterator         | 50%                  | 45%                        |
+| Null Object      | 40%                  | 35%                        |
+
+---
+
+## Class: ident$40
+
+| Pattern         | Detection Confidence | Implementation Correctness |
+|-----------------|----------------------|----------------------------|
+| Factory Method  | 85%                  | 80%                        |
+| Iterator        | 75%                  | 70%                        |
+| State           | 65%                  | 60%                        |
+| Strategy        | 55%                  | 50%                        |
+| Facade          | 45%                  | 40%                        |

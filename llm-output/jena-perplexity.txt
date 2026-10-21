@@ -1,0 +1,135 @@
+Awesome — I read your file and found the ten Java classes split by `<<<<<<<<DIVIDER>>>>>>>>`. Below, each class has its own table with the top 5 pattern candidates, plus (1) my confidence that the pattern is present and (2) how closely the code matches the canonical form (“correctness”). All observations come directly from the uploaded code.&#x20;
+
+---
+
+### 1) `org.apache.jena.util.CollectionFactory`
+ — static creators for Maps/Sets (e.g., `createHashedMap`, `createHashedSet`).&#x20;
+
+| Pattern                        | Why it fits here                                                                          | Confidence | Correctness |
+| ------------------------------ | ----------------------------------------------------------------------------------------- | ---------: | ----------: |
+| Static Factory Method          | Centralized `createHashedMap/Set(...)` constructors hide `new HashMap/HashSet`.           |        98% |         95% |
+| Simple Factory                 | One utility class that manufactures related objects (maps/sets).                          |        90% |         85% |
+| Abstract Factory (lightweight) | “Central place for allocating sets and maps” suggests pluggable families of collections.  |        65% |         60% |
+| Prototype                      | Overloads that copy from an existing `Map`/`Collection` (`new HashMap<>(toCopy)`).        |        60% |         70% |
+| Utility Module (non-GoF)       | Stateless, static-only constructor hub.                                                   |        95% |         90% |
+
+---
+
+### 2) `org.apache.jena.graph.Graph`
+ — interface with `emptyGraph` and default methods (`stream`, `find`, etc.).&#x20;
+
+| Pattern         | Why it fits here                                                                            | Confidence | Correctness |
+| --------------- | ------------------------------------------------------------------------------------------- | ---------: | ----------: |
+| Null Object     | `emptyGraph` is a usable, do-nothing graph whose `find` returns `NullIterator`.             |        95% |         95% |
+| Iterator        | Exposes `ExtendedIterator<Triple>` and `Stream<Triple>` for traversal.                      |        95% |         95% |
+| Template Method | Javadoc points to `GraphBase` as the implementation framework with hook methods.            |        80% |         85% |
+| Observer        | `getEventManager()` integrates event/listener style notifications.                          |        70% |         75% |
+| Facade          | A small core API fronting diverse graph implementations (transaction, capabilities, etc.).  |        60% |         65% |
+
+---
+
+### 3) `org.apache.jena.langtagx.LangTagX`
+ — policy wrapper over `LangTags`, normalizing/validating and converting exceptions.&#x20;
+
+| Pattern                  | Why it fits here                                                                             | Confidence | Correctness |
+| ------------------------ | -------------------------------------------------------------------------------------------- | ---------: | ----------: |
+| Facade                   | Simplifies `LangTags` operations behind cohesive static methods.                             |        90% |         90% |
+| Adapter                  | Converts `LangTagException` into `JenaException` (`convertException`).                       |        85% |         90% |
+| Factory Method           | `createLanguageTag(String)` produces `LangTag` instances.                                    |        75% |         80% |
+| Policy/Strategy (light)  | Centralizes Jena-side language-tag “policy” choices (e.g., legacy toggle, basic vs strict).  |        55% |         60% |
+| Utility Module (non-GoF) | Stateless static API surface.                                                                |        95% |         90% |
+
+---
+
+### 4) `org.apache.jena.riot.system.stream.LocatorURL`
+ — abstract URL locator with scheme filtering and `performOpen` hook.&#x20;
+
+| Pattern                                | Why it fits here                                                            | Confidence | Correctness |
+| -------------------------------------- | --------------------------------------------------------------------------- | ---------: | ----------: |
+| Template Method                        | `open()` checks scheme then delegates to abstract `performOpen(uri)`.       |        95% |         95% |
+| Strategy (via subclass)                | Different subclasses implement URL retrieval strategies via `performOpen`.  |        70% |         75% |
+| Hook Method                            | `performOpen` is the extension point called from the template.              |        85% |         90% |
+| Guard/Predicate (non-GoF)              | `acceptByScheme` as a reusable gate before action.                          |        60% |         70% |
+| Null Return as Null-Object alternative | Returns `null` when scheme unacceptable (non-exceptional “no-op”).          |        35% |         40% |
+
+---
+
+### 5) `org.apache.jena.rdf.model.impl.ModelListenerAdapter`
+ — converts `GraphListener` events to `ModelChangedListener`.&#x20;
+
+| Pattern                           | Why it fits here                                                         | Confidence | Correctness |
+| --------------------------------- | ------------------------------------------------------------------------ | ---------: | ----------: |
+| Adapter                           | Explicit bridge from graph-level events to model-level callbacks.        |        98% |         98% |
+| Observer                          | Operates in a listener/event system; forwards add/remove notifications.  |        85% |         85% |
+| Delegation                        | Methods delegate to `L` after mapping via `m`.                           |        90% |         90% |
+| Wrapper                           | Wraps a `ModelChangedListener` with `GraphListener` API.                 |        80% |         85% |
+| Equality by Composition (non-GoF) | `equals/hashCode` depend on `(L,m)` identity pairing.                    |        60% |         70% |
+
+---
+
+### 6) `org.apache.jena.vocabulary.RDFS`
+ — static constants and node views of RDFS terms.&#x20;
+
+| Pattern                         | Why it fits here                                                          | Confidence | Correctness |
+| ------------------------------- | ------------------------------------------------------------------------- | ---------: | ----------: |
+| Flyweight                       | Shared, static `Resource/Property/Node` singletons to avoid duplication.  |        85% |         85% |
+| Factory Method                  | `resource(...)`/`property(...)` create canonical instances.               |        75% |         80% |
+| Facade                          | Presents a tidy API to core RDF terms for clients.                        |        65% |         70% |
+| Multiton (light)                | One instance per constant key (e.g., `label`, `range`).                   |        55% |         60% |
+| Initialization Holder (non-GoF) | `Init` helper avoids static-init ordering issues.                         |        60% |         70% |
+
+---
+
+### 7) `org.apache.jena.vocabulary.ReasonerVocabulary`
+ — constants & helpers for configuring reasoners.&#x20;
+
+| Pattern                          | Why it fits here                                                     | Confidence | Correctness |
+| -------------------------------- | -------------------------------------------------------------------- | ---------: | ----------: |
+| Facade                           | Single entry point for reasoner properties, URIs, and helpers.       |        80% |         80% |
+| Flyweight                        | Reuses static `Property`/`Resource` instances (shared identifiers).  |        75% |         80% |
+| Factory Method                   | `makeDirect(Property)` constructs “direct” variants of properties.   |        65% |         70% |
+| Configuration Registry (non-GoF) | Central catalog of config URIs & flags.                              |        70% |         75% |
+| Module Singleton (non-GoF)       | Static, stateless constants class.                                   |        85% |         85% |
+
+---
+
+### 8) `org.apache.jena.ext.xerces.impl.dv.SchemaDVFactory`
+ — abstract factory for XML Schema simple types with a default instance.&#x20;
+
+| Pattern                 | Why it fits here                                                               | Confidence | Correctness |
+| ----------------------- | ------------------------------------------------------------------------------ | ---------: | ----------: |
+| Abstract Factory        | Abstract API to obtain built-in/user types; concrete impl provided elsewhere.  |        96% |         95% |
+| Singleton               | Single shared `INSTANCE` returned by `getInstance()`.                          |        90% |         90% |
+| Factory Method          | Abstract methods `getBuiltInType`/`getBuiltInTypes` manufacture types.         |        85% |         85% |
+| Service Locator (light) | `getInstance()` hands out the factory without callers knowing the impl.        |        65% |         70% |
+| Provider (non-GoF)      | Central provider of schema-DV services to clients.                             |        55% |         60% |
+
+---
+
+### 9) `org.apache.jena.datatypes.TypeMapper`
+ — global registry mapping datatype URIs and Java classes to `RDFDatatype`.&#x20;
+
+| Pattern                 | Why it fits here                                                                         | Confidence | Correctness |
+| ----------------------- | ---------------------------------------------------------------------------------------- | ---------: | ----------: |
+| Singleton               | `getInstance()/setInstance()` manage the single global mapper; `reset()` reinitializes.  |        95% |         95% |
+| Registry                | Concurrent maps `uriToDT`/`classToDT` register & look up types.                          |        95% |         95% |
+| Flyweight               | Shared `RDFDatatype` instances reused across lookups.                                    |        70% |         75% |
+| Factory Method          | `getSafeTypeByName` can create a `BaseDatatype` on demand for unknown URIs.              |        65% |         70% |
+| Service Locator (light) | Central access point to datatype services by URI/Class.                                  |        70% |         70% |
+
+---
+
+### 10) `org.apache.jena.ext.xerces.impl.dv.ValidatedInfo`
+ — holder for normalized/actual value and type after validation.&#x20;
+
+| Pattern                    | Why it fits here                                        | Confidence | Correctness |
+| -------------------------- | ------------------------------------------------------- | ---------: | ----------: |
+| Data Transfer Object (DTO) | Public fields carry validation results between layers.  |        95% |         95% |
+| Value Object (POJO)        | Aggregates related value, albeit mutable.               |        70% |         60% |
+| Record (non-GoF)           | Struct-like container of three fields.                  |        80% |         80% |
+| Memento (weak)             | Captures state produced by validation for later use.    |        45% |         50% |
+| Transparent Container      | No behavior; just state exposure.                       |        90% |         90% |
+
+---
+
+If you’d like, I can also export this to CSV or a spreadsheet, or refine the pattern set to only GoF canon.

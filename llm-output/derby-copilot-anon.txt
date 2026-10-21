@@ -1,0 +1,121 @@
+# File 1: class `ident$16`
+
+| Design Pattern | Confidence (%) | Correctness (%) |
+| -------------- | -------------- | --------------- |
+| Facade         | 75             | 65              |
+| Adapter        | 60             | 50              |
+| Decorator      | 50             | 45              |
+| Template Method| 40             | 35              |
+| Strategy       | 30             | 30              |
+
+---
+
+# File 2: interface `ident$9`
+
+| Design Pattern        | Confidence (%) | Correctness (%) |
+| --------------------- | -------------- | --------------- |
+| Constant Interface    | 95             | 95              |
+| Registry              | 30             | 20              |
+| Flyweight             | 25             | 15              |
+| Null Object           | 10             | 10              |
+| No Pattern Detected   | 90             | 90              |
+
+---
+
+# File 3: class `ident$7`
+
+| Design Pattern       | Confidence (%) | Correctness (%) |
+| -------------------- | -------------- | --------------- |
+| Utility Class        | 90             | 90              |
+| Strategy             | 80             | 70              |
+| Facade               | 60             | 50              |
+| Factory Method       | 50             | 40              |
+| Singleton (implicit) | 30             | 10              |
+
+---
+
+# File 4: abstract class `ident$24`
+
+| Design Pattern     | Confidence (%) | Correctness (%) |
+| ------------------ | -------------- | --------------- |
+| Template Method    | 95             | 90              |
+| Strategy           | 50             | 40              |
+| State              | 40             | 30              |
+| Factory Method     | 30             | 20              |
+| No Pattern Detected| 85             | 85              |
+
+---
+
+# File 5: class `ident$14`
+
+| Design Pattern    | Confidence (%) | Correctness (%) |
+| ----------------- | -------------- | --------------- |
+| Factory Method    | 90             | 85              |
+| Facade            | 70             | 60              |
+| Command           | 35             | 25              |
+| Template Method   | 40             | 30              |
+| Strategy          | 30             | 20              |
+
+---
+
+# File 6: class `ident$15`
+
+| Design Pattern       | Confidence (%) | Correctness (%) |
+| -------------------- | -------------- | --------------- |
+| Factory Method       | 85             | 75              |
+| Iterator             | 60             | 50              |
+| Builder              | 50             | 40              |
+| Strategy             | 45             | 35              |
+| No Pattern Detected  | 80             | 80              |
+
+---
+
+# File 7: class `ident$22`
+
+| Design Pattern       | Confidence (%) | Correctness (%) |
+| -------------------- | -------------- | --------------- |
+| Strategy             | 90             | 80              |
+| Iterator             | 80             | 70              |
+| Facade               | 50             | 40              |
+| Singleton            | 40             | 30              |
+| No Pattern Detected  | 75             | 75              |
+
+---
+
+# File 8: enum `ident$14`
+
+| Design Pattern    | Confidence (%) | Correctness (%) |
+| ----------------- | -------------- | --------------- |
+| Enum Singleton    | 100            | 100             |
+| Registry          | 80             | 70              |
+| Flyweight         | 50             | 40              |
+| Factory Method    | 40             | 30              |
+| No Pattern Detected| 70            | 70              |
+
+---
+
+# File 9: interface `ident$8`
+
+| Design Pattern       | Confidence (%) | Correctness (%) |
+| -------------------- | -------------- | --------------- |
+| Strategy             | 90             | 80              |
+| Bridge               | 45             | 35              |
+| Adapter              | 50             | 30              |
+| Facade               | 30             | 20              |
+| No Pattern Detected  | 75             | 75              |
+
+---
+
+# File 10: interface `ident$16`
+
+| Design Pattern      | Confidence (%) | Correctness (%) |
+| ------------------- | -------------- | --------------- |
+| Abstract Factory    | 95             | 90              |
+| Factory Method      | 60             | 50              |
+| Builder             | 40             | 35              |
+| Strategy            | 30             | 25              |
+| No Pattern Detected | 70             | 70              |
+
+---
+
+If you’d like to dive deeper into any of these detections—review the candidate methods, walk through the object collaborations, or refine confidence metrics—just let me know!

@@ -1,0 +1,161 @@
+Thanks — I parsed the uploaded file and analyzed each of the **10** Java types (one table per type). Source: the uploaded file. 
+
+Below you’ll find, for each class/type, the **top 5 design patterns** I detect in that file, a one-line reason for each detection, a percent **confidence** in the detection, and a percent **correctness** (how well the pattern maps to that file’s implementation). I excluded small language idioms (like using `private` constructors for utility classes) where possible, but sometimes a utility/enum/constant-holder will map to a commonly named pattern (I marked those with lower confidence).
+
+---
+
+# 1) `ErrorStringBuilder`
+
+A small wrapper around `StringWriter`/`PrintWriter` with injectable header behavior.
+
+| Pattern            |                                                                                      Why (brief) | Confidence (%) | Correctness (%) |
+| ------------------ | -----------------------------------------------------------------------------------------------: | -------------: | --------------: |
+| Adapter            |         Adapts `PrintWriterGetHeader` + `StringWriter` into a simple error-string-producing API. |             78 |              80 |
+| Decorator          |                   Adds header text before appended lines — decorates output with extra behavior. |             70 |              65 |
+| Strategy           |               Accepts a `PrintWriterGetHeader` to change header behavior at runtime (injection). |             72 |              70 |
+| Façade             | Simplifies building error strings & stack traces into a compact API (hides PrintWriter details). |             65 |              60 |
+| Null Object (weak) |             Handles `headerGetter == null` as the “no-header” behavior (implicit null strategy). |             50 |              45 |
+
+---
+
+# 2) `EXTDTAReaderInputStream`
+
+Abstract `InputStream` subclass that defines status handling, an abstract cleanup hook, and a static exception translator.
+
+| Pattern                         |                                                                                                                 Why (brief) | Confidence (%) | Correctness (%) |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------: | -------------: | --------------: |
+| Template Method                 |                                Abstract `onClientSideStreamingError()` is a hook; concrete subclasses supply cleanup logic. |             95 |              92 |
+| Hook (variation of Template)    |                                     `checkStatus` calls subclass hook to let subclass react to status — classic hook usage. |             90 |              90 |
+| State                           |                  Keeps internal `statusSet`/`status` and exposes `isStatusSet()`/`getStatus()`; behavior depends on status. |             75 |              70 |
+| Exception Translation / Adapter | `throwEXTDTATransferException` maps status codes to specific exceptions (translates protocol codes to IO/Derby exceptions). |             82 |              78 |
+| Strategy (suppressException)    |                               `suppressException` flag alters behavior (throw vs suppress) — a small runtime policy switch. |             60 |              55 |
+
+---
+
+# 3) `JiraIssue`
+
+A value object plus a factory-style parser method that builds many instances from a file.
+
+| Pattern                                       |                                                                                      Why (brief) | Confidence (%) | Correctness (%) |
+| --------------------------------------------- | -----------------------------------------------------------------------------------------------: | -------------: | --------------: |
+| Factory Method (static)                       |                 `createJiraIssueList(String)` parses input and constructs `JiraIssue` instances. |             95 |              93 |
+| Value Object (Data Transfer / Immutable-like) |         Holds issue data (key, title, fixVersions, attachment id); used as a plain data carrier. |             92 |              90 |
+| Parser (not classic GoF but common)           |                 The static factory also implements a file parser for the serialized Jira format. |             85 |              80 |
+| Iterator (collection builder)                 |           Builds and returns a `List<JiraIssue>` from the input stream (iterative construction). |             55 |              50 |
+| Null Object / Sentinel                        | Uses sentinel constants (`NO_RELEASE_NOTE`, `MISSING_RELEASE_NOTE`) to represent special states. |             72 |              70 |
+
+---
+
+# 4) `LanguageFactory` (interface)
+
+Factory interface used to create `ParameterValueSet` and `ResultDescription` variants.
+
+| Pattern                                           |                                                                                                            Why (brief) | Confidence (%) | Correctness (%) |
+| ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------: | -------------: | --------------: |
+| Abstract Factory                                  |             Interface defines creation methods for families of related objects (ParameterValueSet, ResultDescription). |             94 |              90 |
+| Factory Method                                    |                                                  Each method is a factory method to produce a specific product object. |             92 |              88 |
+| Service Provider / Service Locator (usage intent) | The `MODULE` constant is used to locate the implementation via a monitor/service registry (common in modular systems). |             70 |              65 |
+| Dependency Injection (API role)                   |                                The factory is used so consumers depend on interface, not implementation — supports DI. |             68 |              60 |
+| Strategy (by swapping factory impl)               |                              Different `LanguageFactory` implementations change runtime behavior for produced objects. |             60 |              55 |
+
+---
+
+# 5) `Limits` (interface of constants)
+
+An interface used exclusively to expose many compile-time constants.
+
+| Pattern                                           |                                                                                                         Why (brief) | Confidence (%) | Correctness (%) |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------: | -------------: | --------------: |
+| Constant Holder / Parameter Object (nomenclature) |                                Encapsulates a group of related constants in one place (common “Constants” pattern). |             92 |              85 |
+| Flyweight (conceptual)                            |                                      Constants are shared and immutable across the system (memory-efficient reuse). |             50 |              45 |
+| Namespace (logical pattern)                       |                                Provides a namespace for related configuration limits (not a classical GoF pattern). |             70 |              60 |
+| Typesafe Constants (partial)                      |                                     Uses typed constants (ints/floats) to avoid magic numbers — borderline pattern. |             55 |              50 |
+| Null/No-pattern (anti-pattern note)               | This is sometimes considered an anti-pattern to use interfaces for constants — low correctness as a formal pattern. |             30 |              30 |
+
+*(Notes: `Limits` is primarily a constants container; many classical GoF patterns don’t apply. I’ve given frank confidence/correctness values.)*
+
+---
+
+# 6) `MessageVetter`
+
+Utility that loads `.properties` files and runs multiple checks on each message format.
+
+| Pattern                           |                                                                                                                  Why (brief) | Confidence (%) | Correctness (%) |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------: | -------------: | --------------: |
+| Template Method                   | `vet()` orchestrates per-message processing and delegates to `vetMessage` → `checkSingleQuotes` / `checkValidMessageFormat`. |             88 |              85 |
+| Chain of Responsibility (logical) |                              The message is passed through a sequence of checks; each check can raise an error (chain-like). |             70 |              65 |
+| Strategy                          |    The regex patterns (`LONE_QUOTE_PATTERN`, `LONE_QUOTE_ALLOWED_PATTERN`) and allowed-key set change the checking behavior. |             68 |              60 |
+| Command (conceptual)              |                                           The individual checker methods behave like commands/tasks applied to each message. |             50 |              45 |
+| Façade                            |                                        Encapsulates file loading + a suite of checks behind a single API (`vet()` / `main`). |             60 |              55 |
+
+---
+
+# 7) `ReleaseNoteReader`
+
+Parses an XML document (release note), extracts parts and enforces simple rules.
+
+| Pattern                       |                                                                                                    Why (brief) | Confidence (%) | Correctness (%) |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------------: | -------------: | --------------: |
+| Facade                        | Simplifies DOM parsing and provides convenient methods like `getReleaseNoteSummary` / `getReleaseNoteDetails`. |             90 |              88 |
+| Template Method               |                     `main` and instance methods define a sequence of checks (parse → extract → forbid checks). |             78 |              75 |
+| Parser                        |                          Uses `DocumentBuilder` and DOM APIs to parse and validate structure — a parsing role. |             85 |              80 |
+| Guard / Validator             |                           Implements validation rules (`forbidBlockQuotes`) — a Validator pattern in practice. |             76 |              72 |
+| Factory Method (uses factory) |                 Uses `DocumentBuilderFactory.newInstance()` and a `DocumentBuilder` passed in — factory usage. |             60 |              55 |
+
+---
+
+# 8) `ResultDescription` (interface)
+
+API for metadata about SQL result sets.
+
+| Pattern                                |                                                                                                          Why (brief) | Confidence (%) | Correctness (%) |
+| -------------------------------------- | -------------------------------------------------------------------------------------------------------------------: | -------------: | --------------: |
+| Interface / Abstract API (API pattern) |                                Provides the contract for result metadata; implementations provide concrete behavior. |             95 |              90 |
+| Adapter (typical usage)                | Implementations often adapt JDBC metadata or internal descriptors to this API (file itself is the target interface). |             72 |              70 |
+| Strategy                               |                             Different implementations represent different strategies for storing/returning metadata. |             60 |              55 |
+| Flyweight (possible)                   |                Implementations may share descriptor instances to avoid duplication (implied by shallow copy remark). |             55 |              50 |
+| Proxy (possible)                       |          Implementations could lazily fetch metadata (proxying JDBC ResultSetMetaData) — interface enables that use. |             50 |              45 |
+
+*(This file is an interface — the patterns are mostly about how it will be used by implementations.)*
+
+---
+
+# 9) `Securable` (enum)
+
+Enum representing operations that can be secured, each entry carrying associated attributes.
+
+| Pattern                      |                                                                                                Why (brief) | Confidence (%) | Correctness (%) |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------: | -------------: | --------------: |
+| Typesafe Enum (Enum pattern) |                                 Java `enum` used to model a fixed set of securable operations with fields. |             98 |              95 |
+| Registry                     |                          Enum values act as a registry of available securables (lookup by name/iteration). |             80 |              78 |
+| Flyweight                    |                                      Each enum constant is a single shared instance with immutable fields. |             85 |              82 |
+| Metadata Object              | Each enum constant bundles metadata (schema ID, routineName, routineType) — small metadata holder pattern. |             75 |              72 |
+| Command (light)              |            Enum could be used to dispatch behavior for securable operations (pattern implied by grouping). |             45 |              40 |
+
+---
+
+# 10) `SignedBinary`
+
+Static utility class with conversion functions between byte arrays and numeric types for different endianness.
+
+| Pattern                             |                                                                                     Why (brief) | Confidence (%) | Correctness (%) |
+| ----------------------------------- | ----------------------------------------------------------------------------------------------: | -------------: | --------------: |
+| Strategy (selection via parameter)  | `getShort/getInt/getLong` choose algorithm based on `byteOrder` parameter (strategy selection). |             85 |              82 |
+| Static Factory / Conversion utility |                Static methods produce primitives from byte arrays — a conversion factory style. |             90 |              88 |
+| Adapter                             |        Adapts raw byte arrays to Java primitive types (adapting external format to Java types). |             78 |              75 |
+| Façade                              |          Provides a simple façade over several low-level byte order conversion implementations. |             70 |              65 |
+| Singleton (hidden ctor)             |                         Private constructor prevents instantiation (utility-singleton concept). |             55 |              50 |
+
+---
+
+### Final notes / caveats
+
+* I focused on **design patterns** in the sense of reuseable structural / behavioral patterns (GoF and common architectural helpers). Some files are interfaces/enums/constants where the “patterns” are about how they’re intended to be *used* (so detection is necessarily about their role, not an explicit implementation like `new` or `getInstance()`).
+* Confidence is higher where the code directly implements classic pattern structure (e.g., abstract hook methods for Template Method), and lower where the pattern is inferred from intent/usage.
+* If you want, I can:
+
+  * produce **per-file annotated snippets** showing the lines that motivated each pattern detection, or
+  * convert this into a machine-readable CSV / spreadsheet, or
+  * run a second-pass with stricter criteria (only list patterns with ≥70% confidence).
+
+Which follow-up would you like?

@@ -1,0 +1,117 @@
+## Class: BulkDelete
+
+| Pattern            | Detection Confidence | Implementation Correctness |
+|--------------------|----------------------|----------------------------|
+| Strategy           | 90%                  | 80%                        |
+| Interface          | 95%                  | 90%                        |
+| Template Method    | 30%                  | 20%                        |
+| Adapter            | 20%                  | 15%                        |
+| Factory Method     | 15%                  | 10%                        |
+
+---
+
+## Class: Concat
+
+| Pattern            | Detection Confidence | Implementation Correctness |
+|--------------------|----------------------|----------------------------|
+| Command            | 100%                 | 90%                        |
+| Factory Method     | 80%                  | 70%                        |
+| Template Method    | 85%                  | 85%                        |
+| Singleton (testFs) | 60%                  | 50%                        |
+| Strategy           | 40%                  | 30%                        |
+
+---
+
+## Class: CryptoProtocolVersion
+
+| Pattern              | Detection Confidence | Implementation Correctness |
+|----------------------|----------------------|----------------------------|
+| Enum                 | 100%                 | 100%                       |
+| Registry             | 75%                  | 70%                        |
+| Singleton per Value  | 90%                  | 90%                        |
+| Factory Method       | 60%                  | 50%                        |
+| Strategy (supports)  | 50%                  | 40%                        |
+
+---
+
+## Class: DiskValidatorFactory
+
+| Pattern             | Detection Confidence | Implementation Correctness |
+|---------------------|----------------------|----------------------------|
+| Factory             | 100%                 | 95%                        |
+| Multiton            | 90%                  | 85%                        |
+| Lazy Initialization | 90%                  | 80%                        |
+| Reflection (Helper) | 80%                  | 75%                        |
+| Singleton (Class)   | 85%                  | 80%                        |
+
+---
+
+## Class: ExternalCall
+
+| Pattern           | Detection Confidence | Implementation Correctness |
+|-------------------|----------------------|----------------------------|
+| Template Method   | 95%                  | 90%                        |
+| Future            | 90%                  | 85%                        |
+| Command           | 80%                  | 70%                        |
+| Adapter           | 75%                  | 70%                        |
+| State             | 60%                  | 50%                        |
+
+---
+
+## Class: GangliaMetricVisitor
+
+| Pattern         | Detection Confidence | Implementation Correctness |
+|-----------------|----------------------|----------------------------|
+| Visitor         | 100%                 | 95%                        |
+| Null Object     | 60%                  | 50%                        |
+| Strategy        | 45%                  | 40%                        |
+| State           | 40%                  | 40%                        |
+| Interpreter     | 20%                  | 15%                        |
+
+---
+
+## Class: LeaseRecoverable
+
+| Pattern         | Detection Confidence | Implementation Correctness |
+|-----------------|----------------------|----------------------------|
+| Strategy        | 100%                 | 90%                        |
+| Interface       | 95%                  | 90%                        |
+| Proxy           | 50%                  | 40%                        |
+| Command         | 20%                  | 15%                        |
+| Adapter         | 20%                  | 15%                        |
+
+---
+
+## Class: ProtobufHelper
+
+| Pattern     | Detection Confidence | Implementation Correctness |
+|-------------|----------------------|----------------------------|
+| Facade      | 100%                 | 90%                        |
+| Adapter     | 90%                  | 85%                        |
+| Utility     | 95%                  | 90%                        |
+| Delegation  | 85%                  | 80%                        |
+| Singleton   | 20%                  | 15%                        |
+
+---
+
+## Class: RefreshRegistry
+
+| Pattern                       | Detection Confidence | Implementation Correctness |
+|-------------------------------|----------------------|----------------------------|
+| Singleton                     | 100%                 | 95%                        |
+| Registry                      | 100%                 | 95%                        |
+| Observer (handler dispatch)   | 80%                  | 75%                        |
+| Thread-safe Initialization    | 80%                  | 70%                        |
+| Multiton (per identifier)     | 40%                  | 35%                        |
+
+---
+
+## Class: SnapshotCommands
+
+| Pattern            | Detection Confidence | Implementation Correctness |
+|--------------------|----------------------|----------------------------|
+| Command            | 100%                 | 95%                        |
+| Factory Method     | 90%                  | 85%                        |
+| Template Method    | 95%                  | 90%                        |
+| Composite          | 60%                  | 50%                        |
+| Builder (nested)   | 20%                  | 15%                        |

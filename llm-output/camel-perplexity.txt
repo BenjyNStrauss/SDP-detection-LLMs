@@ -1,0 +1,135 @@
+>## Java Classes Design Patterns Analysis
+
+Below are the top 5 detected design patterns for each of the 10 Java classes in your file, based on their code as delimited by the `">>>>>>>"` marker. Each table gives the pattern name, confidence in detection, and expected correctness for the assigned pattern. Analysis is based on file content, common Java/Camel conventions, and contextual cues.
+
+***
+
+### 1. `org.apache.camel.processor.AbstractThrottler`
+
+| Pattern Name            | Confidence (%) | Correctness (%) |
+|------------------------|---------------|-----------------|
+| Template Method        | 95            | 95              |
+| Strategy               | 90            | 90              |
+| State                  | 85            | 85              |
+| Abstract Base/Parent   | 100           | 100             |
+| Factory Method         | 80            | 80              |
+
+***
+
+### 2. `org.apache.camel.AggregationStrategy` (Interface)
+
+| Pattern Name          | Confidence (%) | Correctness (%) |
+|----------------------|---------------|-----------------|
+| Strategy             | 100           | 100             |
+| Template Method      | 85            | 85              |
+| Callback             | 90            | 90              |
+| Null Object          | 70            | 70              |
+| Extension Interface  | 95            | 95              |
+
+***
+
+### 3. `org.apache.camel.processor.aggregator.AggregationStrategyBeanAdapterAllowNullTest`
+
+| Pattern Name        | Confidence (%) | Correctness (%) |
+|--------------------|---------------|-----------------|
+| Test/Fixture       | 100           | 100             |
+| Builder            | 80            | 80              |
+| Strategy           | 70            | 70              |
+| Command            | 70            | 70              |
+| Adapter            | 90            | 90              |
+
+***
+
+### 4. `org.apache.camel.impl.DefaultModelReifierFactory`
+
+| Pattern Name        | Confidence (%) | Correctness (%) |
+|--------------------|---------------|-----------------|
+| Factory            | 100           | 100             |
+| Abstract Factory   | 80            | 80              |
+| Delegation         | 85            | 85              |
+| Singleton          | 60            | 60              |
+| Template Method    | 75            | 75              |
+
+***
+
+### 5. `org.apache.camel.processor.DefaultProcessorFactory`
+
+| Pattern Name        | Confidence (%) | Correctness (%) |
+|--------------------|---------------|-----------------|
+| Factory            | 100           | 100             |
+| Strategy           | 80            | 80              |
+| Delegation         | 85            | 85              |
+| Abstract Factory   | 75            | 75              |
+| Service Provider Interface (SPI) | 90 | 90           |
+
+***
+
+### 6. `org.apache.camel.component.properties.DefaultPropertiesSourceFactory`
+
+| Pattern Name        | Confidence (%) | Correctness (%) |
+|--------------------|---------------|-----------------|
+| Factory            | 100           | 100             |
+| Builder            | 60            | 60              |
+| Singleton          | 60            | 60              |
+| Adapter            | 70            | 70              |
+| Delegation         | 70            | 70              |
+
+***
+
+### 7. `org.apache.camel.tooling.util.JavadocHelper`
+
+| Pattern Name        | Confidence (%) | Correctness (%) |
+|--------------------|---------------|-----------------|
+| Utility/Helper     | 100           | 100             |
+| Static Method      | 100           | 100             |
+| Singleton          | 60            | 60              |
+| Facade             | 70            | 70              |
+| Template Method    | 60            | 60              |
+
+***
+
+### 8. `org.apache.camel.util.KeyValueHolder`
+
+| Pattern Name       | Confidence (%) | Correctness (%) |
+|-------------------|---------------|-----------------|
+| Value Object      | 100           | 100             |
+| Data Holder       | 100           | 100             |
+| Immutable Object  | 90            | 90              |
+| POJO              | 100           | 100             |
+| Key-Value Pair    | 100           | 100             |
+
+***
+
+### 9. `org.apache.camel.tooling.model.Strings`
+
+| Pattern Name        | Confidence (%) | Correctness (%) |
+|--------------------|---------------|-----------------|
+| Utility/Helper     | 100           | 100             |
+| Static Method      | 100           | 100             |
+| Singleton          | 60            | 60              |
+| Facade             | 70            | 70              |
+| String Manipulator | 90            | 90              |
+
+***
+
+### 10. `org.apache.camel.impl.converter.ToStringTypeConverter`
+
+| Pattern Name        | Confidence (%) | Correctness (%) |
+|--------------------|---------------|-----------------|
+| Adapter            | 100           | 100             |
+| Strategy           | 85            | 85              |
+| Type Converter     | 100           | 100             |
+| Template Method    | 70            | 70              |
+| Null Object        | 65            | 65              |
+
+***
+
+**Notes:**
+- "Confidence" indicates the likelihood the pattern is present based on the code.
+- "Correctness" estimates whether the code correctly employs the detected pattern as intended by software engineering standards.
+- "Value Object" and "Data Holder" are both relevant for simple immutable classes with fields, getters, `equals`, and `hashCode`.
+- Many classes use more than one pattern; only the top 5 per class are shown.
+
+Let me know if you want more details about any class or pattern!
+
+[1] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/72739633/c74fcaf0-5420-4441-806e-0a1d6bdc762b/cramfile.txt

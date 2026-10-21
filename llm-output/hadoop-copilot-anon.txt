@@ -1,0 +1,118 @@
+## Class ident$13
+
+| Pattern                             | Detection Confidence | Correctness |
+|-------------------------------------|----------------------|-------------|
+| Visitor                             | 90%                  | 90%         |
+| Strategy                            | 70%                  | 85%         |
+| Adapter (Event Adapter)             | 40%                  | 50%         |
+| Command (Callback Handler)          | 30%                  | 50%         |
+| Null Object                         | 20%                  | 40%         |
+
+---
+
+## Class ident$11 (enum)
+
+| Pattern                             | Detection Confidence | Correctness |
+|-------------------------------------|----------------------|-------------|
+| Typesafe Enum                       | 95%                  | 100%        |
+| Registry                            | 85%                  | 90%         |
+| Factory Method                      | 80%                  | 85%         |
+| Flyweight (shared enum instances)   | 60%                  | 70%         |
+| Iterator (values array iteration)   | 50%                  | 60%         |
+
+---
+
+## Class ident$20
+
+| Pattern                             | Detection Confidence | Correctness |
+|-------------------------------------|----------------------|-------------|
+| Factory                             | 90%                  | 90%         |
+| Multiton / Cache                    | 80%                  | 85%         |
+| Singleton per Class                 | 80%                  | 85%         |
+| Registry / Service Locator          | 70%                  | 80%         |
+| Lazy Initialization                 | 75%                  | 80%         |
+
+---
+
+## Class ident$29
+
+| Pattern                             | Detection Confidence | Correctness |
+|-------------------------------------|----------------------|-------------|
+| Facade (static convenience methods) | 95%                  | 95%         |
+| Adapter (exception wrapping)        | 80%                  | 80%         |
+| Static Factory                      | 85%                  | 85%         |
+| Utility (static helper class)       | 50%                  | 60%         |
+| Proxy (exception interception)      | 40%                  | 50%         |
+
+---
+
+## Class ident$27
+
+| Pattern                             | Detection Confidence | Correctness |
+|-------------------------------------|----------------------|-------------|
+| Singleton (Initialization-on-demand)| 100%                 | 100%        |
+| Registry / Service Locator          | 90%                  | 90%         |
+| Strategy (plugin handlers)          | 90%                  | 90%         |
+| Command (invoking handler actions)  | 80%                  | 80%         |
+| Iterator (iterating registered items)| 60%                 | 60%         |
+
+---
+
+## Class ident$26 (abstract)
+
+| Pattern                             | Detection Confidence | Correctness |
+|-------------------------------------|----------------------|-------------|
+| Template Method                     | 95%                  | 95%         |
+| Bridge (abstraction vs. implementor)| 80%                  | 85%         |
+| Strategy (injecting behavior)       | 85%                  | 80%         |
+| Command (represents executable unit)| 80%                  | 80%         |
+| Factory Method (delegated instantiation)| 70%              | 70%         |
+
+---
+
+## Class ident$21
+
+| Pattern                             | Detection Confidence | Correctness |
+|-------------------------------------|----------------------|-------------|
+| Template Method                     | 95%                  | 95%         |
+| Chain of Responsibility             | 85%                  | 90%         |
+| Strategy (handler variants)         | 75%                  | 80%         |
+| Factory Method (static registration)| 70%                  | 75%         |
+| Command (each handler executes action)| 60%                | 70%         |
+
+---
+
+## Class ident$24
+
+| Pattern                             | Detection Confidence | Correctness |
+|-------------------------------------|----------------------|-------------|
+| Template Method                     | 95%                  | 95%         |
+| Command (concrete command class)    | 85%                  | 85%         |
+| Factory Method (static registration)| 60%                  | 70%         |
+| Strategy (injectable executor)      | 50%                  | 60%         |
+| Dependency Injection point          | 50%                  | 60%         |
+
+---
+
+## Interface ident$26
+
+| Pattern                             | Detection Confidence | Correctness |
+|-------------------------------------|----------------------|-------------|
+| Bridge (Implementor interface)      | 90%                  | 90%         |
+| Strategy (defines interchangeable behavior)| 70%          | 70%         |
+| Command (contract for executable unit)| 60%                | 60%         |
+| Adapter (role interface)            | 50%                  | 50%         |
+| Composite (combines two interfaces) | 40%                  | 40%         |
+
+---
+
+## Interface ident$11
+
+| Pattern                             | Detection Confidence | Correctness |
+|-------------------------------------|----------------------|-------------|
+| Strategy (operation abstraction)    | 90%                  | 90%         |
+| Bridge (defines implementor role)   | 80%                  | 80%         |
+| Command (encapsulates action)       | 60%                  | 60%         |
+| Adapter (service interface)         | 50%                  | 50%         |
+| Null Object (could have null impls) | 30%                  | 40%         |
+
